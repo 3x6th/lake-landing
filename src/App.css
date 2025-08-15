@@ -64,6 +64,11 @@ body {
   min-height: clamp(3rem, 10vw, 7rem);
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
   line-height: 1.2;
+  white-space: nowrap;
+  text-align: center;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .cursor {
