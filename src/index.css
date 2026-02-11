@@ -1,33 +1,19 @@
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
 body {
   margin: 0;
   font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #000;
-  color: #fff;
-  min-height: 100vh;
-  overflow: hidden;
+  background: #03060d;
+  color: #f5f8ff;
+  overflow-x: hidden;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
-}
-
-/* Оптимизация для широких экранов */
-@media (min-width: 1400px) {
-  body {
-    font-size: 18px;
-  }
-}
-
-@media (min-width: 1920px) {
-  body {
-    font-size: 20px;
-  }
-}
-
-@media (min-width: 2560px) {
-  body {
-    font-size: 22px;
-  }
 }

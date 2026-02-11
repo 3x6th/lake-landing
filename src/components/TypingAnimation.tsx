@@ -1,47 +1,62 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
-const TypingAnimation: React.FC = () => {
+interface TypingAnimationProps {
+  texts: string[];
+}
+
+const TypingAnimation: React.FC<TypingAnimationProps> = ({ texts }) => {
   const [displayText, setDisplayText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const [textIndex, setTextIndex] = useState(0);
-  
-  const texts = useMemo(() => ['ozero.dev', 'lake of developers'], []);
-  
+
+  const rotatingTexts = useMemo(
+    () => (texts.length > 0 ? texts : ['ozero.dev']),
+    [texts]
+  );
+
   useEffect(() => {
-    const currentText = texts[textIndex];
-    
+    setDisplayText('');
+    setIsDeleting(false);
+    setTextIndex(0);
+  }, [rotatingTexts]);
+
+  useEffect(() => {
+    const currentText = rotatingTexts[textIndex];
+
     if (!isDeleting) {
       if (displayText.length < currentText.length) {
-        const timeout = setTimeout(() => {
+        const timeout = window.setTimeout(() => {
           setDisplayText(currentText.slice(0, displayText.length + 1));
         }, 150);
-        return () => clearTimeout(timeout);
-      } else {
-        const timeout = setTimeout(() => {
-          setIsDeleting(true);
-        }, 2000);
-        return () => clearTimeout(timeout);
+        return () => window.clearTimeout(timeout);
       }
-    } else {
-      if (displayText.length > 0) {
-        const timeout = setTimeout(() => {
-          setDisplayText(displayText.slice(0, -1));
-        }, 100);
-        return () => clearTimeout(timeout);
-      } else {
-        setIsDeleting(false);
-        setTextIndex((prevIndex) => (prevIndex + 1) % texts.length);
-      }
+
+      const timeout = window.setTimeout(() => {
+        setIsDeleting(true);
+      }, 2000);
+      return () => window.clearTimeout(timeout);
     }
-  }, [displayText, isDeleting, textIndex, texts]);
+
+    if (displayText.length > 0) {
+      const timeout = window.setTimeout(() => {
+        setDisplayText(displayText.slice(0, -1));
+      }, 100);
+      return () => window.clearTimeout(timeout);
+    }
+
+    setIsDeleting(false);
+    setTextIndex((prevIndex) => (prevIndex + 1) % rotatingTexts.length);
+    return undefined;
+  }, [displayText, isDeleting, textIndex, rotatingTexts]);
 
   return (
     <div className="typing-animation">
       <h1 className="main-title">
         {displayText}
-        <span className="cursor">|</span>
+        <span className="cursor" aria-hidden="true">
+          |
+        </span>
       </h1>
-      <p className="subtitle">We build digital solutions that flow like water</p>
     </div>
   );
 };
