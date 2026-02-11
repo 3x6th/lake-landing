@@ -10,16 +10,10 @@ export interface ServiceItem {
   description: LocalizedText;
 }
 
-export interface ProjectRepository {
-  label: LocalizedText;
-  url: string;
-}
-
 export interface ProjectItem {
-  name: string;
+  name: LocalizedText;
   description: LocalizedText;
   tech: string[];
-  repositories: ProjectRepository[];
 }
 
 interface NavigationLabels {
@@ -109,7 +103,7 @@ export const uiCopy: Record<Language, UiCopy> = {
       emailAriaLabel: 'Отправить письмо на javadevtechlead@gmail.com',
     },
     servicesSubtitle: 'Помогаем усиливать команду и запускать продукты быстрее.',
-    projectsSubtitle: 'Реализованные проекты без live demo, с открытыми репозиториями.',
+    projectsSubtitle: 'Ключевые проектные направления команды.',
     vacancySubtitle: 'Ищем Java Developer в продуктовую команду.',
     footerSuffix: 'Аутсорс-команды и интеграция AI-сервисов.',
   },
@@ -142,7 +136,7 @@ export const uiCopy: Record<Language, UiCopy> = {
       emailAriaLabel: 'Send email to javadevtechlead@gmail.com',
     },
     servicesSubtitle: 'We strengthen engineering teams and deliver products end-to-end.',
-    projectsSubtitle: 'Two featured projects with open source repositories.',
+    projectsSubtitle: 'Selected product directions and implementation cases.',
     vacancySubtitle: 'Open role in our product team.',
     footerSuffix: 'Outsourcing teams and AI integrations.',
   },
@@ -193,52 +187,37 @@ export const services: ServiceItem[] = [
 
 export const projects: ProjectItem[] = [
   {
-    name: 'Learning Platform Microservices',
+    name: {
+      ru: 'Обучающая платформа',
+      en: 'Learning Platform',
+    },
     description: {
-      ru: 'Распределённая платформа онлайн-курсов: API Gateway, JWT, Kafka-уведомления и набор доменных сервисов (курсы/менторы/нотификации).',
-      en: 'Distributed LMS with API Gateway, JWT auth, Kafka-based notifications, and multiple domain services (courses/mentors/notifications).',
+      ru: 'Микросервисная платформа для управления образовательным контентом, ролями и прогрессом пользователей.',
+      en: 'A microservice-based platform for educational content management, role-based access, and learner progress tracking.',
     },
     tech: ['Java', 'Spring Boot', 'JWT', 'Kafka', 'PostgreSQL', 'Microservices'],
-    repositories: [
-      {
-        label: {
-          ru: 'Backend / monorepo',
-          en: 'Backend / monorepo',
-        },
-        url: 'https://github.com/VladislavYurin/learning-platform',
-      },
-      {
-        label: {
-          ru: 'Frontend',
-          en: 'Frontend',
-        },
-        url: 'https://github.com/VladislavYurin/learning-platform-frontend',
-      },
-    ],
   },
   {
-    name: 'PlayCure - Game Recommendation AI Platform',
+    name: {
+      ru: 'AI агент с интеграцией в Steam',
+      en: 'AI Agent with Steam Integration',
+    },
     description: {
-      ru: 'Подбор игр при игровом выгорании: Java 21 Spring Boot backend + Python AI сервис, gRPC, PostgreSQL, Redis, Docker, мониторинг.',
-      en: 'Game recommendations for burnout recovery: Java 21 Spring Boot backend + Python AI service, gRPC, PostgreSQL, Redis, Docker, observability.',
+      ru: 'AI-ассистент для рекомендаций игр с контекстом профиля пользователя и интеграцией со Steam.',
+      en: 'An AI assistant for game recommendations with user context processing and Steam integration.',
     },
     tech: ['Java 21', 'Spring Boot', 'Spring Security', 'gRPC', 'PostgreSQL', 'Redis', 'Docker', 'Python', 'FastAPI'],
-    repositories: [
-      {
-        label: {
-          ru: 'Backend / monorepo',
-          en: 'Backend / monorepo',
-        },
-        url: 'https://github.com/3x6th/game-recommender-ai',
-      },
-      {
-        label: {
-          ru: 'UI',
-          en: 'UI',
-        },
-        url: 'https://github.com/3x6th/game-recommender-ai-ui',
-      },
-    ],
+  },
+  {
+    name: {
+      ru: 'Таск-трекер (аналог Jira)',
+      en: 'Task Tracker (Jira-like)',
+    },
+    description: {
+      ru: 'Корпоративный трекер задач Taska: проекты, workflow, роли, доска по статусам, in-app/email уведомления и событийная микросервисная архитектура.',
+      en: 'Taska corporate issue tracker with projects, workflows, role model, status board, in-app/email notifications, and event-driven microservice architecture.',
+    },
+    tech: ['Microservices', 'API Gateway/BFF', 'gRPC', 'Kafka', 'PostgreSQL', 'Outbox Pattern', 'Workflow Engine'],
   },
 ];
 

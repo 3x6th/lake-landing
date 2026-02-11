@@ -203,8 +203,8 @@ function App() {
             <p className="section-subtitle">{content.projectsSubtitle}</p>
             <div className="project-grid">
               {projects.map((project) => (
-                <article className="project-card" key={project.name}>
-                  <h3>{project.name}</h3>
+                <article className="project-card" key={project.name.en}>
+                  <h3>{project.name[language]}</h3>
                   <p>{project.description[language]}</p>
                   <ul className="tech-list" aria-label={projectTechAriaLabel}>
                     {project.tech.map((tech) => (
@@ -213,19 +213,6 @@ function App() {
                       </li>
                     ))}
                   </ul>
-                  <div className="repo-links">
-                    {project.repositories.map((repo) => (
-                      <a
-                        key={repo.url}
-                        href={repo.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="repo-link"
-                      >
-                        {repo.label[language]}
-                      </a>
-                    ))}
-                  </div>
                 </article>
               ))}
             </div>

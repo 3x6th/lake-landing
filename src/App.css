@@ -323,25 +323,6 @@ h2 {
   color: #e5f3ff;
 }
 
-.repo-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.repo-link {
-  text-decoration: none;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #95d3ff;
-  border-bottom: 1px solid transparent;
-}
-
-.repo-link:hover {
-  color: #c6ecff;
-  border-bottom-color: rgba(198, 236, 255, 0.66);
-}
-
 .vacancy-note {
   margin-top: -0.2rem;
   margin-bottom: 0.8rem;
@@ -475,7 +456,6 @@ h2 {
 .nav-link:focus-visible,
 .language-button:focus-visible,
 .copy-icon-button:focus-visible,
-.repo-link:focus-visible,
 .email-link:focus-visible {
   outline: 2px solid #81d7ff;
   outline-offset: 2px;
