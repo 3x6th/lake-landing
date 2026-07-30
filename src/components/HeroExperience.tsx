@@ -4,14 +4,14 @@ import { Language, UiCopy } from '../siteContent';
 import { AsciiFisherman } from './AsciiFisherman';
 
 interface HeroExperienceProps {
-  contactEmail: string;
+  contactHref: string;
   content: UiCopy['hero'];
   language: Language;
   onReleaseChange: (isReleased: boolean) => void;
 }
 
 export const HeroExperience = ({
-  contactEmail,
+  contactHref,
   content,
   language,
   onReleaseChange,
@@ -77,13 +77,13 @@ export const HeroExperience = ({
           <div className="hero-experience__actions">
             <a
               className="hero-button hero-button--primary"
-              href={`mailto:${contactEmail}`}
+              href={contactHref}
             >
               {content.primaryCta}
             </a>
             <a
               className="hero-button hero-button--ghost"
-              href="#projects"
+              href="#work"
             >
               {content.secondaryCta}
             </a>
