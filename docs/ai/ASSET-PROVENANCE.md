@@ -62,6 +62,36 @@ Generation jobs:
 - `bde081df-445f-450c-91c5-e91565890d3c` — macro black-water field
 - `4d8f2d51-8b70-4e81-9634-01406ad8ac4f` — abstract liquid signal field
 
+Macro-water prompt:
+
+> Premium website hero background for a serious European B2B software
+> engineering studio, 16:9. Extreme macro cinematography of a black lake
+> surface at night, camera almost touching the water, no visible shoreline or
+> sky. Black-on-black liquid folds and subtle physically plausible
+> interference; only sparse submerged moss-green and burnt-amber iridescence,
+> mostly in the lower-right and center-right. The left 45 percent stays deep,
+> quiet near-black negative space for live HTML typography. Sophisticated,
+> architectural, restrained, tactile, editorial, contemporary design-studio
+> quality, filmic grain, real optical caustics, no fantasy. Absolutely no
+> people, fisherman, boat, animals, text, letters, logo, UI, coordinates, grid,
+> glowing sphere, neon cyan, glossy CGI blob, product render, lens flare,
+> stock-photo look.
+
+Rejected signal-field prompt:
+
+> Premium abstract website hero background for a serious European B2B software
+> engineering studio, 16:9. A nocturnal liquid signal field inspired by water
+> but not a literal landscape: ultra-thin engraved wave filaments emerge from
+> near-blackness, transition into a sparse analog interference pattern, then
+> disappear again. Composition feels precise and engineered, not sci-fi:
+> paper-white micro-lines with very restrained lake-green and warm amber
+> spectral edges, energy concentrated in the lower-right third, broad quiet
+> black field on the left for live HTML copy. Flat editorial depth mixed with
+> subtle physical texture, sophisticated European motion-design still, calm
+> authority. Absolutely no people, fisherman, boat, objects, text, letters,
+> logo, UI, terminal, coordinates, circuit board, neon cyan, purple, 3D sphere,
+> glossy blob, stock illustration.
+
 Both prompts explicitly exclude people, boats, objects, baked-in UI, terminal
 decoration, coordinates, cyan/purple neon, spheres, and glossy CGI. The final
 production export is selected only after visual review.
