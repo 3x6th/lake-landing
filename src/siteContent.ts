@@ -86,7 +86,7 @@ export const uiCopy: Record<Language, UiCopy> = {
     hero: {
       typingTexts: ['ozero.dev', 'озеро разработчиков'],
       tagline: 'озеро разработчиков',
-      valueProposition: 'Аутсорс-разработка и интеграция AI-сервисов для продуктовых команд.',
+      valueProposition: 'Java-разработчики и продуктовые команды, готовые подключиться за одну–три недели.',
       primaryCta: 'Написать нам',
       secondaryCta: 'Посмотреть проекты',
     },
@@ -119,7 +119,7 @@ export const uiCopy: Record<Language, UiCopy> = {
     hero: {
       typingTexts: ['ozero.dev', 'lake of developers'],
       tagline: 'lake of developers',
-      valueProposition: 'Outsourcing teams and AI integrations for product companies.',
+      valueProposition: 'Java-first engineers and focused product squads, ready to join in one to three weeks.',
       primaryCta: 'Contact us',
       secondaryCta: 'View projects',
     },

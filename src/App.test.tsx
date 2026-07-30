@@ -48,7 +48,7 @@ describe('cinematic hero experience', () => {
     expect(screen.getByRole('button', { name: 'EN' })).toBeInTheDocument();
     expect(
       screen.getByText(
-        'Outsourcing teams and AI integrations for product companies.'
+        'Java-first engineers and focused product squads, ready to join in one to three weeks.'
       )
     ).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Contact us' })).toHaveAttribute(
@@ -65,7 +65,7 @@ describe('cinematic hero experience', () => {
 
     expect(
       screen.getByText(
-        'Аутсорс-разработка и интеграция AI-сервисов для продуктовых команд.'
+        'Java-разработчики и продуктовые команды, готовые подключиться за одну–три недели.'
       )
     ).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Написать нам' })).toHaveAttribute(
