@@ -85,8 +85,10 @@ Create one controlled native-scroll passage named `HeroExperience`:
   matrix rain, random characters, typing, or flicker.
 - Desktop stage height is `210vh`; mobile stage height is `180vh`. A sticky
   `100svh` visual stage owns the passage without intercepting native scroll.
-- Scroll progress is normalized from the hero root and written to one CSS
-  custom property inside one `requestAnimationFrame` per frame. Do not update
+- Scroll progress is normalized from the hero root inside one
+  `requestAnimationFrame` per frame. Cached element refs receive direct
+  compositor-only inline styles: opacity for the engraving and ASCII, plus
+  opacity and transform for the brand line. Do not query the DOM or update
   React state continuously while scrolling.
 - Fisherman and ASCII share one grid cell and exactly the same image box,
   object-fit, object-position, and right-side 8% crop so the fishing-line edge
@@ -105,6 +107,8 @@ Create one controlled native-scroll passage named `HeroExperience`:
   - sample a `120`-column grid on desktop and `64` columns on mobile
   - use area averaging or a one-pixel blur before sampling
   - luminance below `24` is transparent
+  - apply contrast gamma `0.65` to normalized post-threshold luminance before
+    selecting a glyph so thin engraving strokes remain legible
   - glyph ramp is exactly ` .·:+*#@`
   - glyph positions are fixed; output color is `#F1F2ED`
   - regenerate only when the desktop/mobile sampling breakpoint changes
@@ -154,8 +158,11 @@ On mobile use `translate3d(-1px, -1px, 0)`,
 
 1. Add `src/hooks/useHeroProgress.ts`. Observe the hero root with passive
    `scroll` and `resize` listeners, coalesce work into one rAF, calculate
-   normalized progress, write `--hero-progress`, and expose only discrete state
-   needed for navigation or accessibility. Clean up listeners and pending rAF.
+   normalized progress, and write direct compositor styles to cached engraving,
+   ASCII, and brand-line refs. Expose only discrete state needed for navigation
+   or accessibility. In reduced motion, clear inline motion styles and use an
+   isolated passive release-threshold check with no progress rAF. Clean up all
+   listeners, timers, and pending frames.
 2. Add `src/components/AsciiFisherman.tsx`. Decode `/fishman.png`, crop its
    rightmost 8%, sample luminance into the prescribed fixed grid, and render a
    decorative, `aria-hidden` ASCII layer whose box is pixel-registered with the

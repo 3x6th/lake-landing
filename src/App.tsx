@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './App.css';
-import TypingAnimation from './components/TypingAnimation';
+import { HeroExperience } from './components/HeroExperience';
 import {
   CONTACT_EMAIL,
   LANGUAGE_STORAGE_KEY,
@@ -54,13 +54,12 @@ const VacancyGroup: React.FC<VacancyGroupProps> = ({ title, items }) => (
 function App() {
   const [language, setLanguage] = useState<Language>(resolveInitialLanguage);
   const [isCopied, setIsCopied] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [isHeroReleased, setIsHeroReleased] = useState(false);
   const copyFeedbackTimeoutRef = useRef<number | null>(null);
   const content = uiCopy[language];
   const vacancyContent = vacancy[language];
   const projectTechAriaLabel =
     language === 'ru' ? 'Технологии проекта' : 'Project technologies';
-  const heroTypingTexts = ['ozero.dev', 'lake of developers'];
 
   useEffect(() => {
     document.documentElement.lang = language;
@@ -75,20 +74,6 @@ function App() {
     },
     []
   );
-
-  useEffect(() => {
-    const updateScrollState = () => {
-      const blurThreshold = Math.max(220, window.innerHeight * 0.35);
-      setIsScrolled(window.scrollY > blurThreshold);
-    };
-
-    updateScrollState();
-    window.addEventListener('scroll', updateScrollState, { passive: true });
-
-    return () => {
-      window.removeEventListener('scroll', updateScrollState);
-    };
-  }, []);
 
   const copyEmail = async () => {
     let copiedSuccessfully = false;
@@ -127,17 +112,10 @@ function App() {
   };
 
   return (
-    <div className={`App ${isScrolled ? 'scrolled' : ''}`} id="top">
-      <div
-        className="background-image"
-        style={{
-          backgroundImage: 'url(/fishman.png)',
-        }}
-        aria-hidden="true"
-      />
-      <div className="background-overlay" aria-hidden="true" />
-
-      <header className="top-nav">
+    <div className="App" id="top">
+      <header
+        className={`top-nav ${isHeroReleased ? 'top-nav--solid' : ''}`}
+      >
         <nav className="main-nav" aria-label={content.navAriaLabel}>
           <a className="nav-link" href="#services">
             {content.nav.services}
@@ -145,7 +123,7 @@ function App() {
           <a className="nav-link" href="#projects">
             {content.nav.projects}
           </a>
-          <a className="nav-link" href="#vacancy">
+          <a className="nav-link nav-link--vacancy" href="#vacancy">
             {content.nav.vacancy}
           </a>
           <a className="nav-link" href="#contacts">
@@ -173,14 +151,12 @@ function App() {
       </header>
 
       <main className="page-content">
-        <section className="section hero-section">
-          <div className="hero-classic">
-            <TypingAnimation texts={heroTypingTexts} />
-            <p className="subtitle">
-              We build digital solutions that flow like water
-            </p>
-          </div>
-        </section>
+        <HeroExperience
+          contactEmail={CONTACT_EMAIL}
+          content={content.hero}
+          language={language}
+          onReleaseChange={setIsHeroReleased}
+        />
 
         <section id="services" className="section">
           <div className="glass-panel">
