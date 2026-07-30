@@ -1,26 +1,12 @@
 export type Language = 'ru' | 'en';
 
-export interface LocalizedText {
-  ru: string;
-  en: string;
-}
-
-export interface ServiceItem {
-  title: LocalizedText;
-  description: LocalizedText;
-}
-
-export interface ProjectItem {
-  name: LocalizedText;
-  description: LocalizedText;
-  tech: string[];
-}
-
 interface NavigationLabels {
-  services: string;
-  projects: string;
-  vacancy: string;
-  contacts: string;
+  offers: string;
+  work: string;
+  process: string;
+  faq: string;
+  contact: string;
+  menu: string;
 }
 
 interface HeroContent {
@@ -31,18 +17,100 @@ interface HeroContent {
   secondaryCta: string;
 }
 
-interface SectionLabels {
-  services: string;
-  projects: string;
-  vacancy: string;
-  contacts: string;
+interface ProofFact {
+  value: string;
+  label: string;
 }
 
-interface ContactsContent {
+interface OfferItem {
+  title: string;
+  summary: string;
+  details: string[];
+  cta: string;
+  subject: string;
+}
+
+interface TaskaContent {
+  status: string;
+  title: string;
   description: string;
-  copyButtonLabel: string;
-  copiedLabel: string;
+  note: string;
+  boardAlt: string;
+  projectsAlt: string;
+  boardCaption: string;
+  projectsCaption: string;
+}
+
+interface AiFlowStep {
+  title: string;
+  detail: string;
+}
+
+interface AiCaseContent {
+  status: string;
+  title: string;
+  description: string;
+  flowAriaLabel: string;
+  steps: AiFlowStep[];
+  note: string;
+}
+
+interface WorkContent {
+  label: string;
+  title: string;
+  introduction: string;
+  taska: TaskaContent;
+  ai: AiCaseContent;
+}
+
+interface ProcessStep {
+  title: string;
+  description: string;
+}
+
+interface ProcessContent {
+  label: string;
+  title: string;
+  introduction: string;
+  steps: ProcessStep[];
+}
+
+interface CapabilityContent {
+  label: string;
+  title: string;
+  description: string;
+  facts: string[];
+  note: string;
+}
+
+interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+interface FaqContent {
+  label: string;
+  title: string;
+  items: FaqItem[];
+}
+
+interface ContactContent {
+  label: string;
+  title: string;
+  description: string;
+  includeLabel: string;
+  includeItems: string[];
+  primaryCta: string;
+  subject: string;
   emailAriaLabel: string;
+  privacyNote: string;
+}
+
+interface FooterContent {
+  statement: string;
+  careersLabel: string;
+  careersSubject: string;
+  careersAriaLabel: string;
 }
 
 export interface UiCopy {
@@ -50,256 +118,491 @@ export interface UiCopy {
   navAriaLabel: string;
   languageSwitcherAriaLabel: string;
   hero: HeroContent;
-  sections: SectionLabels;
-  contacts: ContactsContent;
-  servicesSubtitle: string;
-  projectsSubtitle: string;
-  vacancySubtitle: string;
-  footerSuffix: string;
-}
-
-export interface VacancyContent {
-  title: string;
-  responsibilitiesHeading: string;
-  requirementsHeading: string;
-  niceToHaveHeading: string;
-  conditionsHeading: string;
-  responsibilities: string[];
-  requirements: string[];
-  niceToHave: string[];
-  conditions: string[];
+  proofAriaLabel: string;
+  proof: ProofFact[];
+  offers: {
+    label: string;
+    title: string;
+    introduction: string;
+    items: OfferItem[];
+  };
+  work: WorkContent;
+  process: ProcessContent;
+  capability: CapabilityContent;
+  faq: FaqContent;
+  contact: ContactContent;
+  footer: FooterContent;
 }
 
 export const CONTACT_EMAIL = 'javadevtechlead@gmail.com';
 export const LANGUAGE_STORAGE_KEY = 'ozero.language';
 
+export const createMailtoHref = (subject: string) =>
+  `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}`;
+
 export const uiCopy: Record<Language, UiCopy> = {
-  ru: {
-    nav: {
-      services: 'Услуги',
-      projects: 'Проекты',
-      vacancy: 'Вакансия',
-      contacts: 'Контакты',
-    },
-    navAriaLabel: 'Навигация по сайту',
-    languageSwitcherAriaLabel: 'Выбор языка',
-    hero: {
-      typingTexts: ['ozero.dev', 'озеро разработчиков'],
-      tagline: 'озеро разработчиков',
-      valueProposition: 'Java-разработчики и продуктовые команды, готовые подключиться за одну–три недели.',
-      primaryCta: 'Написать нам',
-      secondaryCta: 'Посмотреть проекты',
-    },
-    sections: {
-      services: 'Услуги',
-      projects: 'Проекты',
-      vacancy: 'Вакансия: Java Developer',
-      contacts: 'Контакты',
-    },
-    contacts: {
-      description: 'Свяжитесь с нами по почте для сотрудничества или отклика на вакансию.',
-      copyButtonLabel: 'Скопировать email',
-      copiedLabel: 'Скопировано',
-      emailAriaLabel: 'Отправить письмо на javadevtechlead@gmail.com',
-    },
-    servicesSubtitle: 'Помогаем усиливать команду и запускать продукты быстрее.',
-    projectsSubtitle: 'Ключевые проектные направления команды.',
-    vacancySubtitle: 'Ищем Java Developer в продуктовую команду.',
-    footerSuffix: 'Аутсорс-команды и интеграция AI-сервисов.',
-  },
   en: {
     nav: {
-      services: 'Services',
-      projects: 'Projects',
-      vacancy: 'Vacancy',
-      contacts: 'Contacts',
+      offers: 'Offers',
+      work: 'Work',
+      process: 'Process',
+      faq: 'FAQ',
+      contact: 'Contact',
+      menu: 'Menu',
     },
     navAriaLabel: 'Site navigation',
     languageSwitcherAriaLabel: 'Language switcher',
     hero: {
       typingTexts: ['ozero.dev', 'lake of developers'],
       tagline: 'lake of developers',
-      valueProposition: 'Java-first engineers and focused product squads, ready to join in one to three weeks.',
-      primaryCta: 'Contact us',
-      secondaryCta: 'View projects',
+      valueProposition:
+        'Java-first engineers and focused product squads can realistically start in one to three weeks.',
+      primaryCta: 'Start a conversation',
+      secondaryCta: 'See our work',
     },
-    sections: {
-      services: 'Services',
-      projects: 'Projects',
-      vacancy: 'Java Developer Vacancy',
-      contacts: 'Contacts',
+    proofAriaLabel: 'Delivery facts',
+    proof: [
+      {
+        value: '≈30',
+        label: 'engineers in a curated Java-focused network',
+      },
+      {
+        value: '1–3 weeks',
+        label: 'to a realistic focused start after fit is confirmed',
+      },
+      {
+        value: '1 engineer',
+        label: 'or a small squad — begin at the right scale',
+      },
+      {
+        value: '1 month',
+        label: 'minimum engagement',
+      },
+    ],
+    offers: {
+      label: 'Ways to work',
+      title: 'Engineering capacity shaped around the work.',
+      introduction:
+        'Start with one experienced engineer, assemble a focused squad, or hand over a defined delivery scope.',
+      items: [
+        {
+          title: 'Team extension',
+          summary:
+            'Add a Java engineer or a small cross-functional squad to your existing team.',
+          details: [
+            'You retain the roadmap and priorities',
+            'Optional onboarding and technical oversight',
+            'Architecture, mentoring, and replacement support when needed',
+          ],
+          cta: 'Discuss team extension',
+          subject: 'Ozero Dev — team extension',
+        },
+        {
+          title: 'Managed delivery',
+          summary:
+            'Bring us a defined product or engineering scope and get a focused delivery team.',
+          details: [
+            'Discovery and scope clarification',
+            'Architecture and implementation',
+            'Delivery support with visible responsibilities',
+          ],
+          cta: 'Discuss managed delivery',
+          subject: 'Ozero Dev — managed delivery',
+        },
+        {
+          title: 'AI & knowledge integrations',
+          summary:
+            'Turn a defined knowledge need into a useful assistant interface or service.',
+          details: [
+            'Knowledge-source mapping',
+            'Retrieval and controlled generation',
+            'Source-aware response interfaces',
+          ],
+          cta: 'Discuss an AI integration',
+          subject: 'Ozero Dev — AI and knowledge integration',
+        },
+      ],
     },
-    contacts: {
-      description: 'Reach out by email for outsourcing inquiries or job applications.',
-      copyButtonLabel: 'Copy email',
-      copiedLabel: 'Copied',
-      emailAriaLabel: 'Send email to javadevtechlead@gmail.com',
+    work: {
+      label: 'Selected work',
+      title: 'Current product work, shown as it is.',
+      introduction:
+        'No fictional client logos or inflated outcome metrics — only real product directions and their current status.',
+      taska: {
+        status: 'IN DEVELOPMENT',
+        title: 'Taska — work management for product teams',
+        description:
+          'A Jira- and Kanban-like product with project workspaces, issue boards, roles, workflows, and notifications. The interface and product decisions are still evolving.',
+        note:
+          'This is an active development project, not a completed customer case.',
+        boardAlt:
+          'Taska dark-mode Kanban board with To Do, In Progress, and Done columns',
+        projectsAlt:
+          'Taska projects overview with three project workspaces',
+        boardCaption: 'Issue board — current product interface',
+        projectsCaption: 'Project workspaces — supporting view',
+      },
+      ai: {
+        status: 'INTERNAL R&D · ANONYMIZED',
+        title: 'Knowledge assistant for project-specific answers',
+        description:
+          'An internal research direction for connecting assistant interfaces to selected knowledge sources. Project and data details remain anonymized.',
+        flowAriaLabel: 'Knowledge assistant flow',
+        steps: [
+          {
+            title: 'Source library',
+            detail: 'Selected project knowledge',
+          },
+          {
+            title: 'Retrieval',
+            detail: 'Relevant context is identified',
+          },
+          {
+            title: 'Controlled generation',
+            detail: 'The response stays inside that context',
+          },
+          {
+            title: 'Response with sources',
+            detail: 'The answer keeps its evidence visible',
+          },
+        ],
+        note:
+          'The diagram describes the working concept without exposing private screens, vendors, or data.',
+      },
     },
-    servicesSubtitle: 'We strengthen engineering teams and deliver products end-to-end.',
-    projectsSubtitle: 'Selected product directions and implementation cases.',
-    vacancySubtitle: 'Open role in our product team.',
-    footerSuffix: 'Outsourcing teams and AI integrations.',
+    process: {
+      label: 'How we start',
+      title: 'A short path from the first email to useful work.',
+      introduction:
+        'The process stays small on purpose: enough structure to establish fit, without unnecessary procurement overhead.',
+      steps: [
+        {
+          title: 'Brief',
+          description:
+            'Share the role or scope, product context, desired start date, and working language.',
+        },
+        {
+          title: 'Fit',
+          description:
+            'We align the engagement shape, responsibilities, availability, and language fit.',
+        },
+        {
+          title: 'Start',
+          description:
+            'A focused engagement can realistically start in one to three weeks. The minimum engagement is one month.',
+        },
+        {
+          title: 'Work',
+          description:
+            'For team extension, you own the roadmap. Ozero can add onboarding, technical oversight, or delivery support.',
+        },
+      ],
+    },
+    capability: {
+      label: 'Delivery capability',
+      title: 'A compact network with experienced support available.',
+      description:
+        'Ozero maintains a curated network of trusted specialists around Java-heavy product work. Experienced onboarding, technical oversight, mentoring, and architecture support are available when the engagement needs them.',
+      facts: [
+        'Both principals have more than six years of engineering experience',
+        'Network engineers average about three years of development experience',
+        'Java, full-stack, and project-management capability',
+        'An English-speaking subset is available; language fit is confirmed during matching',
+      ],
+      note:
+        'Engagements are available across Europe and the CIS. DevOps and observability support can be included where the delivery scope requires it.',
+    },
+    faq: {
+      label: 'Before we talk',
+      title: 'Practical questions, answered plainly.',
+      items: [
+        {
+          question: 'Can we start with one engineer?',
+          answer:
+            'Yes. An engagement can begin with one engineer and expand to a focused squad if the scope grows.',
+        },
+        {
+          question: 'How quickly can someone start?',
+          answer:
+            'A focused engagement can realistically start in one to three weeks after fit and availability are confirmed. The minimum engagement is one month.',
+        },
+        {
+          question: 'Who owns the roadmap and priorities?',
+          answer:
+            'In team extension, the client owns the roadmap and priorities. Ozero can add onboarding, technical oversight, mentoring, architecture support, or replacement support when agreed.',
+        },
+        {
+          question: 'What experience and language coverage is available?',
+          answer:
+            'Both principals have more than six years of engineering experience, while network engineers average about three years. Part of the network can work in English; language fit is confirmed during matching.',
+        },
+        {
+          question: 'Do you work beyond team extension?',
+          answer:
+            'Yes. Ozero also takes defined managed-delivery scopes and builds AI or knowledge integrations around a concrete need.',
+        },
+        {
+          question: 'What should the first email include?',
+          answer:
+            'Include the role or scope, a little product context, your preferred start date, and the working language. A short note is enough to begin.',
+        },
+      ],
+    },
+    contact: {
+      label: 'Start here',
+      title: 'Tell us what needs to move.',
+      description:
+        'A short email is enough. We will reply with the questions needed to establish fit and a realistic start.',
+      includeLabel: 'Useful to include',
+      includeItems: [
+        'Role or delivery scope',
+        'Product and team context',
+        'Preferred start date',
+        'Working language',
+      ],
+      primaryCta: 'Write to Ozero',
+      subject: 'Ozero Dev — project inquiry',
+      emailAriaLabel: `Send a project inquiry to ${CONTACT_EMAIL}`,
+      privacyNote:
+        'No form and no visitor-data collection. Your email opens in your own mail application.',
+    },
+    footer: {
+      statement: 'Ozero Dev · Java-first engineering capacity',
+      careersLabel: 'Future career introductions',
+      careersSubject: 'Ozero Dev — future career introduction',
+      careersAriaLabel: `Send a future career introduction to ${CONTACT_EMAIL}`,
+    },
   },
-};
-
-export const services: ServiceItem[] = [
-  {
-    title: {
-      ru: 'Аутсорс и team extension',
-      en: 'Outsourcing / Team extension',
-    },
-    description: {
-      ru: 'Выделенные инженеры, чтобы усилить вашу команду.',
-      en: 'Dedicated engineers to strengthen your team.',
-    },
-  },
-  {
-    title: {
-      ru: 'End-to-end delivery',
-      en: 'End-to-end delivery',
-    },
-    description: {
-      ru: 'От идеи до продакшна: архитектура, разработка, поддержка.',
-      en: 'From discovery to production: architecture, implementation, support.',
-    },
-  },
-  {
-    title: {
-      ru: 'Интеграция AI-сервисов',
-      en: 'AI service integration',
-    },
-    description: {
-      ru: 'Интеграция LLM/AI: чат, рекомендации, RAG, оценка качества, безопасность.',
-      en: 'LLM/AI integration: chat, recommendations, RAG, evaluation, safety.',
-    },
-  },
-  {
-    title: {
-      ru: 'DevOps и observability',
-      en: 'DevOps & Observability',
-    },
-    description: {
-      ru: 'CI/CD, Docker, мониторинг (Prometheus/Grafana), стабильный деплой.',
-      en: 'CI/CD, Docker, monitoring (Prometheus/Grafana), reliable deployments.',
-    },
-  },
-];
-
-export const projects: ProjectItem[] = [
-  {
-    name: {
-      ru: 'Обучающая платформа',
-      en: 'Learning Platform',
-    },
-    description: {
-      ru: 'Микросервисная платформа для управления образовательным контентом, ролями и прогрессом пользователей.',
-      en: 'A microservice-based platform for educational content management, role-based access, and learner progress tracking.',
-    },
-    tech: ['Java', 'Spring Boot', 'JWT', 'Kafka', 'PostgreSQL', 'Microservices'],
-  },
-  {
-    name: {
-      ru: 'AI агент с интеграцией в Steam',
-      en: 'AI Agent with Steam Integration',
-    },
-    description: {
-      ru: 'AI-ассистент для рекомендаций игр с контекстом профиля пользователя и интеграцией со Steam.',
-      en: 'An AI assistant for game recommendations with user context processing and Steam integration.',
-    },
-    tech: ['Java 21', 'Spring Boot', 'Spring Security', 'gRPC', 'PostgreSQL', 'Redis', 'Docker', 'Python', 'FastAPI'],
-  },
-  {
-    name: {
-      ru: 'Таск-трекер (аналог Jira)',
-      en: 'Task Tracker (Jira-like)',
-    },
-    description: {
-      ru: 'Корпоративный трекер задач Taska: проекты, workflow, роли, доска по статусам, in-app/email уведомления и событийная микросервисная архитектура.',
-      en: 'Taska corporate issue tracker with projects, workflows, role model, status board, in-app/email notifications, and event-driven microservice architecture.',
-    },
-    tech: ['Microservices', 'API Gateway/BFF', 'gRPC', 'Kafka', 'PostgreSQL', 'Outbox Pattern', 'Workflow Engine'],
-  },
-];
-
-export const vacancy: Record<Language, VacancyContent> = {
   ru: {
-    title: 'Java Developer',
-    responsibilitiesHeading: 'Обязанности',
-    requirementsHeading: 'Требования',
-    niceToHaveHeading: 'Будет плюсом',
-    conditionsHeading: 'Условия',
-    responsibilities: [
-      'Разработка и поддержка микросервисных приложений на Java 21 с использованием Spring Boot (Spring Security, Spring Data JPA, Spring WebFlux)',
-      'Проектирование и реализация REST API, интеграция с внешними сервисами через gRPC и HTTP',
-      'Работа с базами данных PostgreSQL: проектирование схем, оптимизация запросов, управление миграциями (Liquibase)',
-      'Реализация аутентификации и авторизации (JWT, OAuth2, интеграция со Steam)',
-      'Интеграция с брокерами сообщений (Kafka, RabbitMQ) для асинхронного взаимодействия между сервисами',
-      'Написание unit- и интеграционных тестов (JUnit, Testcontainers, JaCoCo)',
-      'Участие в код-ревью, улучшение архитектуры и качества кодовой базы',
-      'Контейнеризация приложений (Docker, Docker Compose), настройка окружений для разработки и деплоя',
+    nav: {
+      offers: 'Форматы',
+      work: 'Проекты',
+      process: 'Процесс',
+      faq: 'Вопросы',
+      contact: 'Контакты',
+      menu: 'Меню',
+    },
+    navAriaLabel: 'Навигация по сайту',
+    languageSwitcherAriaLabel: 'Выбор языка',
+    hero: {
+      typingTexts: ['ozero.dev', 'озеро разработчиков'],
+      tagline: 'озеро разработчиков',
+      valueProposition:
+        'Реалистичный срок подключения Java-разработчика или сфокусированной продуктовой команды — одна–три недели.',
+      primaryCta: 'Начать разговор',
+      secondaryCta: 'Посмотреть проекты',
+    },
+    proofAriaLabel: 'Факты о работе',
+    proof: [
+      {
+        value: '≈30',
+        label: 'специалистов в отобранной Java-ориентированной сети',
+      },
+      {
+        value: '1–3 недели',
+        label: 'до реалистичного сфокусированного старта после подтверждения fit',
+      },
+      {
+        value: '1 специалист',
+        label: 'или небольшая команда — начинаем с нужного масштаба',
+      },
+      {
+        value: '1 месяц',
+        label: 'минимальный срок сотрудничества',
+      },
     ],
-    requirements: [
-      'Опыт разработки на Java (от 1 года), уверенное знание Java 17+',
-      'Знание Spring Boot, Spring Security, Spring Data JPA / R2DBC',
-      'Опыт работы с PostgreSQL и инструментами миграций (Liquibase / Flyway)',
-      'Понимание принципов микросервисной архитектуры и межсервисного взаимодействия (REST, gRPC, очереди сообщений)',
-      'Опыт работы с Docker и Docker Compose',
-      'Опыт работы с Redis (кэширование, rate limiting)',
-      "Знание Git, умение работать с Pull Request'ами и код-ревью",
-      'Понимание принципов ООП, SOLID, паттернов проектирования',
-    ],
-    niceToHave: [
-      'Опыт frontend-разработки: React, TypeScript, Vite, Tailwind CSS',
-      'Знание Python (FastAPI, gRPC, Poetry)',
-      'Навыки DevOps: настройка CI/CD (GitHub Actions), мониторинг (Prometheus, Grafana), деплой на VPS',
-      'Опыт работы с Swagger / OpenAPI, Checkstyle',
-      'Опыт работы с реактивным стеком Spring (WebFlux, R2DBC)',
-    ],
-    conditions: [
-      'Работа в небольшой продуктовой команде над интересными проектами на стыке геймдева и AI',
-      'Современный стек: Java 21, Spring Boot, gRPC, Kafka, Docker, Prometheus + Grafana',
-      'Возможность влиять на архитектурные решения и развивать проект с нуля',
-      'Профессиональный рост: код-ревью, менторство, работа с актуальными технологиями',
-    ],
-  },
-  en: {
-    title: 'Java Developer',
-    responsibilitiesHeading: 'Responsibilities',
-    requirementsHeading: 'Requirements',
-    niceToHaveHeading: 'Nice to have',
-    conditionsHeading: 'Conditions',
-    responsibilities: [
-      'Develop and maintain Java 21 microservice applications using Spring Boot (Spring Security, Spring Data JPA, Spring WebFlux)',
-      'Design and implement REST APIs, integrate with external services via gRPC and HTTP',
-      'Work with PostgreSQL: schema design, query optimization, and migration management (Liquibase)',
-      'Implement authentication and authorization (JWT, OAuth2, Steam integration)',
-      'Integrate message brokers (Kafka, RabbitMQ) for asynchronous communication between services',
-      'Write unit and integration tests (JUnit, Testcontainers, JaCoCo)',
-      'Participate in code reviews, improve architecture and overall code quality',
-      'Containerize applications (Docker, Docker Compose), configure environments for development and deployment',
-    ],
-    requirements: [
-      'At least 1 year of Java development experience, solid knowledge of Java 17+',
-      'Knowledge of Spring Boot, Spring Security, Spring Data JPA / R2DBC',
-      'Experience with PostgreSQL and migration tools (Liquibase / Flyway)',
-      'Understanding of microservice architecture and inter-service communication (REST, gRPC, message queues)',
-      'Experience with Docker and Docker Compose',
-      'Experience with Redis (caching, rate limiting)',
-      'Knowledge of Git, ability to work with pull requests and code reviews',
-      'Understanding of OOP, SOLID principles, and design patterns',
-    ],
-    niceToHave: [
-      'Frontend development experience: React, TypeScript, Vite, Tailwind CSS',
-      'Knowledge of Python (FastAPI, gRPC, Poetry)',
-      'DevOps skills: CI/CD setup (GitHub Actions), monitoring (Prometheus, Grafana), VPS deployment',
-      'Experience with Swagger / OpenAPI and Checkstyle',
-      'Experience with Spring reactive stack (WebFlux, R2DBC)',
-    ],
-    conditions: [
-      'Work in a small product team on projects at the intersection of game development and AI',
-      'Modern stack: Java 21, Spring Boot, gRPC, Kafka, Docker, Prometheus + Grafana',
-      'Opportunity to influence architecture decisions and grow the project from scratch',
-      'Professional growth through code reviews, mentorship, and work with modern technologies',
-    ],
+    offers: {
+      label: 'Форматы работы',
+      title: 'Инженерный ресурс под реальную задачу.',
+      introduction:
+        'Начните с одного опытного разработчика, соберите небольшую команду или передайте нам очерченный объём разработки.',
+      items: [
+        {
+          title: 'Усиление команды',
+          summary:
+            'Java-разработчик или небольшая кросс-функциональная команда в дополнение к вашей.',
+          details: [
+            'Roadmap и приоритеты остаются у вас',
+            'Опционально — онбординг и технический контроль',
+            'Архитектура, менторинг и замена специалиста при необходимости',
+          ],
+          cta: 'Обсудить усиление команды',
+          subject: 'Ozero Dev — усиление команды',
+        },
+        {
+          title: 'Управляемая разработка',
+          summary:
+            'Сфокусированная команда для поставки заранее согласованного продуктового или инженерного объёма.',
+          details: [
+            'Discovery и уточнение объёма',
+            'Архитектура и реализация',
+            'Поддержка поставки с понятными зонами ответственности',
+          ],
+          cta: 'Обсудить управляемую разработку',
+          subject: 'Ozero Dev — управляемая разработка',
+        },
+        {
+          title: 'AI и knowledge-интеграции',
+          summary:
+            'Превращаем конкретную задачу работы со знаниями в полезный интерфейс или сервис.',
+          details: [
+            'Карта источников знаний',
+            'Поиск контекста и контролируемая генерация',
+            'Ответы с видимыми источниками',
+          ],
+          cta: 'Обсудить AI-интеграцию',
+          subject: 'Ozero Dev — AI и интеграция знаний',
+        },
+      ],
+    },
+    work: {
+      label: 'Избранные проекты',
+      title: 'Текущая продуктовая работа без приукрашиваний.',
+      introduction:
+        'Без выдуманных логотипов клиентов и метрик результата — только реальные направления и их честный статус.',
+      taska: {
+        status: 'В РАЗРАБОТКЕ',
+        title: 'Taska — управление работой продуктовых команд',
+        description:
+          'Продукт по типу Jira и Kanban с рабочими пространствами, досками задач, ролями, workflow и уведомлениями. Интерфейс и продуктовые решения продолжают развиваться.',
+        note:
+          'Это активная разработка, а не завершённый клиентский кейс.',
+        boardAlt:
+          'Тёмная Kanban-доска Taska с колонками К выполнению, В работе и Готово',
+        projectsAlt:
+          'Обзор Taska с тремя рабочими пространствами проектов',
+        boardCaption: 'Доска задач — текущий интерфейс продукта',
+        projectsCaption: 'Рабочие пространства — дополнительный экран',
+      },
+      ai: {
+        status: 'ВНУТРЕННИЙ R&D · АНОНИМИЗИРОВАНО',
+        title: 'Knowledge-ассистент для ответов в контексте проекта',
+        description:
+          'Внутреннее исследовательское направление по подключению ассистентских интерфейсов к выбранным источникам знаний. Детали проекта и данных анонимизированы.',
+        flowAriaLabel: 'Схема работы knowledge-ассистента',
+        steps: [
+          {
+            title: 'Библиотека источников',
+            detail: 'Выбранные знания проекта',
+          },
+          {
+            title: 'Поиск контекста',
+            detail: 'Определяется релевантная информация',
+          },
+          {
+            title: 'Контролируемая генерация',
+            detail: 'Ответ остаётся внутри найденного контекста',
+          },
+          {
+            title: 'Ответ с источниками',
+            detail: 'Доказательства остаются видимыми',
+          },
+        ],
+        note:
+          'Схема показывает рабочую концепцию без раскрытия приватных экранов, поставщиков или данных.',
+      },
+    },
+    process: {
+      label: 'Как начинаем',
+      title: 'Короткий путь от первого письма до полезной работы.',
+      introduction:
+        'Процесс намеренно компактный: достаточно структуры, чтобы подтвердить fit, без лишней бюрократии на старте.',
+      steps: [
+        {
+          title: 'Вводные',
+          description:
+            'Опишите роль или объём работ, контекст продукта, желаемую дату старта и рабочий язык.',
+        },
+        {
+          title: 'Соответствие',
+          description:
+            'Согласуем формат работы, зоны ответственности, доступность и языковой fit.',
+        },
+        {
+          title: 'Старт',
+          description:
+            'Реалистичный срок начала сфокусированной работы — от одной до трёх недель. Минимальный срок — один месяц.',
+        },
+        {
+          title: 'Работа',
+          description:
+            'При усилении команды roadmap остаётся у клиента. Ozero может добавить онбординг, технический контроль или поддержку поставки.',
+        },
+      ],
+    },
+    capability: {
+      label: 'Возможности',
+      title: 'Компактная сеть с доступной поддержкой опытных специалистов.',
+      description:
+        'Ozero поддерживает отобранную сеть проверенных специалистов вокруг Java-ориентированной продуктовой разработки. При необходимости доступны помощь с онбордингом, технический контроль, менторинг и архитектурная поддержка.',
+      facts: [
+        'У обоих руководителей более шести лет инженерного опыта',
+        'Средний опыт специалистов сети — около трёх лет разработки',
+        'Компетенции в Java, full-stack-разработке и управлении проектами',
+        'Часть специалистов работает на английском; языковой fit подтверждается при подборе',
+      ],
+      note:
+        'Работаем с Европой и СНГ. DevOps и observability могут входить в поддержку, когда этого требует объём поставки.',
+    },
+    faq: {
+      label: 'До разговора',
+      title: 'Практические вопросы — прямые ответы.',
+      items: [
+        {
+          question: 'Можно начать с одного специалиста?',
+          answer:
+            'Да. Сотрудничество может начаться с одного разработчика и вырасти до сфокусированной команды, если увеличится объём.',
+        },
+        {
+          question: 'Как быстро можно начать?',
+          answer:
+            'После подтверждения fit и доступности реалистичный срок начала сфокусированной работы — от одной до трёх недель. Минимальный срок сотрудничества — один месяц.',
+        },
+        {
+          question: 'Кто отвечает за roadmap и приоритеты?',
+          answer:
+            'В формате усиления команды roadmap и приоритеты остаются у клиента. По договорённости Ozero может добавить онбординг, технический контроль, менторинг, архитектурную поддержку или замену специалиста.',
+        },
+        {
+          question: 'Какой опыт и языковая поддержка доступны?',
+          answer:
+            'У обоих руководителей более шести лет инженерного опыта, средний опыт специалистов сети — около трёх лет. Часть сети может работать на английском; языковой fit подтверждаем при подборе.',
+        },
+        {
+          question: 'Вы работаете только как team extension?',
+          answer:
+            'Нет. Ozero также выполняет управляемую поставку согласованного продуктового объёма и создаёт AI или knowledge-интеграции под конкретную задачу.',
+        },
+        {
+          question: 'Что написать в первом письме?',
+          answer:
+            'Укажите роль или объём работ, немного контекста продукта, желаемую дату старта и рабочий язык. Для начала достаточно короткого сообщения.',
+        },
+      ],
+    },
+    contact: {
+      label: 'Начать здесь',
+      title: 'Расскажите, что нужно сдвинуть с места.',
+      description:
+        'Достаточно короткого письма. Мы ответим вопросами, которые помогут подтвердить fit и реалистичный срок старта.',
+      includeLabel: 'Полезно указать',
+      includeItems: [
+        'Роль или объём поставки',
+        'Контекст продукта и команды',
+        'Желаемую дату старта',
+        'Рабочий язык',
+      ],
+      primaryCta: 'Написать Ozero',
+      subject: 'Ozero Dev — запрос по проекту',
+      emailAriaLabel: `Отправить запрос по проекту на ${CONTACT_EMAIL}`,
+      privacyNote:
+        'Без формы и сбора данных посетителя. Письмо откроется в вашем почтовом приложении.',
+    },
+    footer: {
+      statement: 'Ozero Dev · Java-ориентированный инженерный ресурс',
+      careersLabel: 'Знакомство на будущее',
+      careersSubject: 'Ozero Dev — знакомство на будущее',
+      careersAriaLabel: `Отправить письмо для знакомства на ${CONTACT_EMAIL}`,
+    },
   },
 };
