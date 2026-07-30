@@ -34,9 +34,15 @@ replay_pid*
 
 # production
 /build
+/dist
+*.tsbuildinfo
 
 # misc
 .DS_Store
+.idea/
+.env
+.env.*
+!.env.example
 .env.local
 .env.development.local
 .env.test.local

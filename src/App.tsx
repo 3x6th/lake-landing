@@ -131,7 +131,7 @@ function App() {
       <div
         className="background-image"
         style={{
-          backgroundImage: `url(${process.env.PUBLIC_URL}/fishman.png)`,
+          backgroundImage: 'url(/fishman.png)',
         }}
         aria-hidden="true"
       />
