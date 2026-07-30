@@ -2,8 +2,8 @@
 
 ## Result
 
-The cinematic hero implementation at commit `45e4a1b` is accepted for the
-experience milestone.
+The cinematic hero implementation at commit `45e4a1b`, with first-viewport
+offer alignment at `e9dacaf`, is accepted for the experience milestone.
 
 - Motion review: **APPROVE**
 - Independent launch review: **APPROVE WITH NON-BLOCKING NOTES**
@@ -13,6 +13,8 @@ experience milestone.
 
 - The approved desktop, 4:3, and portrait black-water posters are used as
   responsive media.
+- The first viewport states the truthful Java-first offer and one-to-three-week
+  start window in both English and Russian.
 - Water has one restrained 22-second transform-only drift.
 - `public/fishman.png` appears once and crossfades into luminance-derived ASCII.
 - ASCII uses an 8% right crop, 120/64 columns, 2×2 area averaging, threshold

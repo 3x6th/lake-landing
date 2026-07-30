@@ -3,6 +3,7 @@
 - **Status**: DONE
 - **Commit**: 428dbe3
 - **Implementation**: 45e4a1b
+- **Content alignment**: e9dacaf
 - **Severity**: HIGH
 - **Category**: Narrative motion and reduced motion
 - **Estimated scope**: 6–8 files, roughly 500–800 lines including tests
