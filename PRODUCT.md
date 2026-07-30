@@ -29,9 +29,12 @@ are secondary offers.
 ## Operating Context
 
 - Engagements may begin with one engineer or a small cross-functional squad.
+- The minimum engagement is one month.
 - The client normally owns roadmap and priorities for team-extension work.
 - Ozero Dev can provide onboarding, technical oversight, mentoring,
   architecture support, and replacement support.
+- An English-speaking subset of the network is available for international
+  work; language fit is confirmed during matching.
 - English is the primary site language; Russian is available at parity.
 - The production site is statically hosted on GitHub Pages at `ozero.dev`.
 - The primary conversion is an email conversation through a reachable address.
@@ -44,6 +47,7 @@ are secondary offers.
 - Engineers in the network average approximately three years of experience.
 - The network includes Java engineers, full-stack engineers, and project
   management capability; it does not claim a dedicated frontend department.
+- Ozero Dev works with buyers in Europe and the CIS.
 - The site must not publish pricing, founders' identities, team photographs,
   personal GitHub profiles, invented customers, testimonials, logos, outcomes,
   or completed-project claims.
