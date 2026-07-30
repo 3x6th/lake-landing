@@ -45,9 +45,10 @@ The site should feel like a nocturnal lake observed by a disciplined engineering
 studio: black water, an engraved fisherman, restrained submerged green and
 amber light, paper-white type, and exact mono labels.
 
-The fisherman is a brand signature, not a mascot. It appears prominently once
-in the hero, may dissolve into an ASCII or line-field interpretation during one
-transition, and must not repeat as decoration throughout the page.
+The fisherman is a brand signature, not a mascot. It appears once as a
+restrained secondary artifact after the primary hero copy, dissolves into a
+real image-derived ASCII interpretation during one transition, and must not
+repeat as decoration throughout the page.
 
 ## Composition rules
 
