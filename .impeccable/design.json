@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-30T00:00:00+03:00",
+  "title": "Design System: Ozero Dev",
+  "extensions": {
+    "colorMeta": {
+      "abyss": {
+        "role": "neutral",
+        "displayName": "Abyss",
+        "canonical": "#050706",
+        "tonalRamp": ["#020302", "#050706", "#0A100E", "#252B28"]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "canonical": "#F1F2ED",
+        "tonalRamp": ["#A8B0A9", "#D9DDD7", "#F1F2ED", "#FFFFFF"]
+      },
+      "lake-glow": {
+        "role": "primary",
+        "displayName": "Lake Glow",
+        "canonical": "#B8FF78",
+        "tonalRamp": ["#314523", "#658C44", "#B8FF78", "#DDFFBE"]
+      },
+      "ember-glow": {
+        "role": "secondary",
+        "displayName": "Ember Glow",
+        "canonical": "#FF8A48",
+        "tonalRamp": ["#512613", "#A94D23", "#FF8A48", "#FFC09A"]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Whispered Display",
+        "purpose": "Hero and section theses only."
+      },
+      "label": {
+        "displayName": "Operational Label",
+        "purpose": "Indices, facts, and ASCII material only."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "glide",
+        "value": "cubic-bezier(0.19, 1, 0.22, 1)",
+        "purpose": "Cinematic transforms and section reveals."
+      },
+      {
+        "name": "control",
+        "value": "cubic-bezier(0.2, 0.8, 0.2, 1)",
+        "purpose": "Responsive controls and navigation states."
+      }
+    ],
+    "breakpoints": [
+      { "name": "phone", "value": "375px" },
+      { "name": "tablet", "value": "768px" },
+      { "name": "laptop", "value": "1024px" },
+      { "name": "desktop", "value": "1440px" }
+    ]
+  },
+  "components": [],
+  "narrative": {
+    "northStar": "The Nocturnal Lake Observatory",
+    "rules": [
+      "Color behaves like light under water.",
+      "Large type whispers instead of shouting.",
+      "Evidence remains flat and editorial.",
+      "One cinematic motion system is enough."
+    ]
+  }
+}
