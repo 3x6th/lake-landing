@@ -22,11 +22,4 @@ export default defineConfig([
       },
     },
   },
-  {
-    files: ['src/components/TypingAnimation.tsx'],
-    rules: {
-      // Preserve the legacy typing sequence during the build-system-only migration.
-      'react-hooks/set-state-in-effect': 'off',
-    },
-  },
 ]);
