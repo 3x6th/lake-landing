@@ -2,7 +2,7 @@
 
 | Plan | Title | Severity | Status |
 | --- | --- | --- | --- |
-| [001](./001-fisherman-ascii-hero.md) | Build the fisherman-to-ASCII hero passage | High | TODO |
+| [001](./001-fisherman-ascii-hero.md) | Build the fisherman-to-ASCII hero passage | High | DONE |
 
 ## Execution order
 

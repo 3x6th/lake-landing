@@ -1,7 +1,8 @@
 # 001 — Build the fisherman-to-ASCII hero passage
 
-- **Status**: TODO
+- **Status**: DONE
 - **Commit**: 428dbe3
+- **Implementation**: 45e4a1b
 - **Severity**: HIGH
 - **Category**: Narrative motion and reduced motion
 - **Estimated scope**: 6–8 files, roughly 500–800 lines including tests
