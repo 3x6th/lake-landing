@@ -273,3 +273,51 @@ without it.
 It replaces `fishman.png` as `og:image`, which was 1536×1024, so every social
 scraper cropped it to an unintended composition, and 1.03MB fetched on every
 share.
+
+## Taska case captures, replaced 2026-07-31
+
+Owner-supplied product screenshots, not generated. Preserved untracked in
+`private-assets/taska-source-v2/` alongside the superseded first pair in
+`private-assets/taska-source/`, which is kept rather than deleted so the
+decision stays reversible.
+
+| Published file | Source | Native |
+| --- | --- | --- |
+| `public/media/cases/taska-board.webp` | `taska-source-v2/img_4-board.png` | 999×702, ratio 1.42 |
+| `public/media/cases/taska-projects.webp` | `taska-source-v2/img_3-projects.png` | 713×450, ratio 1.58 |
+
+Encoded with `cwebp -q 86`, the same setting as the hero posters. **No crop.**
+Unlike the first pair, neither capture carries empty background, so the
+published frame is the whole capture at its native ratio — which is what
+CONTENT-BRIEF asks for and what the first pair could not deliver.
+
+### Why the first pair was replaced
+
+Measured from the sources, background detected as the modal grey value rather
+than assumed black:
+
+```
+img_2.png (board)     989×898  ink ends row 617  31.2% empty  ratio 1.60
+img_1.png (projects) 1234×768  ink ends row 300  60.8% empty  ratio 4.10
+```
+
+The projects capture was three fifths empty. Publishing it whole wasted most of
+the frame; cropping the emptiness left a 4.10 strip that, in the 0.75fr column
+of an asymmetric spread, rendered a 1234px-wide interface at 0.34 scale. Both
+were tried and rejected. The geometry admitted no third answer, because a 1.60
+and a 4.10 asset cannot share a row and be simultaneously comparable in height,
+legible, and complete.
+
+The replacement pair removes the constraint rather than working around it.
+
+### A handling note worth keeping
+
+The owner delivered these by dropping them into `public/media/cases/`. Vite
+copies the whole of `public/` into `dist/` regardless of whether anything
+references a file, so all five arrived one build away from being served at
+`https://ozero.dev/media/cases/…`, uncurated. One of them had already reached a
+local `dist/`. They were moved out before any build was published.
+
+This is the same trap recorded in CONTENT-BRIEF about `img.png`: **anything
+that must not be served cannot live in `public/`, and being unreferenced is not
+protection.** Incoming source material belongs in `private-assets/`.

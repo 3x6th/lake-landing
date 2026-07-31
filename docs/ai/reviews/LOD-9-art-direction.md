@@ -90,6 +90,63 @@ clash as honest evidence.
 - `README.md` is still Create React App boilerplate, as flagged in the LOD-5
   and LOD-6 content review.
 
+## Owner decision, 2026-07-31: the Taska frames ship whole
+
+The re-run of this review raised a second blocking finding: the published case
+screenshots ship mostly empty background. Measured from the private sources,
+`img_1.png` carries real content only in rows 0–300 of 768, so 61% of the
+projects frame is empty indigo, and `img_2.png` ends at row 617 of 898, so 31%
+of the board frame is empty.
+
+Two corrections were implemented and both were rejected by the owner on sight.
+
+Cropping the frame in CSS removed the void but left a 4.1:1 strip in a 0.75fr
+column, about 415px wide and 101px tall, rendering a 1234px-wide interface at
+0.34 scale. Illegible, and it read as a mistake rather than as evidence.
+
+Moving the strip to full width below the board made it legible at roughly 1.05
+scale, but it cut the board out of the same screen. That broke the thing the
+spread exists for: seeing the issue board and the project workspaces at once,
+in one row.
+
+The geometry does not admit a clean answer. The board is 1.60 and the projects
+view is 4.10, so in a shared row they cannot be simultaneously comparable in
+height, legible, and complete. The owner chose to keep the original
+composition — both screens side by side, each shown whole, including the empty
+field beneath the projects view.
+
+**This overruled a blocking art-direction finding, deliberately.** It was
+recorded here rather than resolved quietly.
+
+### Resolved the same day, by removing the constraint
+
+The owner then supplied new captures, which is the one move neither correction
+could make. The published pair is now a 1.42 board and a 1.58 projects screen,
+neither carrying any empty background:
+
+```
+board     999×702  ratio 1.42   Taska Platform, ten issues, four members
+projects  713×450  ratio 1.58   four workspaces with descriptions
+```
+
+Close enough in proportion to share a row at comparable height, complete, and
+uncropped at every viewport. The projects view now renders at 0.60 of native
+instead of 0.34. The finding is closed on its merits rather than by decision,
+and the override above is spent.
+
+Two things fell out of the swap. The `aspect-ratio: 4 / 5` that the phone rule
+forced on the primary had to go — against the new capture it cropped
+horizontally about the centre and hid the To Do and Done columns outright. It
+had only ever worked by zooming past the old capture's dead margin, so it was
+compensating for the defect rather than art-directing anything. And the board
+now shows real Taska development work — `Kanban drag-and-drop transitions`,
+`Board column count is off by one` — instead of seeded demo data, which is
+materially stronger evidence for a product labelled `IN DEVELOPMENT`.
+
+The chroma question in finding 6 is also quieter as a result: the new captures
+carry the same product chrome but no longer devote most of their area to an
+empty indigo field.
+
 ## Amendment record
 
 `REFERENCE-LOCK.md` § Locked synthesis and § Composition rules, and

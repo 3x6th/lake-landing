@@ -212,18 +212,20 @@ describe('Ozero landing experience', () => {
   it('uses optimized accessible Taska evidence and never publishes the excluded source', () => {
     const { container } = render(<App />);
     const board = screen.getByRole('img', {
-      name: 'Taska dark-mode Kanban board with To Do, In Progress, and Done columns',
+      name: 'Taska issue board in dark mode with To Do, In Progress, and Done columns holding ten task, bug, and story cards, each with a date and an assignee avatar',
     });
     const projects = screen.getByRole('img', {
-      name: 'Taska projects overview with three project workspaces',
+      name: 'Taska projects screen with four project workspace cards, each showing a short description, member avatars, and an issue count',
     });
 
     expect(board).toHaveAttribute(
       'src',
       '/media/cases/taska-board.webp'
     );
-    expect(board).toHaveAttribute('width', '989');
-    expect(board).toHaveAttribute('height', '898');
+    // The reserved box must equal the published file, or the spread reflows
+    // once the lazy image decodes.
+    expect(board).toHaveAttribute('width', '999');
+    expect(board).toHaveAttribute('height', '702');
     expect(board).toHaveAttribute('loading', 'lazy');
     expect(board).toHaveAttribute('decoding', 'async');
 
@@ -231,8 +233,8 @@ describe('Ozero landing experience', () => {
       'src',
       '/media/cases/taska-projects.webp'
     );
-    expect(projects).toHaveAttribute('width', '1234');
-    expect(projects).toHaveAttribute('height', '768');
+    expect(projects).toHaveAttribute('width', '713');
+    expect(projects).toHaveAttribute('height', '450');
     expect(projects).toHaveAttribute('loading', 'lazy');
     expect(projects).toHaveAttribute('decoding', 'async');
 

@@ -88,10 +88,29 @@ Status is always `IN DEVELOPMENT` / `В РАЗРАБОТКЕ`.
 
 Describe it as a Jira/Kanban-like work-management product in active
 development. Show the evolving interface and product decisions, never a
-completed customer outcome. Use only optimized derivatives of:
+completed customer outcome.
 
-- `private-assets/taska-source/img_2.png` as the primary board evidence;
-- `private-assets/taska-source/img_1.png` as the supporting projects view.
+**Sources replaced 2026-07-31.** The published derivatives now come from:
+
+- `private-assets/taska-source-v2/img_4-board.png` — the board evidence;
+- `private-assets/taska-source-v2/img_3-projects.png` — the projects view.
+
+The first pair — `taska-source/img_2.png` and `img_1.png` — is superseded but
+preserved. It was replaced for a measured reason rather than a preference: the
+old projects capture carried real content in only the top 301 of its 768 rows,
+so 61% of the published frame was empty background, and removing that emptiness
+left a 4.10 strip that could not share a row with a 1.60 board and stay
+legible. Two corrections were attempted and both were rejected; see
+`docs/ai/reviews/LOD-9-art-direction.md`.
+
+The replacement captures are 1.42 and 1.58, close enough to sit side by side at
+comparable height, and neither carries empty background, so neither needs a
+crop. The board also shows real Taska development work rather than seeded demo
+data, which is stronger evidence of a product in active development.
+
+Member avatars showing initials appear in both captures. They are product
+interface, not a team section, and carry no names, photographs or profile
+links, so they stay. The owner confirmed this explicitly on 2026-07-31.
 
 Never publish or preload `img.png`, because it contains a visible login email.
 Preserve all three user-supplied source files unchanged and untracked.
@@ -137,9 +156,13 @@ must be explicitly labelled `PAUSED` / `ПРИОСТАНОВЛЕН`.
 - Hero motion remains the only cinematic motion. Below it, controls may use
   only 120–200ms color/opacity feedback.
 
-Taska uses a large asymmetric editorial spread. The board is cropped from the
-top at a stable aspect ratio, while the projects view remains close to its
-native ratio. Mobile crops are art-directed, not scaled desktop compositions.
+Taska uses a large asymmetric editorial spread. **Amended 2026-07-31:** both
+captures are now published whole, at their native ratios, at every viewport.
+The board is no longer cropped from the top, and the phone rule that forced it
+to `4 / 5` is gone — against the replacement capture that crop cut away the To
+Do and Done columns entirely, because it only ever worked by zooming past the
+old capture's dead margin. Asymmetry now comes from the column widths, which is
+where it belongs, rather than from cropping one image harder than the other.
 Every `<img>` reserves space, is lazy below the fold, and has localized alt
 text.
 

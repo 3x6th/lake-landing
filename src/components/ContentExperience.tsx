@@ -92,8 +92,8 @@ export const ContentExperience = ({
               <div className="case-image-frame">
                 <img
                   src="/media/cases/taska-board.webp"
-                  width="989"
-                  height="898"
+                  width="999"
+                  height="702"
                   loading="lazy"
                   decoding="async"
                   alt={content.work.taska.boardAlt}
@@ -105,8 +105,8 @@ export const ContentExperience = ({
               <div className="case-image-frame">
                 <img
                   src="/media/cases/taska-projects.webp"
-                  width="1234"
-                  height="768"
+                  width="713"
+                  height="450"
                   loading="lazy"
                   decoding="async"
                   alt={content.work.taska.projectsAlt}
@@ -123,10 +123,14 @@ export const ContentExperience = ({
 
     <div className="research-band">
       <article className="content-shell research-case">
-        <div className="research-case__copy" data-reveal>
-          <p className="status-label">{content.work.ai.status}</p>
-          <h3>{content.work.ai.title}</h3>
-          <p>{content.work.ai.description}</p>
+        <div className="research-case__aside">
+          <div className="research-case__copy" data-reveal>
+            <p className="status-label">{content.work.ai.status}</p>
+            <h3>{content.work.ai.title}</h3>
+            <p>{content.work.ai.description}</p>
+          </div>
+
+          <p className="research-case__note">{content.work.ai.note}</p>
         </div>
 
         <ol
@@ -150,8 +154,6 @@ export const ContentExperience = ({
             </li>
           ))}
         </ol>
-
-        <p className="research-case__note">{content.work.ai.note}</p>
       </article>
     </div>
 

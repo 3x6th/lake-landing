@@ -230,9 +230,9 @@ export const uiCopy: Record<Language, UiCopy> = {
         note:
           'This is an active development project, not a completed customer case.',
         boardAlt:
-          'Taska dark-mode Kanban board with To Do, In Progress, and Done columns',
+          'Taska issue board in dark mode with To Do, In Progress, and Done columns holding ten task, bug, and story cards, each with a date and an assignee avatar',
         projectsAlt:
-          'Taska projects overview with three project workspaces',
+          'Taska projects screen with four project workspace cards, each showing a short description, member avatars, and an issue count',
         boardCaption: 'Issue board — current product interface',
         projectsCaption: 'Project workspaces — supporting view',
       },
@@ -296,7 +296,7 @@ export const uiCopy: Record<Language, UiCopy> = {
       description:
         'Ozero maintains a curated network of engineers around Java-heavy product work. Experienced onboarding, technical oversight, mentoring, and architecture support are available when the engagement needs them.',
       facts: [
-        'Each principal has more than six years of engineering experience',
+        'Each of the two principals has more than six years of engineering experience',
         'Network engineers average about three years of development experience',
         'The network covers Java, full-stack, and project-management work',
         'An English-speaking subset is available; language fit is confirmed during matching',
@@ -325,7 +325,7 @@ export const uiCopy: Record<Language, UiCopy> = {
         {
           question: 'What experience and language coverage is available?',
           answer:
-            'Each principal has more than six years of engineering experience, while network engineers average about three years. Part of the network can work in English; language fit is confirmed during matching.',
+            'Each of the two principals has more than six years of engineering experience, while network engineers average about three years. Part of the network can work in English; language fit is confirmed during matching.',
         },
         {
           question: 'Do you work beyond team extension?',
@@ -457,9 +457,9 @@ export const uiCopy: Record<Language, UiCopy> = {
         note:
           'Это активная разработка, а не завершённый клиентский кейс.',
         boardAlt:
-          'Тёмная Kanban-доска Taska с колонками To Do, In Progress и Done',
+          'Тёмная доска задач Taska с колонками To Do, In Progress и Done: десять карточек task, bug и story, у каждой дата и аватар исполнителя',
         projectsAlt:
-          'Экран проектов Taska с тремя рабочими пространствами',
+          'Экран проектов Taska с четырьмя карточками рабочих пространств: у каждой краткое описание, аватары участников и число задач',
         boardCaption: 'Доска задач — текущий интерфейс продукта',
         projectsCaption: 'Рабочие пространства — дополнительный экран',
       },
@@ -509,7 +509,7 @@ export const uiCopy: Record<Language, UiCopy> = {
         {
           title: 'Старт',
           description:
-            'Реалистичный срок выхода на проект — от одной до трёх недель. Минимальный срок сотрудничества — один месяц.',
+            'Реалистичный срок подключения — от одной до трёх недель. Минимальный срок сотрудничества — один месяц.',
         },
         {
           title: 'Работа',
@@ -542,7 +542,7 @@ export const uiCopy: Record<Language, UiCopy> = {
         {
           question: 'Как быстро можно начать?',
           answer:
-            'Реалистичный срок выхода разработчика или небольшой команды — от одной до трёх недель после того, как согласованы формат работы и доступность. Минимальный срок сотрудничества — один месяц.',
+            'Реалистичный срок подключения разработчика или небольшой команды — от одной до трёх недель после того, как согласованы формат работы и доступность. Минимальный срок сотрудничества — один месяц.',
         },
         {
           question: 'Кто отвечает за продуктовый план и приоритеты?',
