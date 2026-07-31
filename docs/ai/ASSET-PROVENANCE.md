@@ -102,6 +102,86 @@ signal-field result was rejected as generic contour-line imagery and has no
 production export. The ASCII transition is generated in the browser from the
 original fisherman pixels.
 
+## Water, regenerated 2026-07-31
+
+The earlier water is superseded. It was dark, empty on the left and put its
+material in one corner, which the LOD-9 review traced to the brief rather than
+to the model — see `docs/ai/MEDIA-BRIEF.md` for the corrected direction.
+
+Generated through the Higgsfield **web connector**, not the CLI. The CLI
+rejects both video and image models on this account with
+`{"error_type":"free_trial_model_requires_plan","plan_type":"plus"}`, verified
+against `kling3_0`, `kling3_0_turbo`, `wan2_7` and `nano_banana_2`.
+
+Supplied by the user:
+
+| File | Delivered as | Notes |
+| --- | --- | --- |
+| hero still, 16:9 | PNG 1376×768 | start frame for the hero clip |
+| hero still, 9:16 | PNG 1536×2752 | native portrait, not a crop |
+| hero clip | MP4 1924×1076, 8.04s, 24fps, 15.5MB | second take; loops natively |
+| interlude one | MP4 1928×1076, 8.04s, 13.8MB | cooler, green |
+| interlude two | MP4 1928×1076, 8.04s, 18.0MB | warmer, amber |
+
+The first hero clip did not loop — first-versus-last-frame PSNR 21.9 — and was
+replaced with a take that does, scoring 36.5. That replacement matters for more
+than the seam; see the encoding note below.
+
+**Job IDs are not recorded.** They were not captured at generation time and the
+CLI cannot list connector jobs on this account. Anyone re-deriving these assets
+should retrieve them from the Higgsfield web history and fill this table in.
+
+### Processing
+
+Posters were cut from **frame 0 of the supplied clip**, not from the supplied
+PNG. The clip frame is larger (1924×1076 against 1376×768) and is by definition
+the frame the video starts on, so the poster-to-video handoff is invisible.
+
+```bash
+# poster masters
+ffmpeg -i hero-water-desktop.mp4 -vf "select=eq(n\,0)" -vframes 1 master.png
+ffmpeg -i master.png -vf "crop=1912:1076:6:0"    desktop.png   # 16:9
+ffmpeg -i master.png -vf "crop=1434:1076:245:0"  4x3.png       # 4:3, centred
+ffmpeg -i master.png -vf "crop=605:1076:598:0"   mobile.png    # 9:16, on the bloom
+cwebp -q 86 <each> -o <each>.webp
+```
+
+Dark smooth gradients are the worst case for h264: it discards the film grain
+and replaces it with blocking. Two things fix that, and only one of them is an
+encoder setting.
+
+**A clip that loops natively is worth more than any encoder flag.** A clip that
+does not loop has to be rebuilt as a ping-pong — played forward, then reversed
+with the duplicated boundary frame trimmed — which makes the seam exact by
+construction but doubles the running time, halving the bitrate available at any
+given file size. The hero was first shipped that way at CRF 32 and came out
+visibly grainy: SSIM 0.861 against source at 2267KB. The replacement clip loops
+on its own, so at almost the same size it scores **0.984**. Same bytes, nine
+CRF steps of quality, entirely because the material did not have to be played
+twice.
+
+Encoder settings, for dark water specifically:
+
+```bash
+-c:v libx264 -crf 23 -preset slow -pix_fmt yuv420p \
+-x264-params "aq-mode=3:aq-strength=1.1:psy-rd=1.0,0.15" \
+-movflags +faststart
+```
+
+`aq-mode=3` biases bitrate toward dark regions, which is where every artefact
+in this footage lives.
+
+Shipped: hero at width 1600 CRF 23, straight through with no ping-pong;
+interludes at width 1152 CRF 25, still ping-ponged because their seams remain
+low (23.4 and 20.2) and no replacement takes exist yet. Total video payload
+7.6MB against 51.5MB of source.
+
+**Outstanding:** the two interlude clips would benefit from the same treatment
+as the hero — a take that loops on its own. Each currently runs 16s instead of
+8s purely to hide its seam, and would gain roughly the same quality-per-byte
+the hero did. There is also no portrait clip yet, so the hero plays video only
+above 700px; the portrait still carries the phone on its own.
+
 ## Production exports
 
 - `public/media/hero/hero-water-desktop.webp` — 2752×1536 primary 16:9 poster

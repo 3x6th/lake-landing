@@ -10,13 +10,15 @@
  */
 export const heroVideoSources: {
   desktop: string;
-  mobile: string;
-} | null = null;
+  mobile?: string;
+} | null = {
+  desktop: '/media/hero/hero-water-desktop.mp4',
+};
 
 export const interludeBands: {
   afterWork: string | null;
   beforeContact: string | null;
 } = {
-  afterWork: null,
-  beforeContact: null,
+  afterWork: '/media/interlude/depth-01.mp4',
+  beforeContact: '/media/interlude/depth-02.mp4',
 };

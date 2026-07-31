@@ -2,8 +2,12 @@ import { useState } from 'react';
 
 interface AtmosphereVideoProps {
   className?: string;
-  /** Resolved once on mount; the portrait cut is used below 700px. */
-  sources: { desktop: string; mobile: string } | { desktop: string };
+  /**
+   * Resolved once on mount. The portrait cut is used below 700px when one
+   * exists; without it the landscape clip is simply not played there, because
+   * a landscape loop cropped into a phone viewport shows almost nothing.
+   */
+  sources: { desktop: string; mobile?: string };
 }
 
 const MOBILE_QUERY = '(max-width: 699px)';
@@ -21,8 +25,8 @@ const resolveSource = (
     return null;
   }
 
-  if (matches(MOBILE_QUERY) && 'mobile' in sources) {
-    return sources.mobile;
+  if (matches(MOBILE_QUERY)) {
+    return sources.mobile ?? null;
   }
 
   return sources.desktop;

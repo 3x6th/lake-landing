@@ -16,9 +16,13 @@ export const DepthBand = ({ source }: DepthBandProps) => {
 
   return (
     <div className="depth-band" aria-hidden="true">
+      {/* The same landscape clip on phones, deliberately. A band carries no
+          composition to protect and no poster to mismatch, so a cropped
+          stretch of moving water beats an empty frame. The hero does the
+          opposite: it waits for a real portrait cut. */}
       <AtmosphereVideo
         className="depth-band__video"
-        sources={{ desktop: source }}
+        sources={{ desktop: source, mobile: source }}
       />
     </div>
   );

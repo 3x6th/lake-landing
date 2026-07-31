@@ -400,28 +400,24 @@ figcaption {
 }
 
 /*
- * The water asset already carries the art direction: its left ~45% is black
- * and its optical energy sits at x 58–92%. The scrim must not repeat that
- * gradient — doing so darkened the frame twice and ate into the side holding
- * the detail. It now only protects the fixed navigation and the copy column.
+ * The water now fills the frame and its brightest bloom lands under the copy
+ * column, so the scrim is a pool of shade anchored to that column rather than
+ * a wash across the picture. Everything outside the copy stays as bright as
+ * the asset — darkening the whole frame is what made the previous hero empty.
  */
 .hero-water__scrim {
   z-index: 1;
   pointer-events: none;
   background:
-    linear-gradient(
-      90deg,
-      rgba(5, 7, 6, 0.45) 0%,
-      rgba(5, 7, 6, 0.18) 40%,
-      rgba(5, 7, 6, 0) 66%
+    radial-gradient(
+      ellipse 62% 76% at 20% 52%,
+      rgba(5, 7, 6, 0.84) 0%,
+      rgba(5, 7, 6, 0.58) 44%,
+      rgba(5, 7, 6, 0) 78%
     ),
-    linear-gradient(
-      180deg,
-      rgba(5, 7, 6, 0.7) 0%,
-      rgba(5, 7, 6, 0.1) 16%,
-      rgba(5, 7, 6, 0) 34%,
-      rgba(5, 7, 6, 0.3) 100%
-    );
+    linear-gradient(90deg, rgba(5, 7, 6, 0.5) 0%, rgba(5, 7, 6, 0) 42%),
+    linear-gradient(180deg, rgba(5, 7, 6, 0.72) 0%, rgba(5, 7, 6, 0) 18%),
+    linear-gradient(0deg, rgba(5, 7, 6, 0.34) 0%, rgba(5, 7, 6, 0) 22%);
 }
 
 /*
@@ -1329,16 +1325,18 @@ figcaption {
     animation-name: hero-water-drift-mobile;
   }
 
-  /* Protects the copy column down to roughly half the viewport, then clears
-     completely so the caustics in the lower third stay visible. */
+  /* Portrait puts the copy in the upper half and the swell in the lower one,
+     so the shade is a band across the top rather than a pool on the left.
+     Measured, not guessed: this leaves the offer at roughly 7:1 against the
+     4.5:1 it needs, which is margin enough without flattening the water. */
   .hero-water__scrim {
     background: linear-gradient(
       180deg,
-      rgba(5, 7, 6, 0.84) 0%,
-      rgba(5, 7, 6, 0.6) 30%,
-      rgba(5, 7, 6, 0.16) 52%,
-      rgba(5, 7, 6, 0) 68%,
-      rgba(5, 7, 6, 0.26) 100%
+      rgba(5, 7, 6, 0.7) 0%,
+      rgba(5, 7, 6, 0.56) 34%,
+      rgba(5, 7, 6, 0.22) 54%,
+      rgba(5, 7, 6, 0) 72%,
+      rgba(5, 7, 6, 0.2) 100%
     );
   }
 
