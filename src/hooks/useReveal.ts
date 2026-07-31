@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Language } from '../siteContent';
 
 const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
@@ -11,6 +11,20 @@ const REVEALED_CLASS = 'is-revealed';
  * remaining target is revealed once this elapses.
  */
 const FAILSAFE_DELAY = 2000;
+
+/**
+ * Whether the element currently crosses the viewport at all.
+ *
+ * Deliberately cruder than the observer's own thresholds: this only decides
+ * whether the visitor can already see something, so any overlap counts.
+ */
+const isOnScreen = (element: Element) => {
+  const bounds = element.getBoundingClientRect();
+  const viewportHeight =
+    window.innerHeight || document.documentElement.clientHeight;
+
+  return bounds.bottom > 0 && bounds.top < viewportHeight;
+};
 
 /**
  * Reveals section structure once, as it enters the viewport.
@@ -29,10 +43,15 @@ const FAILSAFE_DELAY = 2000;
  * replacement at opacity 0 for good.
  */
 export const useReveal = (language: Language) => {
+  const hasMountedRef = useRef(false);
+
   useEffect(() => {
     const targets = Array.from(
       document.querySelectorAll(REVEAL_SELECTOR)
     );
+    const isLanguageChange = hasMountedRef.current;
+
+    hasMountedRef.current = true;
 
     if (targets.length === 0) {
       return undefined;
@@ -53,6 +72,23 @@ export const useReveal = (language: Language) => {
       return undefined;
     }
 
+    /*
+     * A locale switch replaces the nodes the visitor is currently reading, and
+     * the replacements arrive with no `is-revealed` class. Waiting for the
+     * observer to hand it back means the section they are looking at fades out
+     * and back in for no reason. So on a switch — never on first mount, where
+     * the staged entrance is the whole point — anything already on screen is
+     * revealed in the same frame it is created, and the observer is left to
+     * stage everything below the fold exactly as before.
+     */
+    if (isLanguageChange) {
+      targets.forEach((target) => {
+        if (isOnScreen(target)) {
+          target.classList.add(REVEALED_CLASS);
+        }
+      });
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -71,7 +107,9 @@ export const useReveal = (language: Language) => {
     );
 
     targets.forEach((target) => {
-      observer.observe(target);
+      if (!target.classList.contains(REVEALED_CLASS)) {
+        observer.observe(target);
+      }
     });
 
     const failsafe = window.setTimeout(() => {

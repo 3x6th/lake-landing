@@ -29,7 +29,7 @@ export const FishermanInterlude = ({
   const brandLineRef = useRef<HTMLParagraphElement>(null);
   /*
    * AsciiFisherman fetches the megabyte engraving itself, in JS, to sample its
-   * pixels — `loading="lazy"` on the <img> below cannot defer that, because
+   * pixels — `loading="lazy"` on the image below cannot defer that, because
    * the script request happens first and the image then just hits cache. So
    * the sampler is not mounted until this passage is close. The section, the
    * stage and the layout are unchanged either way, so the scroll stage still
@@ -46,15 +46,28 @@ export const FishermanInterlude = ({
       return;
     }
 
+    /*
+     * Every window is the original one shifted 0.12 earlier; none of the spans
+     * changed. The engraving used to wait until 0.12 of the stage's travel
+     * before it began to appear, which left roughly a third of a viewport of
+     * black between the last mark of the research band and the first mark of
+     * the fisherman — long enough to read as a failed load rather than a pause.
+     *
+     * The rhythm is preserved exactly: arrive over 0.20, hold for 0.12,
+     * transform over 0.24/0.28, resolve over 0.22, with the brand line still
+     * overlapping the tail of the ASCII by 0.06. The transformation itself is
+     * not compressed; the whole passage simply starts as the band arrives and
+     * finishes with more tail instead of more approach.
+     */
     const engravingEntrance = interpolateWindow(
       progress,
-      0.12,
-      0.34,
+      0.02,
+      0.22,
       ENGRAVING_PEAK
     );
     const engravingExit =
-      ENGRAVING_PEAK * (1 - interpolateWindow(progress, 0.46, 0.7));
-    const brandProgress = interpolateWindow(progress, 0.68, 0.9);
+      ENGRAVING_PEAK * (1 - interpolateWindow(progress, 0.34, 0.58));
+    const brandProgress = interpolateWindow(progress, 0.56, 0.78);
 
     engraving.style.opacity = formatStyleNumber(
       Math.min(engravingEntrance, engravingExit)
@@ -107,11 +120,17 @@ export const FishermanInterlude = ({
       <div className="fisherman-interlude__stage">
         <div className="fisherman-art" aria-hidden="true" ref={artRef}>
           <div className="fisherman-art__viewport">
+            {/* The dimensions are the asset's intrinsic 1536x1024: CROP_RATIO
+                is 1, so the whole engraving is in frame. The viewport's
+                aspect-ratio already reserves the space, but every image
+                states its own box. */}
             <img
               ref={engravingRef}
               className="fisherman-art__layer fisherman-art__source fisherman-art__engraving"
               src="/fishman.png"
               alt=""
+              width="1536"
+              height="1024"
               loading="lazy"
               decoding="async"
             />

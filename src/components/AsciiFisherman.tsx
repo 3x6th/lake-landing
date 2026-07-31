@@ -51,6 +51,26 @@ const MOBILE_QUERY = '(max-width: 699px)';
 const AREA_SAMPLE_SIZE = 2;
 const TRANSPARENT_LUMINANCE = 24;
 const ASCII_CONTRAST_GAMMA = 0.65;
+/*
+ * The luminance that maps to the heaviest glyph in the ramp.
+ *
+ * This is a property of /fishman.png, not a general constant. Normalizing
+ * against 255 assumes a cell somewhere reaches white, and this engraving never
+ * does: sampled at the shipped 120x40 grid its brightest cell is 131, p99 is
+ * 73.5 and p90 is 30.7. Against a 255 ceiling the brightest cell in the whole
+ * image resolves to '+', so '*', '#' and '@' could never be emitted once and
+ * 90% of the glyphs were the two faintest characters — the figure crossed the
+ * transition as scattered dots instead of a fisherman.
+ *
+ * 110 sits just under the measured ceiling so the densest passages — hat, face,
+ * hull — reach the top of the ramp while the sparse water stays sparse. The
+ * normalized value is clamped because cells above the peak would otherwise run
+ * off the end of the ramp.
+ *
+ * Replacing fishman.png means re-measuring this. Sample the new file at 120x40
+ * and set it near the p99 of the cells above TRANSPARENT_LUMINANCE.
+ */
+const ASCII_PEAK_LUMINANCE = 110;
 const imagePromises = new Map<string, Promise<HTMLImageElement>>();
 
 const loadImage = (source: string) => {
@@ -187,9 +207,11 @@ const sampleImage = (
         continue;
       }
 
-      const normalizedLuminance =
+      const normalizedLuminance = Math.min(
+        1,
         (luminance - TRANSPARENT_LUMINANCE) /
-        (255 - TRANSPARENT_LUMINANCE);
+          (ASCII_PEAK_LUMINANCE - TRANSPARENT_LUMINANCE)
+      );
       const contrastAdjustedLuminance = Math.pow(
         normalizedLuminance,
         ASCII_CONTRAST_GAMMA
