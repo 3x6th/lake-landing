@@ -679,22 +679,42 @@ figcaption {
   overflow: hidden;
 }
 
+/* The line spans the stage and centres its text, rather than being a
+   shrink-to-fit box pinned at `left: 50%`.
+
+   That pin was the whole defect. An absolutely positioned box with a `left`
+   and no `right` shrink-wraps against the space left over to its right, so the
+   line was only ever offered half the stage: 180px at a 360px viewport. The
+   tracked Russian tagline «ОЗЕРО РАЗРАБОТЧИКОВ» measures 187px at the 0.22em
+   used below 700px, so at 360 it broke onto two lines, and at 390 it cleared
+   its 195px allowance by eight pixels — close enough that a slightly wider
+   Cyrillic fallback, or a visitor who has raised their default text size,
+   pushes it over. Spanning the stage and honouring the page gutter gives it
+   320px at 360 instead of 180, and the box can no longer exceed the viewport
+   because it is the viewport.
+
+   `text-indent` cancels the trailing letter-spacing. Tracking is applied after
+   the final character too, so a centred line sits half a tracking unit left of
+   true centre; indenting the line by the same amount puts it back. */
 .fisherman-interlude__brand-line {
+  --brand-tracking: 0.3em;
+
   position: absolute;
   bottom: clamp(3rem, 11vh, 7.5rem);
-  left: 50%;
+  inset-inline: 0;
   margin: 0;
+  padding-inline: var(--page-gutter);
   color: var(--paper);
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   font-size: 0.75rem;
   font-weight: 500;
-  letter-spacing: 0.3em;
+  letter-spacing: var(--brand-tracking);
   line-height: 1.4;
   text-align: center;
+  text-indent: var(--brand-tracking);
   text-transform: uppercase;
   opacity: 0;
   transform: translateY(10px);
-  translate: -50% 0;
 }
 
 .fisherman-art {
@@ -1039,7 +1059,10 @@ figcaption {
   bottom: -14px;
   z-index: 1;
   color: var(--paper-muted);
-  content: '↓';
+  /* U+2193 followed by U+FE0E, the text-presentation variation selector; see
+     the note above NORTH_EAST_ARROW in ContentExperience.tsx. Both escapes are
+     terminated by a non-hex character, so neither needs a trailing space. */
+  content: '\2193\FE0E';
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   font-size: 1rem;
 }
@@ -1539,8 +1562,9 @@ figcaption {
   }
 
   .fisherman-interlude__brand-line {
+    --brand-tracking: 0.22em;
+
     bottom: 8vh;
-    letter-spacing: 0.22em;
   }
 
   .proof-rail__list {
@@ -1789,13 +1813,14 @@ figcaption {
     opacity: 0.38;
   }
 
+  /* The stage already pads itself in this mode, so the line drops its own
+     gutter and simply sits in the flex column. */
   .fisherman-interlude__brand-line {
     position: relative;
-    bottom: auto;
-    left: auto;
+    inset: auto;
+    padding-inline: 0;
     opacity: 1;
     transform: none;
-    translate: none;
   }
 
   .top-nav::before,
