@@ -13,6 +13,24 @@ interface ContentExperienceProps {
 const revealOrder = (index: number) =>
   ({ '--reveal-index': index }) as CSSProperties;
 
+/*
+ * Every list below is keyed by position, and that is deliberate.
+ *
+ * The obvious keys — a title, a question, a label — are all translated copy,
+ * so each one changes with the locale and React destroys the row and builds a
+ * new one. The replacement paints at the `[data-reveal]` rule's opacity 0 and
+ * transitions back in, which re-runs the entrance animation on the very block
+ * the visitor was reading, and no effect can prevent it because effects run
+ * after that first paint.
+ *
+ * Position is a legitimate key here because it is genuinely stable: these
+ * lists come from a fixed literal in siteContent.ts, both locales carry the
+ * same number of items, and nothing sorts, filters, or inserts. Row 3 is the
+ * same row in both languages, so React updates its text in place. There is no
+ * locale-independent id in the content model to prefer instead — even the
+ * mailto subjects are translated.
+ */
+
 export const ContentExperience = ({
   content,
   language,
@@ -26,7 +44,7 @@ export const ContentExperience = ({
         {content.proof.map((fact, index) => (
           <li
             className="proof-rail__item"
-            key={fact.label}
+            key={index}
             data-reveal
             style={revealOrder(index)}
           >
@@ -47,7 +65,7 @@ export const ContentExperience = ({
         {content.offers.items.map((offer, index) => (
           <article
             className="offer-row"
-            key={offer.title}
+            key={index}
             data-reveal
             style={revealOrder(index)}
           >
@@ -140,7 +158,7 @@ export const ContentExperience = ({
           {content.work.ai.steps.map((step, index) => (
             <li
               className="knowledge-flow__step"
-              key={step.title}
+              key={index}
               data-reveal
               style={revealOrder(index)}
             >
@@ -169,7 +187,7 @@ export const ContentExperience = ({
         {content.process.steps.map((step, index) => (
           <li
             className="process-step"
-            key={step.title}
+            key={index}
             data-reveal
             style={revealOrder(index)}
           >
@@ -207,7 +225,7 @@ export const ContentExperience = ({
         {content.faq.items.map((item, index) => (
           <details
             className="faq-item"
-            key={item.question}
+            key={index}
             data-reveal
             open={index === 0}
             style={revealOrder(index)}

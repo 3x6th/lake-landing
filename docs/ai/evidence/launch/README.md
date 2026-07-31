@@ -48,17 +48,22 @@ exception is now recorded in the typography amendment rather than implied here.
 These numbers were also measured with overlay scrollbars. See the note on
 full-bleed blocks below.
 
-## One measured caveat on the desktop numbers
+## One measured caveat on the desktop numbers — since closed
 
-With a **classic** scrollbar — Windows and Linux Chrome — the desktop
-viewports carry about 8px of scrollable overflow that these frames cannot
-show: at 1280 the launch review measured `scrollWidth` 1273 against
-`clientWidth` 1265. Every full-bleed block uses the
-`width: 100vw; left: 50%; margin-left: -50vw` idiom, and `100vw` includes the
-scrollbar, so each is laid out ~7.5px wider than the content box while
-`body { overflow-x: hidden }` hides the consequence. No horizontal scrollbar
-appears; full-bleed media sits very slightly left of centre. The phone
-viewports measured genuinely clean, `scrollWidth == clientWidth`.
+**Closed in `20c3aa8`.** Kept here as history, because the measurement is
+useful and the trap is easy to reintroduce.
+
+When these frames were taken, a **classic** scrollbar — Windows and Linux
+Chrome — put about 8px of scrollable overflow on the desktop viewports: at
+1280 the launch review measured `scrollWidth` 1273 against `clientWidth` 1265.
+Every full-bleed block used the `width: 100vw; left: 50%; margin-left: -50vw`
+idiom, and `100vw` includes the scrollbar, so each was laid out ~7.5px wider
+than the content box while `body { overflow-x: hidden }` hid the consequence.
+
+All five blocks are direct children of a padding-free `main.page-content`, so
+they now use `width: 100%` and the overflow is structurally impossible rather
+than merely absent. Re-measured at 1440: `scrollWidth === clientWidth === 1440`
+with zero overflowing elements.
 
 ## How these were captured, and one earlier set that was wrong
 

@@ -936,7 +936,7 @@ figcaption {
 
    That decision cost something under the first pair of captures, which framed
    their interface inside a large empty background: the projects view carried
-   roughly 61% dead space and the board about 26%. Tightening the ratio, or
+   roughly 61% dead space and the board 31%. Tightening the ratio, or
    cropping the asset, was tried twice and rejected twice — cropping in CSS
    shrank the projects frame to a 4:1 strip in a narrow column and made it
    illegible, and stacking it full-width below the board lost the one thing
@@ -981,10 +981,18 @@ figcaption {
   background: var(--ink-deep-water);
 }
 
+/* The minima are 0 on purpose. A pixel floor on either column outlives the
+   single-column breakpoint at 820px: 280 + 520 plus a 7vw gap needs about
+   910px of viewport, so measured, every width from 821px to 908px pushed the
+   flow past the right edge — 70px of it at 830 — with the ↓ connectors, which
+   sit at `right: 0`, clipped off-screen and `body { overflow-x: hidden }`
+   hiding that it had happened. 834×1112 is iPad Pro 11" portrait, so the band
+   is real hardware, not a gap between breakpoints. The ratio still governs
+   wherever there is room to honour it. */
 .research-case {
   display: grid;
   gap: clamp(3.5rem, 7vw, 7rem);
-  grid-template-columns: minmax(280px, 0.8fr) minmax(520px, 1.6fr);
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.6fr);
 }
 
 /* The statement is short and the flow beside it is tall, which left a dead
@@ -1140,11 +1148,14 @@ figcaption {
   line-height: 1.6;
 }
 
+/* Zero minima for the same reason as `.research-case`: with 280 + 480 and an
+   8vw gap this grid overflowed on its own from 821px to 883px, measured, all
+   of it above the width where it collapses to one column. */
 .faq-section {
   display: grid;
   gap: clamp(4rem, 8vw, 9rem);
   border-top: 1px solid var(--rule);
-  grid-template-columns: minmax(280px, 0.8fr) minmax(480px, 1.2fr);
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
 }
 
 .faq-list {
@@ -1731,8 +1742,8 @@ figcaption {
     transform: none;
   }
 
-  /* The signature passage collapses to one static frame: the ASCII reading of
-     the engraving, which is the resolved end of the transformation. */
+  /* The signature passage collapses to one static frame; what that frame
+     holds is decided by the two layer opacities below. */
   .fisherman-interlude {
     height: auto;
   }

@@ -25,32 +25,9 @@ const mockMotionPreference = (matches: boolean) => {
   );
 };
 
-/**
- * jsdom reports a zero rect for every element, which reads as off-screen. This
- * puts the harness's targets either inside or below the viewport.
- */
-const stubOnScreen = (onScreen: boolean) => {
-  vi.spyOn(
-    HTMLElement.prototype,
-    'getBoundingClientRect'
-  ).mockReturnValue({
-    bottom: onScreen ? 200 : 3000,
-    height: 100,
-    left: 0,
-    right: 100,
-    toJSON: () => ({}),
-    top: onScreen ? 100 : 2900,
-    width: 100,
-    x: 0,
-    y: onScreen ? 100 : 2900,
-  });
-};
-
 describe('useReveal', () => {
   beforeEach(() => {
     mockMotionPreference(false);
-    window.innerWidth = 1440;
-    window.innerHeight = 900;
   });
 
   afterEach(() => {
@@ -119,68 +96,41 @@ describe('useReveal', () => {
   });
 
   /*
-   * The pair below is the whole contract: a locale switch must not re-animate
-   * what the visitor is already reading, and fixing that must not flatten the
-   * first-mount entrance into "everything visible is instantly on".
+   * A locale switch used to be special-cased here, because content-based list
+   * keys meant React handed the hook fresh nodes. It no longer does — the
+   * lists are keyed by position — and the surviving contract is that a switch
+   * takes nothing away: targets already revealed stay revealed, and the rest
+   * are still left to the observer rather than being flushed on early.
+   *
+   * That the nodes themselves survive is asserted in App.test.tsx, against the
+   * real page. It cannot be asserted here, where the harness owns the markup.
    */
-  it('reveals on-screen targets synchronously when the locale changes', () => {
+  it('adds no reveal of its own when the locale changes', () => {
     const observe = vi.fn();
+    let notify: ((entries: unknown[]) => void) | undefined;
     vi.stubGlobal(
       'IntersectionObserver',
       class {
         disconnect = vi.fn();
         observe = observe;
         unobserve = vi.fn();
+
+        constructor(callback: (entries: unknown[]) => void) {
+          notify = callback;
+        }
       }
     );
-    stubOnScreen(true);
 
     const { getByTestId, rerender } = render(<RevealHarness language="en" />);
-
-    expect(getByTestId('first')).not.toHaveClass('is-revealed');
+    notify?.([{ isIntersecting: true, target: getByTestId('first') }]);
 
     rerender(<RevealHarness language="ru" />);
 
     expect(getByTestId('first')).toHaveClass('is-revealed');
-    expect(getByTestId('second')).toHaveClass('is-revealed');
-  });
-
-  it('still stages the entrance on first mount, even when on screen', () => {
-    const observe = vi.fn();
-    vi.stubGlobal(
-      'IntersectionObserver',
-      class {
-        disconnect = vi.fn();
-        observe = observe;
-        unobserve = vi.fn();
-      }
-    );
-    stubOnScreen(true);
-
-    const { getByTestId } = render(<RevealHarness language="en" />);
-
-    expect(getByTestId('first')).not.toHaveClass('is-revealed');
     expect(getByTestId('second')).not.toHaveClass('is-revealed');
-    expect(observe).toHaveBeenCalledTimes(2);
-  });
-
-  it('leaves off-screen targets to the observer on a locale change', () => {
-    const observe = vi.fn();
-    vi.stubGlobal(
-      'IntersectionObserver',
-      class {
-        disconnect = vi.fn();
-        observe = observe;
-        unobserve = vi.fn();
-      }
-    );
-    stubOnScreen(false);
-
-    const { getByTestId, rerender } = render(<RevealHarness language="en" />);
-    rerender(<RevealHarness language="ru" />);
-
-    expect(getByTestId('first')).not.toHaveClass('is-revealed');
-    expect(getByTestId('second')).not.toHaveClass('is-revealed');
+    // Only the target still waiting is handed to the new observer.
+    expect(observe).toHaveBeenCalledTimes(3);
+    expect(observe).toHaveBeenLastCalledWith(getByTestId('second'));
   });
 
   it('reveals everything without observing when motion is reduced', () => {

@@ -112,6 +112,18 @@ Member avatars showing initials appear in both captures. They are product
 interface, not a team section, and carry no names, photographs or profile
 links, so they stay. The owner confirmed this explicitly on 2026-07-31.
 
+**The board content is seeded demonstration data, not a live project.** The
+owner confirmed this on 2026-07-31, after the launch review flagged that two
+of the ten visible cards read as open authentication defects
+(`TAS-101`, `TAS-105`). They are not real defects and the workspace is not a
+real project, so nothing private is disclosed and nothing is being claimed
+about the state of the product's security.
+
+This is why the captures are evidence of an *interface* rather than of work
+delivered, and why the `IN DEVELOPMENT` label and the "not a completed customer
+case" note carry the whole claim. Do not add copy that reads the card titles as
+achievements, a roadmap, or a changelog.
+
 Never publish or preload `img.png`, because it contains a visible login email.
 Preserve all three user-supplied source files unchanged and untracked.
 

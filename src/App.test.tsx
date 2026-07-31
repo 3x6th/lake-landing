@@ -128,9 +128,8 @@ describe('Ozero landing experience', () => {
     const user = userEvent.setup();
     const { container } = render(<App />);
 
-    // List keys are content-based, so switching locale remounts most
-    // [data-reveal] nodes. Whatever marks them revealed has to run again for
-    // the replacements, otherwise CSS holds them at opacity 0 permanently.
+    // CSS holds every [data-reveal] target at opacity 0 until it is marked
+    // revealed, so a target that loses the mark is invisible for good.
     expect(
       container.querySelectorAll('[data-reveal]:not(.is-revealed)')
     ).toHaveLength(0);
@@ -142,6 +141,58 @@ describe('Ozero landing experience', () => {
     ).map((node) => node.className || node.tagName);
 
     expect(stillHidden).toEqual([]);
+  });
+
+  /*
+   * The mechanism, not the symptom. Whether a switched-to block re-animates is
+   * decided by whether React keeps its DOM node: a replaced node is painted at
+   * the stylesheet's opacity 0 and transitions back in, and no assertion about
+   * classes can see that, because the class is restored one passive effect too
+   * late — after the browser has already painted the fresh node.
+   *
+   * So this asserts identity. Every sampled node must be the same instance
+   * afterwards, updated in place, which is only true while the list keys are
+   * independent of the copy they render.
+   */
+  it('translates reveal blocks in place instead of replacing their nodes', async () => {
+    const user = userEvent.setup();
+    const { container } = render(<App />);
+
+    const sampledSelectors = [
+      '.proof-rail__item',
+      '.offer-row',
+      '.knowledge-flow__step',
+      '.process-step',
+      '.faq-item',
+    ];
+    const sampled = sampledSelectors.map((selector) => {
+      const node = container.querySelector(selector);
+
+      expect(node, `no node matched ${selector}`).not.toBeNull();
+
+      return { node: node as Element, selector };
+    });
+    const englishOffer = container.querySelector('.offer-row h3')?.textContent;
+
+    await user.click(screen.getByRole('button', { name: 'RU' }));
+
+    sampled.forEach(({ node, selector }) => {
+      expect(
+        container.contains(node),
+        `${selector} was replaced by the locale switch`
+      ).toBe(true);
+      expect(container.querySelector(selector)).toBe(node);
+      expect(node).toHaveClass('is-revealed');
+    });
+
+    // The switch has to have actually happened, or the identity check above
+    // would pass against a page that never changed.
+    expect(container.querySelector('.offer-row h3')?.textContent).not.toBe(
+      englishOffer
+    );
+    expect(container.querySelector('.offer-row h3')).toHaveTextContent(
+      'Усиление команды'
+    );
   });
 
   it('restores a previously selected locale', () => {
