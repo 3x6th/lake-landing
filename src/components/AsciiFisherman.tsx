@@ -122,13 +122,59 @@ const loadImage = (source: string) => {
       }
     };
 
-    image.decoding = 'async';
-    image.onload = resolveOnce;
+    /*
+     * `load` says the bytes arrived. `decode()` says there is a bitmap. The
+     * sampler needs the bitmap, so `load` cannot settle this on its own.
+     *
+     * This used to set `decoding = 'async'` and resolve on whichever of `load`
+     * and `decode()` came first. On WebKit that is always `load`, and WebKit
+     * honours the async hint literally: `drawImage` of an image that has
+     * loaded but not yet decoded draws nothing, and does not block waiting for
+     * it. `getImageData` then came back entirely zero, every cell fell under
+     * TRANSPARENT_LUMINANCE, no glyph was ever pushed, and the component
+     * rendered an empty `<svg>` carrying `data-ascii-status="ready"` — the
+     * failure state that looks most like success. On an iPhone the signature
+     * was simply absent, in Safari and in Chrome for iOS alike, because both
+     * are WebKit. Blink decodes synchronously inside `drawImage`, so desktop
+     * Chrome never showed it, and no column count could: the glyph list was
+     * empty at every grid size.
+     *
+     * Measured in WKWebView against this page, sampling /fishman.png at the
+     * shipped 96-column grid: settling on `load` with the async hint gives a
+     * peak cell luminance of 0. Awaiting `decode()` gives 137.93 and a full
+     * glyph set, and so does dropping the hint and settling on `load`.
+     *
+     * Both halves of that measurement are used. `decode()` is the guarantee
+     * and is now the only thing that resolves this promise on an engine that
+     * has it; the hint is gone because `load` is still the fallback where
+     * `decode()` is missing or refuses, and that fallback is only sound if the
+     * engine was never told to decode lazily. Nothing is lost by dropping it:
+     * this image is never inserted into the document, so it has no
+     * presentation decode to schedule.
+     */
+    const handleLoad = () => {
+      if (typeof image.decode !== 'function') {
+        resolveOnce();
+      }
+    };
+
+    image.onload = handleLoad;
     image.onerror = rejectOnce;
     image.src = source;
 
     if (typeof image.decode === 'function') {
-      void image.decode().then(resolveOnce, rejectOnce);
+      void image.decode().then(resolveOnce, () => {
+        /*
+         * WebKit has historically rejected `decode()` for images that did
+         * arrive intact. An arrived image is still worth sampling, and with
+         * the async hint gone this is the path measured good above.
+         */
+        if (image.complete && image.naturalWidth > 0) {
+          resolveOnce();
+        } else {
+          rejectOnce();
+        }
+      });
     }
   });
 
