@@ -57,3 +57,7 @@ yarn-error.log*
 # login email, so keeping them there would publish them no matter what this
 # file says.
 /private-assets/
+
+# Capture aids must never be servable from public/.
+/public/__seed.html
+/public/__og-card.html

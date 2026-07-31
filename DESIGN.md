@@ -173,10 +173,21 @@ reachable without this role.
 The wordmark keeps `display`. The brand is still the largest thing on the
 page — the offer is simply no longer the smallest.
 
-One deliberate exception stays off the ramp: `.intro-overlay__wordmark`
-(`src/App.css:104`) sets the entry curtain at `clamp(2.25rem, 5.5vw, 4.25rem)`.
-It is a single transient element that never coexists with page type, and
-tokenizing a role for one overlay would be worse than the exception.
+Two deliberate exceptions stay off the ramp.
+
+`.intro-overlay__wordmark` (`src/App.css:104`) sets the entry curtain at
+`clamp(2.25rem, 5.5vw, 4.25rem)`. It is a single transient element that never
+coexists with page type, and tokenizing a role for one overlay would be worse
+than the exception.
+
+**Below 699px the hero overrides both `display` and `lede`**, to
+`clamp(3.6rem, 17vw, 5.5rem)` and `1.3rem`. The § Layout rule that mobile uses
+an art-directed vertical crop rather than a shrunken desktop composition
+applies to type as well: the declared `display` floor of `3.8rem` is tuned to
+a wide measure, and `17vw` is what keeps the wordmark proportionate to a
+portrait frame. This is recorded because the launch review found the `lede`
+token being quoted as universal when it holds on desktop only — the viewport
+class carrying most traffic was the one where it was untrue.
 
 ## Layout
 

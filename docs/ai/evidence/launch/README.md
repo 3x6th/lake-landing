@@ -33,10 +33,32 @@ read in the same pass, and every pair was equal:
  360×800  sw=360  cw=360     h1 61.2px
 ```
 
-The `h1` column double-checks the display token: 144/1440, 128/1280 and
-102.4/1024 are all exactly `10vw`, and the two phone sizes are exactly `17vw`
-from the mobile override. That is `DESIGN.md`'s declared
-`clamp(3.8rem, 10vw, 9.5rem)` rendering as declared.
+The `h1` column double-checks the display token **on desktop only**:
+144/1440, 128/1280 and 102.4/1024 are all exactly `10vw`, which is
+`DESIGN.md`'s declared `clamp(3.8rem, 10vw, 9.5rem)` rendering as declared.
+
+The two phone figures are **not** that token. 66.3px and 61.2px are `17vw`
+from the art-directed mobile override at `src/App.css:1388`,
+`clamp(3.6rem, 17vw, 5.5rem)`. The declared token would give 60.8px at 390px —
+its `3.8rem` floor. An earlier version of this file claimed both rows proved
+token compliance, which its own numbers disprove; the launch review caught it.
+`DESIGN.md` § Layout permits an art-directed mobile treatment, and the
+exception is now recorded in the typography amendment rather than implied here.
+
+These numbers were also measured with overlay scrollbars. See the note on
+full-bleed blocks below.
+
+## One measured caveat on the desktop numbers
+
+With a **classic** scrollbar — Windows and Linux Chrome — the desktop
+viewports carry about 8px of scrollable overflow that these frames cannot
+show: at 1280 the launch review measured `scrollWidth` 1273 against
+`clientWidth` 1265. Every full-bleed block uses the
+`width: 100vw; left: 50%; margin-left: -50vw` idiom, and `100vw` includes the
+scrollbar, so each is laid out ~7.5px wider than the content box while
+`body { overflow-x: hidden }` hides the consequence. No horizontal scrollbar
+appears; full-bleed media sits very slightly left of centre. The phone
+viewports measured genuinely clean, `scrollWidth == clientWidth`.
 
 ## How these were captured, and one earlier set that was wrong
 
@@ -66,6 +88,36 @@ Three things had to be right, and each was wrong first:
    interlude frames carry the layer opacities that were read at capture time:
    engraving `0.82` / ascii `0` for the engraving frame, engraving `0` /
    ascii `0.86` for the ASCII frame.
+
+## These frames show posters, not playing video
+
+Two separate reviews found capture faults here, and both are recorded rather
+than quietly re-shot.
+
+The art director found that headless Chrome launched with `--disable-gpu`
+**silently declines to decode video**. It does not error and it does not warn;
+the `<video>` simply never paints. The water visible in the hero frames is
+therefore `hero-water-desktop.webp` — the real poster underneath, and a state a
+visitor genuinely sees before the loop fades in — not `hero-water-desktop.mp4`.
+No frame in this set is evidence that a video plays.
+
+The launch review then found that the five **EN** frames were additionally
+captured before the poster itself had decoded: every EN file was 40–45% smaller
+on disk than its RU twin and the hero read near-black, which would have
+evidenced layout but not art direction. They were re-taken, and the capture now
+asserts `HTMLImageElement.complete` and a non-zero `naturalWidth` on
+`.hero-water__image` before the shutter and prints the result next to each
+frame. A capture pipeline that cannot tell a dark composition from an
+undecoded one is not evidence.
+
+That is also why no depth-band frame is included. A band captured under
+`--disable-gpu` would have been a black rectangle, and filing that as evidence
+of an atmospheric pause would have been worse than filing nothing. The bands
+were confirmed playing separately, in a GPU-enabled run, by the art director.
+
+Anyone re-running this must drop `--disable-gpu` and assert
+`video.paused === false` before trusting a frame that is supposed to contain
+motion.
 
 ## What the interlude frames show
 

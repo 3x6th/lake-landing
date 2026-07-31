@@ -38,6 +38,50 @@ npm install
 | `private-assets/` | Untracked source material that must not be served |
 | `docs/ai/` | Product, design and delivery documents, plus review records |
 
+## The agent harness
+
+This site is built by a small set of agents with explicit, unequal rights, and
+that is deliberate: it is what keeps a generated page from quietly inventing
+claims about a real business.
+
+| Role | Writes | Owns |
+| --- | --- | --- |
+| Orchestrator | Repository, git, Jira, releases | Scope, sequencing, evidence |
+| `frontend-builder` | Production frontend | The only agent that may edit `src/` |
+| `product-strategist` | Nothing | Positioning, claim integrity, EN/RU parity |
+| `art-director` | Nothing | Visual hierarchy, crops, motion restraint |
+| `launch-reviewer` | Nothing | The independent verdict before a merge |
+
+Three read-only agents against one writer is the point. A reviewer that cannot
+edit cannot quietly fix what it should be reporting, and a builder that cannot
+approve cannot sign off on its own work. Read-only agents may run concurrently;
+two production writers must never run at once.
+
+Definitions live twice, once per harness — `.claude/agents/*.md` and
+`.codex/agents/*.toml`. The role bodies are identical and only the frontmatter
+differs. Change one, change the other.
+
+Commit subjects carry the Jira key. Reviewer verdicts are recorded in the PR as
+text; a same-account GitHub approval is not a substitute for review and is
+never faked.
+
+## Generated media
+
+Every generated asset is traceable. `docs/ai/ASSET-PROVENANCE.md` records the
+model, prompt, date, job IDs where they were captured, the exact ffmpeg and
+`cwebp` invocations, and the measured result — loop seams as PSNR, encode
+fidelity as SSIM, and file sizes. `docs/ai/MEDIA-BRIEF.md` holds the briefs the
+assets were generated against.
+
+Two rules that are easy to get wrong:
+
+- Media is additive. A poster is a real element underneath every loop, so a
+  missing file, a blocked request or an unsupported codec costs atmosphere and
+  nothing else.
+- The published case screenshots are derivatives of untracked private sources.
+  They may be cropped and re-encoded, never recoloured, skewed, or dressed in
+  device chrome — `docs/ai/CONTENT-BRIEF.md` is the contract.
+
 ## Before changing anything
 
 Read [AGENTS.md](AGENTS.md). It defines the authority order, what may and may
