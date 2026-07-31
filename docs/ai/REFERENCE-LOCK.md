@@ -45,18 +45,28 @@ The site should feel like a nocturnal lake observed by a disciplined engineering
 studio: black water, an engraved fisherman, restrained submerged green and
 amber light, paper-white type, and exact mono labels.
 
-The fisherman is a brand signature, not a mascot. It appears once as a
-restrained secondary artifact after the primary hero copy, dissolves into a
-real image-derived ASCII interpretation during one transition, and must not
-repeat as decoration throughout the page.
+The fisherman is a brand signature, not a mascot. It appears exactly once, in
+its own dedicated passage, dissolves into a real image-derived ASCII
+interpretation during one transition, and must not repeat as decoration
+throughout the page.
+
+That passage is deliberately **not** the hero. Amended 2026-07-31 — see
+`docs/ai/reviews/LOD-9-art-direction.md`. Sharing the hero stage with the water
+forced three visual systems to overlap at partial opacity, and none of them
+read. The signature now owns a full-bleed band of its own between the work and
+process sections, and the hero carries water and words only.
 
 ## Composition rules
 
-- Keep the left side of the desktop hero calm enough for real HTML copy.
-- Place the fisherman and boat on the right or lower-right.
+- Keep the left side of the desktop hero calm enough for real HTML copy, but
+  never so dark that the water stops being visible. The atmosphere is the
+  point; a scrim that erases it defeats the direction.
+- Give the fisherman and boat their own full-bleed passage below the hero,
+  composed with generous negative space rather than tucked into a corner.
 - Prefer one continuous atmospheric world over a stack of unrelated effects.
-- Use one signature scroll transformation only: engraving to signal field/ASCII
-  to calm water.
+  Two systems must not compete inside one viewport.
+- Use one signature scroll transformation only: engraving to image-derived
+  ASCII, in one place, once.
 - Maintain large quiet areas between high-information sections.
 - Use full-bleed imagery for atmosphere and sharp editorial frames for content.
 - Keep primary copy and actions readable without waiting for animation.

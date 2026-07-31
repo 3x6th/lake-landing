@@ -25,14 +25,29 @@ distinct material identity.
 
 ## Scroll sequence
 
-1. **Stillness (0–35%)** — subtle black-water movement, readable offer and
-   email CTA.
-2. **Signal (35–65%)** — reflected lake/ember light passes beneath the surface;
-   the original fisherman engraving appears as a restrained independent layer.
-3. **Resolution (65–100%)** — the browser samples the engraving into a real
-   code-native ASCII canvas while the copy resolves to “a lake of developers”.
-4. **Release** — the stage yields to a compact proof line and normal document
+Amended 2026-07-31. The engraving and ASCII beats previously lived here, which
+put water, engraving, and ASCII in one stage at partial opacity so that none of
+them read. They now form their own passage below the work section; see
+`docs/ai/reviews/LOD-9-art-direction.md`. The hero keeps water and words only.
+
+1. **Stillness (0–60%)** — black water moves and is genuinely visible; the
+   offer and email CTA are readable from the first frame.
+2. **Resolution (60–100%)** — the brand line “a lake of developers” resolves
+   quietly at the edge of the frame.
+3. **Release** — the stage yields to a compact proof line and normal document
    scrolling. No scroll-jacking continues beyond the hero.
+
+## Signature passage
+
+Placed between the work and process sections, full-bleed on near-black.
+
+1. **Arrival** — the engraving fades up alone, wide negative space around it.
+2. **Transformation** — the browser samples the engraving's own pixels into
+   ASCII and crossfades to it across one scroll passage.
+3. **Exit** — one JetBrains Mono line remains; the band releases to normal flow.
+
+Nothing else animates inside this band. It is the only place on the page where
+the fisherman appears.
 
 ## Media requirements
 
