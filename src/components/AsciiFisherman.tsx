@@ -24,7 +24,7 @@ interface AsciiSample {
 type AsciiStatus = 'loading' | 'ready' | 'failed';
 
 const ASCII_GLYPH_RAMP = ' .·:+*#@';
-const CROP_RATIO = 0.92;
+const CROP_RATIO = 0.87;
 const MOBILE_COLUMNS = 64;
 const DESKTOP_COLUMNS = 120;
 const MOBILE_QUERY = '(max-width: 699px)';
@@ -276,7 +276,7 @@ export const AsciiFisherman = ({
       viewBox={
         sample
           ? `0 0 ${sample.viewBoxWidth} ${sample.viewBoxHeight}`
-          : `0 0 ${columns / CROP_RATIO} ${columns / 1.5}`
+          : `0 0 ${columns / CROP_RATIO} ${columns / (1.5 * CROP_RATIO)}`
       }
     >
       {sample?.glyphs.map(({ character, column, row }) => (

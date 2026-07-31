@@ -1,4 +1,5 @@
 import { createMailtoHref, Language, UiCopy } from '../siteContent';
+import { FishermanInterlude } from './FishermanInterlude';
 
 interface ContentExperienceProps {
   content: UiCopy;
@@ -131,6 +132,8 @@ export const ContentExperience = ({
         <p className="research-case__note">{content.work.ai.note}</p>
       </article>
     </div>
+
+    <FishermanInterlude content={content.hero} />
 
     <section id="process" className="content-section content-shell">
       <header className="section-heading">

@@ -1,51 +1,27 @@
-import { useRef } from 'react';
-import { useHeroProgress } from '../hooks/useHeroProgress';
 import { Language, UiCopy } from '../siteContent';
-import { AsciiFisherman } from './AsciiFisherman';
 
 interface HeroExperienceProps {
   contactHref: string;
   content: UiCopy['hero'];
   language: Language;
-  onReleaseChange: (isReleased: boolean) => void;
 }
 
+/**
+ * Water and words only. The engraving-to-ASCII signature lives in
+ * FishermanInterlude, so nothing here competes with the offer, and the hero
+ * needs no scroll driver at all.
+ */
 export const HeroExperience = ({
   contactHref,
   content,
   language,
-  onReleaseChange,
 }: HeroExperienceProps) => {
-  const heroRef = useRef<HTMLElement>(null);
-  const engravingRef = useRef<HTMLImageElement>(null);
-  const asciiRef = useRef<SVGSVGElement>(null);
-  const brandLineRef = useRef<HTMLParagraphElement>(null);
-  const { isReleased, prefersReducedMotion } = useHeroProgress(
-    heroRef,
-    {
-      asciiRef,
-      brandLineRef,
-      engravingRef,
-    },
-    {
-      onReleaseChange,
-    }
-  );
   const heroTitleId = `hero-title-${language}`;
-  const classes = [
-    'hero-experience',
-    isReleased ? 'hero-experience--released' : '',
-    prefersReducedMotion ? 'hero-experience--reduced' : '',
-  ]
-    .filter(Boolean)
-    .join(' ');
 
   return (
     <section
-      ref={heroRef}
-      className={classes}
+      className="hero-experience"
       aria-labelledby={heroTitleId}
-      data-reduced-motion={prefersReducedMotion ? 'true' : 'false'}
     >
       <div className="hero-experience__stage">
         <div className="hero-experience__atmosphere" aria-hidden="true">
@@ -70,7 +46,7 @@ export const HeroExperience = ({
         </div>
 
         <div className="hero-experience__copy">
-          <h1 id={heroTitleId}>{content.typingTexts[0]}</h1>
+          <h1 id={heroTitleId}>{content.headline}</h1>
           <p className="hero-experience__offer">
             {content.valueProposition}
           </p>
@@ -89,30 +65,6 @@ export const HeroExperience = ({
             </a>
           </div>
         </div>
-
-        <div className="fisherman-art" aria-hidden="true">
-          <div className="fisherman-art__viewport">
-            <img
-              ref={engravingRef}
-              className="fisherman-art__layer fisherman-art__source fisherman-art__engraving"
-              src="/fishman.png"
-              alt=""
-              decoding="async"
-            />
-            <AsciiFisherman
-              elementRef={asciiRef}
-              className="fisherman-art__layer fisherman-art__source fisherman-art__ascii"
-            />
-          </div>
-        </div>
-
-        <p
-          ref={brandLineRef}
-          className="hero-experience__brand-line"
-          aria-hidden="true"
-        >
-          {content.tagline}
-        </p>
       </div>
     </section>
   );

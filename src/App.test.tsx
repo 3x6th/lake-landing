@@ -251,10 +251,9 @@ describe('Ozero landing experience', () => {
     mockMotionPreference(true);
     const { container } = render(<App />);
 
-    expect(container.querySelector('.hero-experience')).toHaveAttribute(
-      'data-reduced-motion',
-      'true'
-    );
+    expect(
+      container.querySelector('.fisherman-interlude')
+    ).toHaveClass('fisherman-interlude--reduced');
     expect(
       screen.getByRole('link', { name: 'Start a conversation' })
     ).toBeVisible();

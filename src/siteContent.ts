@@ -10,7 +10,7 @@ interface NavigationLabels {
 }
 
 interface HeroContent {
-  typingTexts: string[];
+  headline: string;
   tagline: string;
   valueProposition: string;
   primaryCta: string;
@@ -153,7 +153,7 @@ export const uiCopy: Record<Language, UiCopy> = {
     navAriaLabel: 'Site navigation',
     languageSwitcherAriaLabel: 'Language switcher',
     hero: {
-      typingTexts: ['ozero.dev', 'lake of developers'],
+      headline: 'ozero.dev',
       tagline: 'lake of developers',
       valueProposition:
         'Java-first engineers and focused product squads can realistically start in one to three weeks.',
@@ -385,7 +385,7 @@ export const uiCopy: Record<Language, UiCopy> = {
     navAriaLabel: 'Навигация по сайту',
     languageSwitcherAriaLabel: 'Выбор языка',
     hero: {
-      typingTexts: ['ozero.dev', 'озеро разработчиков'],
+      headline: 'ozero.dev',
       tagline: 'озеро разработчиков',
       valueProposition:
         'Реалистичный срок подключения Java-разработчика или сфокусированной продуктовой команды — одна–три недели.',

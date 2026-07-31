@@ -2,12 +2,15 @@ import { useEffect, useRef, useState } from 'react';
 import './App.css';
 import { ContentExperience } from './components/ContentExperience';
 import { HeroExperience } from './components/HeroExperience';
+import { useScrolledPast } from './hooks/useScrolledPast';
 import {
   createMailtoHref,
   LANGUAGE_STORAGE_KEY,
   Language,
   uiCopy,
 } from './siteContent';
+
+const NAV_SCRIM_THRESHOLD = 64;
 
 const resolveInitialLanguage = (): Language => {
   if (typeof window !== 'undefined') {
@@ -27,7 +30,7 @@ function App() {
   const [language, setLanguage] = useState<Language>(
     resolveInitialLanguage
   );
-  const [isHeroReleased, setIsHeroReleased] = useState(false);
+  const hasScrolled = useScrolledPast(NAV_SCRIM_THRESHOLD);
   const mobileNavigationRef = useRef<HTMLDetailsElement>(null);
   const content = uiCopy[language];
   const navigationItems = [
@@ -52,7 +55,7 @@ function App() {
   return (
     <div className="App" id="top">
       <header
-        className={`top-nav ${isHeroReleased ? 'top-nav--solid' : ''}`}
+        className={`top-nav ${hasScrolled ? 'top-nav--solid' : ''}`}
       >
         <a className="nav-wordmark" href="#top" aria-label="Ozero Dev">
           ozero.dev
@@ -110,7 +113,6 @@ function App() {
           contactHref={createMailtoHref(content.contact.subject)}
           content={content.hero}
           language={language}
-          onReleaseChange={setIsHeroReleased}
         />
         <ContentExperience content={content} language={language} />
       </main>

@@ -1,16 +1,20 @@
 import { RefObject, useEffect, useRef, useState } from 'react';
 
-interface HeroProgressTargets {
-  asciiRef: RefObject<SVGSVGElement | null>;
-  brandLineRef: RefObject<HTMLParagraphElement | null>;
-  engravingRef: RefObject<HTMLImageElement | null>;
-}
-
-interface UseHeroProgressOptions {
+interface UseScrollStageOptions {
+  /**
+   * Receives 0–1 progress through the stage's scroll travel, once per frame.
+   * Write only compositor properties here: opacity and transform.
+   */
+  write: (progress: number) => void;
+  /**
+   * Clears whatever `write` set. Called instead of `write` when the visitor
+   * prefers reduced motion, so CSS alone decides the resting appearance.
+   */
+  reset: () => void;
   onReleaseChange?: (isReleased: boolean) => void;
 }
 
-interface HeroProgressState {
+interface ScrollStageState {
   isReleased: boolean;
   prefersReducedMotion: boolean;
 }
@@ -22,37 +26,41 @@ const getReducedMotionPreference = () =>
   typeof window.matchMedia === 'function' &&
   window.matchMedia(REDUCED_MOTION_QUERY).matches;
 
-const clampProgress = (value: number) => Math.min(1, Math.max(0, value));
+export const clampProgress = (value: number) =>
+  Math.min(1, Math.max(0, value));
 
-const interpolateWindow = (
+export const interpolateWindow = (
   progress: number,
   start: number,
   end: number,
   maximum = 1
 ) => clampProgress((progress - start) / (end - start)) * maximum;
 
-const formatStyleNumber = (value: number) =>
+export const formatStyleNumber = (value: number) =>
   String(Number(value.toFixed(4)));
 
-export const useHeroProgress = (
-  heroRef: RefObject<HTMLElement | null>,
-  {
-    asciiRef,
-    brandLineRef,
-    engravingRef,
-  }: HeroProgressTargets,
-  { onReleaseChange }: UseHeroProgressOptions = {}
-): HeroProgressState => {
+/**
+ * Drives one sticky scroll stage. Scroll and resize are coalesced into a
+ * single animation frame, and progress is written straight to the DOM so no
+ * React state changes while scrolling.
+ *
+ * Under `prefers-reduced-motion` no frame is ever scheduled: the hook falls
+ * back to a cheap threshold check for release state only.
+ */
+export const useScrollStage = (
+  stageRef: RefObject<HTMLElement | null>,
+  { write, reset, onReleaseChange }: UseScrollStageOptions
+): ScrollStageState => {
   const [isReleased, setIsReleased] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(
     getReducedMotionPreference
   );
   const releaseStateRef = useRef(false);
-  const releaseCallbackRef = useRef(onReleaseChange);
+  const callbacksRef = useRef({ write, reset, onReleaseChange });
 
   useEffect(() => {
-    releaseCallbackRef.current = onReleaseChange;
-  }, [onReleaseChange]);
+    callbacksRef.current = { write, reset, onReleaseChange };
+  }, [onReleaseChange, reset, write]);
 
   useEffect(() => {
     if (typeof window.matchMedia !== 'function') {
@@ -72,12 +80,9 @@ export const useHeroProgress = (
   }, []);
 
   useEffect(() => {
-    const hero = heroRef.current;
-    const engraving = engravingRef.current;
-    const ascii = asciiRef.current;
-    const brandLine = brandLineRef.current;
+    const stage = stageRef.current;
 
-    if (!hero || !engraving || !ascii || !brandLine) {
+    if (!stage) {
       return undefined;
     }
 
@@ -85,18 +90,15 @@ export const useHeroProgress = (
       if (nextReleaseState !== releaseStateRef.current) {
         releaseStateRef.current = nextReleaseState;
         setIsReleased(nextReleaseState);
-        releaseCallbackRef.current?.(nextReleaseState);
+        callbacksRef.current.onReleaseChange?.(nextReleaseState);
       }
     };
 
     if (prefersReducedMotion) {
-      engraving.style.removeProperty('opacity');
-      ascii.style.removeProperty('opacity');
-      brandLine.style.removeProperty('opacity');
-      brandLine.style.removeProperty('transform');
+      callbacksRef.current.reset();
 
       const updateReducedMotionRelease = () => {
-        updateReleaseState(hero.getBoundingClientRect().bottom <= 1);
+        updateReleaseState(stage.getBoundingClientRect().bottom <= 1);
       };
       const initialThresholdCheck = window.setTimeout(
         updateReducedMotionRelease,
@@ -122,37 +124,11 @@ export const useHeroProgress = (
     const updateProgress = () => {
       animationFrame = null;
 
-      const bounds = hero.getBoundingClientRect();
+      const bounds = stage.getBoundingClientRect();
       const viewportHeight = Math.max(window.innerHeight, 1);
-      const scrollDistance = Math.max(hero.offsetHeight - viewportHeight, 1);
-      const progress = clampProgress(-bounds.top / scrollDistance);
-      const engravingEntrance = interpolateWindow(
-        progress,
-        0.35,
-        0.52,
-        0.64
-      );
-      const engravingExit =
-        0.64 * (1 - interpolateWindow(progress, 0.66, 0.86));
-      const engravingOpacity = Math.min(
-        engravingEntrance,
-        engravingExit
-      );
-      const asciiOpacity = interpolateWindow(
-        progress,
-        0.66,
-        0.86,
-        0.76
-      );
-      const brandProgress = interpolateWindow(progress, 0.88, 0.98);
+      const scrollDistance = Math.max(stage.offsetHeight - viewportHeight, 1);
 
-      engraving.style.opacity = formatStyleNumber(engravingOpacity);
-      ascii.style.opacity = formatStyleNumber(asciiOpacity);
-      brandLine.style.opacity = formatStyleNumber(brandProgress);
-      brandLine.style.transform = `translateY(${formatStyleNumber(
-        (1 - brandProgress) * 8
-      )}px)`;
-
+      callbacksRef.current.write(clampProgress(-bounds.top / scrollDistance));
       updateReleaseState(bounds.bottom <= viewportHeight + 1);
     };
 
@@ -178,13 +154,7 @@ export const useHeroProgress = (
         window.cancelAnimationFrame(animationFrame);
       }
     };
-  }, [
-    asciiRef,
-    brandLineRef,
-    engravingRef,
-    heroRef,
-    prefersReducedMotion,
-  ]);
+  }, [prefersReducedMotion, stageRef]);
 
   return {
     isReleased,
