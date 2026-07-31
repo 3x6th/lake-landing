@@ -241,3 +241,35 @@ expensive valid 3-second 16:9 video preflight was 4.5 credits, so no video job
 was submitted. This avoided a failed or paid-overage render. The hero component
 keeps media behind a replaceable layer so a future loop can be added without
 changing the content or accessibility structure.
+
+## Social preview card, 2026-07-31
+
+`public/media/social/og-cover.jpg` — 1200×630, 89KB.
+
+Composed from assets already in the repository, not generated. A link preview
+should look like the page it links to, and a new model call would have added a
+fourth asset to keep in step with the water for no gain.
+
+- Background: `public/media/hero/hero-water-desktop.webp`, the shipped hero
+  poster, `object-position: 62% 50%` so the card keeps the moss-green and amber
+  caustics that the hero leads with.
+- Scrim: the same two-axis wash as `.hero-water__scrim` — protect the type on
+  the left, leave the water its optical energy on the right.
+- Type: real Onest 300 and JetBrains Mono 500, the site's own faces, inlined as
+  base64 into a throwaway card so the render could not fall back to Arial.
+
+Rendered through the DevTools Protocol at 1200×630 with `deviceScaleFactor: 2`,
+then downsampled to 1200×630 so the wordmark stays crisp, and encoded at JPEG
+quality 88. `document.fonts.status` was asserted `loaded` and the water image
+asserted decoded before the capture, because a card that silently renders in a
+fallback face is worse than no card.
+
+The card carries two claims and both are authorized: "Java-first team
+extension" is `PRODUCT.md` § Positioning, and "one engineer or a small squad ·
+realistic start in 1–3 weeks" is `CONTENT-BRIEF.md` § Approved public proof.
+The word "realistic" is baked in deliberately — the claim is not authorized
+without it.
+
+It replaces `fishman.png` as `og:image`, which was 1536×1024, so every social
+scraper cropped it to an unintended composition, and 1.03MB fetched on every
+share.
