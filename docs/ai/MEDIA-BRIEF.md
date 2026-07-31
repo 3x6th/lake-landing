@@ -112,6 +112,27 @@ Same treatment, recomposed rather than cropped:
 The upper third stays softer because the headline sits there — but "softer"
 means gentler light, not black.
 
+## Making a clip that actually loops
+
+This matters more than any encoder setting. A clip whose last frame does not
+meet its first has to be rebuilt as a ping-pong — forward, then reversed — to
+hide the seam, and that doubles the running time, halving the bitrate available
+at any given file size. It is exactly what made the first pass look grainy: the
+same 2.3MB scored SSIM 0.861 as a ping-pong and 0.984 once the clip looped on
+its own.
+
+**Put the same image in `start_image` and `end_image`.** Kling accepts both.
+Forcing the clip to end where it began makes the seam exact by construction
+rather than by luck. Without it, a good take still lands around 36 PSNR at the
+seam; a bad one lands at 21 and visibly jumps.
+
+Sound can be left on. It is a 128 kbps track against 15 Mbps of video, under
+one percent of the file, and it is stripped before encoding anyway. It has no
+effect on picture quality.
+
+Send the clips as generated, at full size. Downscaling and compression happen
+here, where the seam can be measured first.
+
 ## 3. Hero loop — 16:9 and 9:16
 
 Start image: the accepted still from 1 and 2, so the poster-to-video handoff is
@@ -196,11 +217,13 @@ bands reading as the same clip shown twice.
 
 ### 4b. Interlude loops — steps 7 and 8
 
-**Video model. Output is an MP4.** Put the PNG from step 5 into the **start
-frame** field for `depth-01.mp4`, and the PNG from step 6 for `depth-02.mp4`.
-Same settings as the hero: 5s, sound off, camera locked. One prompt serves
-both — the difference between the two bands is already carried by their start
-frames.
+**Video model. Output is an MP4.** Put the PNG from step 5 into **both**
+`start_image` and `end_image` for `depth-01.mp4`, and the PNG from step 6 into
+both for `depth-02.mp4`. Same image in both fields is what makes the loop
+close; see the section above.
+
+Camera locked, 5s or 8s. One prompt serves both — the difference between the
+two bands is already carried by their start frames.
 
 > The water breathes. One very slow swell crosses the frame and the submerged
 > light shifts gently with it. Motion is continuous and unhurried so the clip
