@@ -24,7 +24,27 @@ interface AsciiSample {
 type AsciiStatus = 'loading' | 'ready' | 'failed';
 
 const ASCII_GLYPH_RAMP = ' .·:+*#@';
-const CROP_RATIO = 0.87;
+/*
+ * How much of the source width the interlude shows, measured from the left.
+ *
+ * The engraving is authored already framed — its ink runs from 3.7% to 96.6%
+ * of the width with even margins on all four sides — so it needs no crop. It
+ * was cropped to 0.87 once, which cut off the rod tip and the whole fishing
+ * line and left the fisherman holding a bare stick; both layers sampled from
+ * the same ratio, so the crossfade still registered and the loss was invisible
+ * in review.
+ *
+ * The constant stays because it is one third of a contract. Any re-crop has to
+ * move all three of these together or the engraving and its ASCII stop sitting
+ * on the same pixels through the crossfade:
+ *
+ *   1. this ratio
+ *   2. `.fisherman-art__viewport { aspect-ratio }`  = 1536 * ratio / 1024
+ *   3. `.fisherman-art__source { width }`           = 100% / ratio
+ */
+const CROP_RATIO = 1;
+/* The intrinsic aspect of /fishman.png: 1536 x 1024. */
+const SOURCE_ASPECT_RATIO = 1.5;
 const MOBILE_COLUMNS = 64;
 const DESKTOP_COLUMNS = 120;
 const MOBILE_QUERY = '(max-width: 699px)';
@@ -200,6 +220,11 @@ const sampleImage = (
     rows,
     rowHeight: viewBoxHeight / rows,
     viewBoxHeight,
+    /*
+     * The glyphs occupy columns 0..`columns`, which is the cropped region. The
+     * box is widened by the same ratio the stylesheet widens this <svg> by, so
+     * one glyph column keeps covering one column of the visible viewport.
+     */
     viewBoxWidth: columns / CROP_RATIO,
   };
 };
@@ -276,7 +301,14 @@ export const AsciiFisherman = ({
       viewBox={
         sample
           ? `0 0 ${sample.viewBoxWidth} ${sample.viewBoxHeight}`
-          : `0 0 ${columns / CROP_RATIO} ${columns / (1.5 * CROP_RATIO)}`
+          : /*
+             * Before the first sample lands, hold the same box the sample will
+             * produce: `croppedAspectRatio` is the source aspect times the
+             * crop, so this is that geometry stated ahead of the pixels.
+             */
+            `0 0 ${columns / CROP_RATIO} ${
+              columns / (SOURCE_ASPECT_RATIO * CROP_RATIO)
+            }`
       }
     >
       {sample?.glyphs.map(({ character, column, row }) => (
