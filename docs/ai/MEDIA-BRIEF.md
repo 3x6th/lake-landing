@@ -19,18 +19,27 @@ against `kling3_0`, `kling3_0_turbo`, `wan2_7` and `nano_banana_2`.
 Everything descends from the first still, so it is worth being fussy about
 that one and quick about the rest.
 
-| # | Generate | From | Keep? |
-| --- | --- | --- | --- |
-| 1 | Hero still 16:9 | prompt only | yes — `hero-water-desktop.webp` |
-| 2 | Hero still 9:16 | prompt, with 1 as reference | yes — `hero-water-mobile.webp` |
-| 3 | Hero loop desktop | **start frame: 1** | yes — `hero-water-desktop.mp4` |
-| 4 | Hero loop mobile | **start frame: 2** | yes — `hero-water-mobile.mp4` |
-| 5 | Interlude still A | prompt, with 1 as reference | no — working file |
-| 6 | Interlude still B | prompt, with 1 as reference | no — working file |
-| 7 | Interlude loop one | **start frame: 5** | yes — `depth-01.mp4` |
-| 8 | Interlude loop two | **start frame: 6** | yes — `depth-02.mp4` |
+Odd steps make images. Even steps turn an image into a video. Nothing here is
+generated text-to-video.
 
-Six files reach the repository; steps 5 and 6 exist only to feed 7 and 8.
+| # | Model | Output | Attach | Prompt | Keep? |
+| --- | --- | --- | --- | --- | --- |
+| 1 | image | PNG | — | §1 | yes → `hero-water-desktop.webp` |
+| 2 | image | PNG | 1 as **reference** | §2 | yes → `hero-water-mobile.webp` |
+| 3 | video | MP4 | 1 as **start frame** | §3 | yes → `hero-water-desktop.mp4` |
+| 4 | video | MP4 | 2 as **start frame** | §3 | yes → `hero-water-mobile.mp4` |
+| 5 | image | PNG | 1 as **reference** | §4a, first | no — working file |
+| 6 | image | PNG | 1 as **reference** | §4a, second | no — working file |
+| 7 | video | MP4 | 5 as **start frame** | §4b | yes → `depth-01.mp4` |
+| 8 | video | MP4 | 6 as **start frame** | §4b | yes → `depth-02.mp4` |
+
+"image" means a still model such as Nano Banana 2 or GPT Image 2. "video"
+means a clip model such as Kling 3.0.
+
+Six files reach the repository. Steps 5 and 6 produce images that are never
+committed — they exist only to give steps 7 and 8 a first frame, because a
+video model with no start frame invents its own water and the page ends up
+with three different lakes.
 
 If a still gets rejected at step 1, everything after it is wasted, so run the
 three checks below before moving on.
@@ -135,12 +144,14 @@ Note the two fields are not the same thing:
 - **Start frame**, on a video model — the clip literally begins on that exact
   frame. A hard constraint.
 
-### 4a. Interlude stills — intermediate only
+### 4a. Interlude stills — steps 5 and 6
 
-Generate with the **accepted hero 16:9 still attached as a reference image**.
-These are working files: they are start frames for the loops and are never
-committed. The bands render no poster, and a black band on a near-black page is
-invisible anyway.
+**Image model. Output is a PNG, not a clip.** Attach the accepted hero 16:9
+still as a **reference image** and run one of the two prompts below.
+
+Neither result is committed. Each one exists to become the start frame of its
+loop in 4b. The bands render no poster, and a black band on a near-black page
+is invisible anyway.
 
 Interlude one, cooler and dimmer:
 
@@ -161,10 +172,13 @@ Interlude two, warmer and closer:
 Making one green and one amber is what stops the two bands reading as the same
 clip shown twice.
 
-### 4b. Interlude loops
+### 4b. Interlude loops — steps 7 and 8
 
-Each interlude still becomes the **start frame** of its loop. Same settings as
-the hero: 5s, sound off, camera locked.
+**Video model. Output is an MP4.** Put the PNG from step 5 into the **start
+frame** field for `depth-01.mp4`, and the PNG from step 6 for `depth-02.mp4`.
+Same settings as the hero: 5s, sound off, camera locked. One prompt serves
+both — the difference between the two bands is already carried by their start
+frames.
 
 > The water breathes. One very slow swell crosses the frame and the submerged
 > light shifts gently with it. Motion is continuous and unhurried so the clip
