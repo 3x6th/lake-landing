@@ -321,3 +321,47 @@ local `dist/`. They were moved out before any build was published.
 This is the same trap recorded in CONTENT-BRIEF about `img.png`: **anything
 that must not be served cannot live in `public/`, and being unreferenced is not
 protection.** Incoming source material belongs in `private-assets/`.
+
+## depth-02 regenerated, 2026-07-31
+
+The shipped `depth-02.mp4` froze. Measured as the mean absolute difference
+against the previous frame, motion collapsed from 1.03 to 0.245 in a single
+frame at about t=6.79s and then decayed to 0.001, so the last ~1.25s of an 8s
+clip were a still image. On a looping band that reads as the page hanging.
+
+Nothing in the four SSIM and PSNR numbers already recorded here would have
+caught it: those measure encode fidelity and the loop seam, both of which were
+fine. A clip can be a faithful encode with a perfect seam and still stop
+moving. The owner caught it by watching the page.
+
+Replaced with a fresh generation from the Higgsfield web connector rather than
+repaired. Repair would have meant cutting the dead tail and hunting for a new
+loop point, which trades a frozen second for a visible jump every 8 seconds.
+
+```bash
+ffmpeg -i depth-02-loop-fix.mp4 -vf "scale=1280:-2,format=yuv420p" \
+  -c:v libx264 -crf 24 -preset slow \
+  -x264-params "aq-mode=3:aq-strength=1.1:psy-rd=1.0,0.15" \
+  -an -movflags +faststart depth-02.mp4
+```
+
+| | before | after |
+| --- | --- | --- |
+| size | 992KB | 1153KB |
+| duration | 8.04s | 8.04s |
+| resolution | 1280x714 | 1280x714 |
+| **min frame delta** | **0.001** | **0.233** |
+| max frame delta | — | 2.393 |
+| loop seam PSNR | 43.3 | 40.39 |
+
+161KB heavier and 2.9dB down on the seam, both accepted: the clip now moves for
+its whole length, and 40dB is still well clear of a visible cut. The band is
+proximity-gated so this is not first-load weight.
+
+**Add a motion floor to the checks for any future clip.** Encode fidelity and
+seam quality say nothing about whether the picture is still alive:
+
+```bash
+ffmpeg -i clip.mp4 -vf "tblend=all_mode=difference,signalstats,\
+metadata=print:key=lavfi.signalstats.YAVG:file=-" -f null -
+```
