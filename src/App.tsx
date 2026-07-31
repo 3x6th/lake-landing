@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import './App.css';
 import { ContentExperience } from './components/ContentExperience';
 import { HeroExperience } from './components/HeroExperience';
+import { IntroOverlay } from './components/IntroOverlay';
 import { useReveal } from './hooks/useReveal';
 import { useScrolledPast } from './hooks/useScrolledPast';
 import {
@@ -58,6 +59,8 @@ function App() {
 
   return (
     <div className="App" id="top">
+      <IntroOverlay />
+
       <header
         className={`top-nav ${hasScrolled ? 'top-nav--solid' : ''}`}
       >
