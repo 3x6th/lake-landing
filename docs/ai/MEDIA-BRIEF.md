@@ -14,6 +14,27 @@ blocked on this account for both video and images:
 `{"error_type":"free_trial_model_requires_plan","plan_type":"plus"}`, verified
 against `kling3_0`, `kling3_0_turbo`, `wan2_7` and `nano_banana_2`.
 
+## Order of work
+
+Everything descends from the first still, so it is worth being fussy about
+that one and quick about the rest.
+
+| # | Generate | From | Keep? |
+| --- | --- | --- | --- |
+| 1 | Hero still 16:9 | prompt only | yes — `hero-water-desktop.webp` |
+| 2 | Hero still 9:16 | prompt, with 1 as reference | yes — `hero-water-mobile.webp` |
+| 3 | Hero loop desktop | **start frame: 1** | yes — `hero-water-desktop.mp4` |
+| 4 | Hero loop mobile | **start frame: 2** | yes — `hero-water-mobile.mp4` |
+| 5 | Interlude still A | prompt, with 1 as reference | no — working file |
+| 6 | Interlude still B | prompt, with 1 as reference | no — working file |
+| 7 | Interlude loop one | **start frame: 5** | yes — `depth-01.mp4` |
+| 8 | Interlude loop two | **start frame: 6** | yes — `depth-02.mp4` |
+
+Six files reach the repository; steps 5 and 6 exist only to feed 7 and 8.
+
+If a still gets rejected at step 1, everything after it is wasted, so run the
+three checks below before moving on.
+
 ## The correction, in one line
 
 Lighter, closer, slower. The water is a **material that fills the frame**, not
@@ -100,15 +121,55 @@ Save as: `public/media/interlude/depth-01.mp4`,
 These sit between editorial sections and should be quieter than the hero, so
 the hero stays the loudest moment.
 
-> Extreme macro of the same dark lake surface, lens at the water, shallow depth
-> of field. Very slow smooth swells with submerged moss-green light diffusing
-> through them, dimmer and more even than a hero shot. Deep charcoal and
-> petrol-green midtones, fine film grain, editorial, restrained. Motion is slow
-> and continuous so the clip loops seamlessly. No people, no boat, no text, no
-> letters, no logo, no UI, no neon, no glossy CGI, no camera movement, no cuts.
+**These need a still first as well, and it is a two-step.** Text-to-video
+straight from a prompt would work, but each independent generation invents its
+own water — its own tint, grain and surface. Three separately generated clips
+read as three different lakes, and `REFERENCE-LOCK.md` asks for one continuous
+atmospheric world. So each interlude still is generated *from the accepted hero
+still*, and the loop is then generated from that.
 
-Make the second one warmer — amber rather than green — so the two do not read
-as the same clip twice.
+Note the two fields are not the same thing:
+
+- **Reference image**, on an image model — "make something like this". A soft
+  influence on style and subject.
+- **Start frame**, on a video model — the clip literally begins on that exact
+  frame. A hard constraint.
+
+### 4a. Interlude stills — intermediate only
+
+Generate with the **accepted hero 16:9 still attached as a reference image**.
+These are working files: they are start frames for the loops and are never
+committed. The bands render no poster, and a black band on a near-black page is
+invisible anyway.
+
+Interlude one, cooler and dimmer:
+
+> The same dark lake surface as the reference, same material, same grain, but
+> quieter: dimmer overall, cooler, the submerged light moss green rather than
+> amber, spread evenly instead of concentrated. Large slow smooth swells, no
+> choppy ripples. Deep charcoal and petrol-green midtones. No people, no boat,
+> no text, no letters, no logo, no UI, no neon, no glossy CGI, no lens flare.
+
+Interlude two, warmer and closer:
+
+> The same dark lake surface as the reference, same material, same grain, but
+> closer and warmer: the lens nearer the water, the submerged light burnt amber
+> rather than green, diffusing up from the lower edge. Large slow smooth
+> swells, no choppy ripples. Deep charcoal midtones. No people, no boat, no
+> text, no letters, no logo, no UI, no neon, no glossy CGI, no lens flare.
+
+Making one green and one amber is what stops the two bands reading as the same
+clip shown twice.
+
+### 4b. Interlude loops
+
+Each interlude still becomes the **start frame** of its loop. Same settings as
+the hero: 5s, sound off, camera locked.
+
+> The water breathes. One very slow swell crosses the frame and the submerged
+> light shifts gently with it. Motion is continuous and unhurried so the clip
+> loops seamlessly with no visible restart. Nothing else moves. No camera
+> movement, no zoom, no cuts, no new objects entering frame.
 
 ## After download
 
