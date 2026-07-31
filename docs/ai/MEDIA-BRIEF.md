@@ -36,6 +36,11 @@ generated text-to-video.
 "image" means a still model such as Nano Banana 2 or GPT Image 2. "video"
 means a clip model such as Kling 3.0.
 
+A **reference** carries the material across — same lake, different frame. It
+must not produce the hero shot again in another colour; three near-identical
+pictures down one page is worse than three unrelated ones. A **start frame**
+is the opposite: the clip begins on exactly that image, pixel for pixel.
+
 Six files reach the repository. Steps 5 and 6 produce images that are never
 committed — they exist only to give steps 7 and 8 a first frame, because a
 video model with no start frame invents its own water and the page ends up
@@ -153,24 +158,41 @@ Neither result is committed. Each one exists to become the start frame of its
 loop in 4b. The bands render no poster, and a black band on a near-black page
 is invisible anyway.
 
+**Same lake, different frame.** The reference is there to carry the material,
+the grain and the character of the swell — not the composition. A result that
+looks like the hero still with a colour filter over it is a failure: a visitor
+scrolls from the hero into the band and sees the same picture twice. Think of
+one shoot at one location, several exposures.
+
+These also have a freedom the hero does not: **no copy sits on them**, so
+nothing needs to stay quiet. The hero reserves a calm left column for the
+headline; a band can fill the whole frame however it likes.
+
 Interlude one, cooler and dimmer:
 
-> The same dark lake surface as the reference, same material, same grain, but
-> quieter: dimmer overall, cooler, the submerged light moss green rather than
-> amber, spread evenly instead of concentrated. Large slow smooth swells, no
-> choppy ripples. Deep charcoal and petrol-green midtones. No people, no boat,
-> no text, no letters, no logo, no UI, no neon, no glossy CGI, no lens flare.
+> A different stretch of the same dark lake surface as the reference — same
+> material, same grain, same character of swell, but a new composition, not
+> the same frame. Quieter and cooler: dimmer overall, the submerged light moss
+> green rather than amber, spread evenly across the frame instead of
+> concentrated to one side. Large slow smooth swells, no choppy ripples. Deep
+> charcoal and petrol-green midtones with a real range from shadow to
+> highlight. No reserved empty area — the composition fills the frame. No
+> people, no boat, no text, no letters, no logo, no UI, no neon, no glossy
+> CGI, no lens flare.
 
 Interlude two, warmer and closer:
 
-> The same dark lake surface as the reference, same material, same grain, but
-> closer and warmer: the lens nearer the water, the submerged light burnt amber
-> rather than green, diffusing up from the lower edge. Large slow smooth
-> swells, no choppy ripples. Deep charcoal midtones. No people, no boat, no
-> text, no letters, no logo, no UI, no neon, no glossy CGI, no lens flare.
+> A different stretch of the same dark lake surface as the reference — same
+> material, same grain, but the lens noticeably closer to the water and a new
+> composition, not the same frame. Warmer: the submerged light burnt amber
+> rather than green, diffusing up from the lower edge. One large slow swell
+> dominates. Deep charcoal midtones with a real range from shadow to
+> highlight. No reserved empty area — the composition fills the frame. No
+> people, no boat, no text, no letters, no logo, no UI, no neon, no glossy
+> CGI, no lens flare.
 
-Making one green and one amber is what stops the two bands reading as the same
-clip shown twice.
+One green and one amber, one wide and one close: that is what stops the two
+bands reading as the same clip shown twice.
 
 ### 4b. Interlude loops — steps 7 and 8
 
