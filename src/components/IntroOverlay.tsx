@@ -107,12 +107,19 @@ export const IntroOverlay = () => {
       return undefined;
     }
 
+    // Scroll must skip too. The curtain locks page scrolling while it plays,
+    // so without this a wheel or trackpad gesture — the likeliest first thing
+    // a visitor does — is the one input that does nothing.
     window.addEventListener('keydown', skip);
     window.addEventListener('pointerdown', skip);
+    window.addEventListener('wheel', skip, { passive: true });
+    window.addEventListener('touchmove', skip, { passive: true });
 
     return () => {
       window.removeEventListener('keydown', skip);
       window.removeEventListener('pointerdown', skip);
+      window.removeEventListener('wheel', skip);
+      window.removeEventListener('touchmove', skip);
     };
   }, [isEnabled, phase, skip]);
 
