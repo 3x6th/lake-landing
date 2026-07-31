@@ -136,6 +136,39 @@ a {
   }
 }
 
+/*
+ * The first focusable element on the page. Parked above the viewport instead
+ * of hidden, so it keeps its place in the tab order, and it returns over the
+ * fixed navigation rather than beside it — a keyboard visitor should not have
+ * to walk the whole nav before reaching the content.
+ */
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 70;
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  color: var(--ink);
+  background: var(--paper);
+  font-family: Onest, Arial, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  transform: translateY(calc(-100% - 1.5rem));
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  transform: none;
+}
+
 .top-nav {
   position: fixed;
   top: 0.75rem;
@@ -310,7 +343,6 @@ a {
   max-width: 1080px;
 }
 
-.section-label,
 .status-label,
 .knowledge-flow__marker,
 .process-step__number,
@@ -474,24 +506,30 @@ figcaption {
   transform: translateY(-52%);
 }
 
-/* Display scale comes from DESIGN.md. The Whispered Authority Rule grows type
-   through scale and negative space, never weight, so 350 stays. */
+/* The hero ramp is display -> lede -> body, in three steps rather than two.
+   The h1 is the DESIGN.md display token exactly. The offer below it is the
+   lede: with only the display and body rungs, the sentence that carries the
+   actual proposition landed 5.8x smaller than the wordmark and read as a
+   caption, against PRODUCT.md Principle 1 and DESIGN.md's first "Do", which
+   both require the offer legible in the first viewport. All three rungs grow
+   through scale, never weight — the Whispered Authority Rule — so 350 stays. */
 .hero-experience__copy h1 {
   margin: 0;
   color: var(--paper);
-  font-size: clamp(4.5rem, 12vw, 9.5rem);
+  font-size: clamp(3.8rem, 10vw, 9.5rem);
   font-weight: 350;
   letter-spacing: -0.055em;
   line-height: 0.86;
 }
 
 .hero-experience__offer {
-  max-width: 34rem;
+  max-width: 40rem;
   margin: 1.9rem 0 0;
   color: var(--paper);
-  font-size: clamp(1.15rem, 1.7vw, 1.65rem);
+  font-size: clamp(1.5rem, 2.4vw, 2.5rem);
   font-weight: 350;
-  line-height: 1.42;
+  letter-spacing: -0.015em;
+  line-height: 1.22;
 }
 
 .hero-experience__actions {
@@ -694,7 +732,7 @@ figcaption {
 .research-case__copy h3 {
   margin: 0;
   color: var(--paper);
-  font-size: clamp(1.25rem, 3vw, 2rem);
+  font-size: clamp(1.25rem, 2.8vw, 2rem);
   font-weight: 400;
   letter-spacing: -0.03em;
   line-height: 1.08;
@@ -957,10 +995,6 @@ figcaption {
   grid-template-columns: minmax(280px, 0.9fr) minmax(360px, 1.1fr);
 }
 
-.capability-section__statement .section-label {
-  margin-bottom: 1.5rem;
-}
-
 .capability-section__statement > p:last-child {
   margin-top: 2rem;
 }
@@ -1060,11 +1094,6 @@ figcaption {
   display: grid;
   gap: clamp(3.5rem, 8vw, 9rem);
   grid-template-columns: minmax(320px, 1.35fr) minmax(300px, 0.65fr);
-}
-
-.contact-section .section-label {
-  margin-bottom: 1.6rem;
-  color: var(--paper-muted);
 }
 
 .contact-section h2 {
@@ -1355,10 +1384,12 @@ figcaption {
     letter-spacing: -0.05em;
   }
 
+  /* The lede keeps its rung on phones, one step down from a 3.6rem headline
+     rather than the caption it used to be. 30ch holds the measure. */
   .hero-experience__offer {
     max-width: 30ch;
     margin-top: 1.3rem;
-    font-size: 1.1rem;
+    font-size: 1.3rem;
   }
 
   .hero-experience__actions {
