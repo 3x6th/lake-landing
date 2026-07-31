@@ -1,5 +1,7 @@
 import { CSSProperties } from 'react';
+import { interludeBands } from '../mediaConfig';
 import { createMailtoHref, Language, UiCopy } from '../siteContent';
+import { DepthBand } from './DepthBand';
 import { FishermanInterlude } from './FishermanInterlude';
 
 interface ContentExperienceProps {
@@ -119,6 +121,8 @@ export const ContentExperience = ({
       </div>
     </section>
 
+    <DepthBand source={interludeBands.afterWork} />
+
     <div className="research-band">
       <article className="content-shell research-case">
         <div className="research-case__copy" data-reveal>
@@ -221,6 +225,8 @@ export const ContentExperience = ({
         ))}
       </div>
     </section>
+
+    <DepthBand source={interludeBands.beforeContact} />
 
     <section id="contact" className="contact-section">
       <div className="content-shell contact-section__layout">

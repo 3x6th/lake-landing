@@ -354,6 +354,48 @@ figcaption {
     );
 }
 
+/*
+ * The loop sits above the poster and only becomes visible once it can play,
+ * so a missing or unsupported file leaves the still poster exactly as it was.
+ */
+.atmosphere-video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 900ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.atmosphere-video--playable {
+  opacity: 1;
+}
+
+.hero-water__video {
+  position: absolute;
+  inset: 0;
+  object-position: center;
+}
+
+/* The poster's drift is a stand-in for real motion; once the loop plays, the
+   video carries it and the still underneath should hold still. */
+.hero-experience:has(.atmosphere-video--playable) .hero-water__image {
+  animation: none;
+}
+
+.depth-band {
+  position: relative;
+  left: 50%;
+  width: 100vw;
+  height: clamp(38vh, 52vh, 70vh);
+  margin-left: -50vw;
+  overflow: hidden;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  background: var(--ink);
+}
+
 .hero-experience__copy {
   position: absolute;
   top: 50%;
@@ -696,12 +738,19 @@ figcaption {
   aspect-ratio: 1234 / 768;
 }
 
+/*
+ * The raw capture carries indigo product chrome, which made it the most
+ * saturated thing on a near-black mineral page and read as another brand.
+ * This is a tone treatment only — nothing in the interface is altered or
+ * hidden, the evidence still shows exactly what the product shows.
+ */
 .case-image-frame img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: top;
+  filter: saturate(0.62) contrast(1.03) brightness(0.96);
 }
 
 .taska-spread figcaption {
@@ -723,6 +772,14 @@ figcaption {
   display: grid;
   gap: clamp(3.5rem, 7vw, 7rem);
   grid-template-columns: minmax(280px, 0.8fr) minmax(520px, 1.6fr);
+}
+
+/* The statement is short and the flow beside it is tall, which left a dead
+   column at wide viewports. Letting it travel keeps the pair related. */
+.research-case__copy {
+  position: sticky;
+  top: 8rem;
+  align-self: start;
 }
 
 .research-case__copy .status-label {
@@ -1138,6 +1195,12 @@ figcaption {
   .faq-section,
   .contact-section__layout {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Single column: the statement now sits directly above the flow, so there
+     is no dead space for it to travel through. */
+  .research-case__copy {
+    position: static;
   }
 
   .taska-case__copy .status-label,

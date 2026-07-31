@@ -106,7 +106,26 @@ original fisherman pixels.
 
 - `public/media/hero/hero-water-desktop.webp` — 2752×1536 primary 16:9 poster
 - `public/media/hero/hero-water-4x3.webp` — 2048×1536 authored 4:3 crop
-- `public/media/hero/hero-water-mobile.webp` — 864×1536 authored 9:16 crop
+- `public/media/hero/hero-water-mobile.webp` — 864×1536 portrait crop
+
+### Portrait crop, re-cut 2026-07-31
+
+The original authored 9:16 export was near-black across its upper two thirds,
+with a trace of water only in the lower-right corner. It could not carry the
+mobile hero at any scrim setting.
+
+It was re-cut from the existing 2752×1536 master rather than regenerated, so
+no new model call was involved and provenance is unchanged:
+
+```bash
+dwebp hero-water-desktop.webp -o master.png
+ffmpeg -i master.png -vf "crop=864:1536:1250:0" mobile-crop.png
+cwebp -q 86 mobile-crop.png -o hero-water-mobile.webp
+```
+
+The x offset of 1250 centres the crop on the region holding the ripple line
+and the moss-green caustics, giving a quiet upper third for copy and optical
+energy in the lower third.
 
 Exports use WebP quality 86. The rejected fisherman-heavy WebPs, signal-field
 exports, and raw PNG

@@ -78,9 +78,25 @@ Save as: `public/media/interlude/depth-02.mp4`
 
 ## After download
 
-Drop the files at the paths above. Nothing else needs changing — the media
-layer already renders `<video>` over the WebP poster and falls back to the
-poster alone when a file is missing.
+Drop the files at the paths above, then fill the matching slot in
+`src/mediaConfig.ts` in the same commit:
+
+```ts
+export const heroVideoSources = {
+  desktop: '/media/hero/hero-water-desktop.mp4',
+  mobile: '/media/hero/hero-water-mobile.mp4',
+};
+
+export const interludeBands = {
+  afterWork: '/media/interlude/depth-01.mp4',
+  beforeContact: '/media/interlude/depth-02.mp4',
+};
+```
+
+Nothing else changes. The hero already renders the loop over its WebP poster
+and keeps the poster if the file cannot play; an unfilled band renders
+nothing at all. The slots exist so the page never requests a file that is not
+there.
 
 Then re-encode to keep each loop under the 2.5MB budget:
 

@@ -1,4 +1,6 @@
+import { heroVideoSources } from '../mediaConfig';
 import { Language, UiCopy } from '../siteContent';
+import { AtmosphereVideo } from './AtmosphereVideo';
 
 interface HeroExperienceProps {
   contactHref: string;
@@ -42,6 +44,12 @@ export const HeroExperience = ({
               fetchPriority="high"
             />
           </picture>
+          {heroVideoSources ? (
+            <AtmosphereVideo
+              className="hero-water__video"
+              sources={heroVideoSources}
+            />
+          ) : null}
           <div className="hero-water__scrim" />
         </div>
 
