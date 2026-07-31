@@ -151,7 +151,7 @@ describe('Ozero landing experience', () => {
 
     expect(
       screen.getByText(
-        'Реалистичный срок выхода Java-разработчика или небольшой продуктовой команды на проект — одна–три недели.'
+        'Подключаем Java-разработчика или небольшую продуктовую команду. Реалистичный срок — одна–три недели.'
       )
     ).toBeInTheDocument();
     expect(document.documentElement).toHaveAttribute('lang', 'ru');
