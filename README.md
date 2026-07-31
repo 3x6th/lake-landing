@@ -44,6 +44,11 @@ This site is built by a small set of agents with explicit, unequal rights, and
 that is deliberate: it is what keeps a generated page from quietly inventing
 claims about a real business.
 
+**[docs/ai/HARNESS.md](docs/ai/HARNESS.md) is the account of whether it
+worked** — including a reviewer overruling the orchestrator, a builder refusing
+an instruction and being right to, and three defects that shipped past a
+complete evidence matrix because the instrument could not see them.
+
 | Role | Writes | Owns |
 | --- | --- | --- |
 | Orchestrator | Repository, git, Jira, releases | Scope, sequencing, evidence |
