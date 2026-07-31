@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import './App.css';
 import { ContentExperience } from './components/ContentExperience';
 import { HeroExperience } from './components/HeroExperience';
+import { useReveal } from './hooks/useReveal';
 import { useScrolledPast } from './hooks/useScrolledPast';
 import {
   createMailtoHref,
@@ -32,6 +33,9 @@ function App() {
   );
   const hasScrolled = useScrolledPast(NAV_SCRIM_THRESHOLD);
   const mobileNavigationRef = useRef<HTMLDetailsElement>(null);
+
+  useReveal();
+
   const content = uiCopy[language];
   const navigationItems = [
     { href: '#offers', label: content.nav.offers },
