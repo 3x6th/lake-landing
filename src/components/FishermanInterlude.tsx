@@ -1,4 +1,5 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
+import { useNearViewport } from '../hooks/useNearViewport';
 import {
   formatStyleNumber,
   interpolateWindow,
@@ -26,6 +27,15 @@ export const FishermanInterlude = ({
   const engravingRef = useRef<HTMLImageElement>(null);
   const asciiRef = useRef<SVGSVGElement>(null);
   const brandLineRef = useRef<HTMLParagraphElement>(null);
+  /*
+   * AsciiFisherman fetches the megabyte engraving itself, in JS, to sample its
+   * pixels — `loading="lazy"` on the <img> below cannot defer that, because
+   * the script request happens first and the image then just hits cache. So
+   * the sampler is not mounted until this passage is close. The section, the
+   * stage and the layout are unchanged either way, so the scroll stage still
+   * measures the same 200vh of travel from first paint.
+   */
+  const [artRef, isNearViewport] = useNearViewport<HTMLDivElement>();
 
   const write = useCallback((progress: number) => {
     const engraving = engravingRef.current;
@@ -70,6 +80,21 @@ export const FishermanInterlude = ({
     write,
   });
 
+  useEffect(() => {
+    if (!isNearViewport) {
+      return;
+    }
+
+    /*
+     * `write` bails out while the ASCII layer is absent, and the stage only
+     * takes a new reading on scroll or resize. That is fine when the layer
+     * arrives during a scroll, but not when a reload restores the visitor
+     * mid-passage: the layer would then wait for the next scroll event to be
+     * given its opacity. One synthetic read settles it.
+     */
+    window.dispatchEvent(new Event('scroll'));
+  }, [isNearViewport]);
+
   const classes = [
     'fisherman-interlude',
     prefersReducedMotion ? 'fisherman-interlude--reduced' : '',
@@ -80,7 +105,7 @@ export const FishermanInterlude = ({
   return (
     <section ref={stageRef} className={classes}>
       <div className="fisherman-interlude__stage">
-        <div className="fisherman-art" aria-hidden="true">
+        <div className="fisherman-art" aria-hidden="true" ref={artRef}>
           <div className="fisherman-art__viewport">
             <img
               ref={engravingRef}
@@ -90,10 +115,12 @@ export const FishermanInterlude = ({
               loading="lazy"
               decoding="async"
             />
-            <AsciiFisherman
-              elementRef={asciiRef}
-              className="fisherman-art__layer fisherman-art__source fisherman-art__ascii"
-            />
+            {isNearViewport ? (
+              <AsciiFisherman
+                elementRef={asciiRef}
+                className="fisherman-art__layer fisherman-art__source fisherman-art__ascii"
+              />
+            ) : null}
           </div>
         </div>
 
