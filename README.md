@@ -33,7 +33,7 @@ npm install
 | `src/siteContent.ts` | All copy, both locales. `Record<Language, UiCopy>` makes a missing translation a compile error |
 | `src/components/` | Hero, the fisherman interlude, and the content sections |
 | `src/hooks/` | Scroll-stage driver, reveal observer, nav scroll flag |
-| `src/mediaConfig.ts` | Atmosphere loop slots; see `docs/ai/VIDEO-BRIEF.md` |
+| `src/mediaConfig.ts` | Atmosphere loop slots; see `docs/ai/MEDIA-BRIEF.md` |
 | `public/` | Everything here is published — never put private material in it |
 | `private-assets/` | Untracked source material that must not be served |
 | `docs/ai/` | Product, design and delivery documents, plus review records |

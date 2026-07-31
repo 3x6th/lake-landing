@@ -78,7 +78,8 @@ It must never become a large literal fishing scene or the dominant sales image.
 
 **Key Characteristics:**
 
-- Near-black water as a material field, not a generic dark-mode background.
+- Water as a material field that fills the frame, not a generic dark-mode
+  background and not a highlight in the corner of a black rectangle.
 - White editorial type with extremely restrained lake-green and ember light.
 - Sharp content geometry paired with full-pill actions.
 - One cinematic motion system; quiet, readable sections around it.
@@ -88,6 +89,14 @@ It must never become a large literal fishing scene or the dominant sales image.
 
 The interface is neutral and mineral; chroma belongs primarily to light moving
 inside hero media.
+
+**Amended 2026-07-31.** "Near-black" was read literally and produced a hero
+that is mostly empty black with the material pushed into one corner. The
+interface stays near-black; the *water* does not. Hero media carries a real
+range from shadow to highlight, with submerged green and amber light present
+across the whole frame. Neither reference behaves otherwise: monopo fills the
+frame with light and sets white type on top of it, and XData keeps its liquid
+dark but gives it form and speculars. See `docs/ai/MEDIA-BRIEF.md`.
 
 ### Primary
 

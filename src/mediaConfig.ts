@@ -1,5 +1,5 @@
 /**
- * Atmospheric loops. See docs/ai/VIDEO-BRIEF.md for the prompts, settings and
+ * Atmospheric loops. See docs/ai/MEDIA-BRIEF.md for the prompts, settings and
  * exact filenames these are generated with.
  *
  * Every slot stays `null` until its file exists, and is filled in the same
