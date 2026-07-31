@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { Language } from '../siteContent';
 
 const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
 const REVEAL_SELECTOR = '[data-reveal]';
@@ -21,8 +22,13 @@ const FAILSAFE_DELAY = 2000;
  *
  * Under `prefers-reduced-motion` no observer is created at all; the elements
  * are marked revealed immediately and CSS drops the transition.
+ *
+ * Takes `language` because switching locale remounts most targets: list keys
+ * are content-based, so React replaces those DOM nodes with fresh ones that
+ * carry no `is-revealed` class. Without re-running here, CSS would hold every
+ * replacement at opacity 0 for good.
  */
-export const useReveal = () => {
+export const useReveal = (language: Language) => {
   useEffect(() => {
     const targets = Array.from(
       document.querySelectorAll(REVEAL_SELECTOR)
@@ -79,5 +85,5 @@ export const useReveal = () => {
       window.clearTimeout(failsafe);
       observer.disconnect();
     };
-  }, []);
+  }, [language]);
 };

@@ -124,6 +124,26 @@ describe('Ozero landing experience', () => {
     expect(window.localStorage.getItem(LANGUAGE_STORAGE_KEY)).toBe('ru');
   });
 
+  it('leaves no revealed block hidden after a language switch', async () => {
+    const user = userEvent.setup();
+    const { container } = render(<App />);
+
+    // List keys are content-based, so switching locale remounts most
+    // [data-reveal] nodes. Whatever marks them revealed has to run again for
+    // the replacements, otherwise CSS holds them at opacity 0 permanently.
+    expect(
+      container.querySelectorAll('[data-reveal]:not(.is-revealed)')
+    ).toHaveLength(0);
+
+    await user.click(screen.getByRole('button', { name: 'RU' }));
+
+    const stillHidden = Array.from(
+      container.querySelectorAll('[data-reveal]:not(.is-revealed)')
+    ).map((node) => node.className || node.tagName);
+
+    expect(stillHidden).toEqual([]);
+  });
+
   it('restores a previously selected locale', () => {
     window.localStorage.setItem(LANGUAGE_STORAGE_KEY, 'ru');
 
@@ -131,7 +151,7 @@ describe('Ozero landing experience', () => {
 
     expect(
       screen.getByText(
-        'Реалистичный срок подключения Java-разработчика или сфокусированной продуктовой команды — одна–три недели.'
+        'Реалистичный срок выхода Java-разработчика или небольшой продуктовой команды на проект — одна–три недели.'
       )
     ).toBeInTheDocument();
     expect(document.documentElement).toHaveAttribute('lang', 'ru');

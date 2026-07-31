@@ -35,7 +35,7 @@ function App() {
   const hasScrolled = useScrolledPast(NAV_SCRIM_THRESHOLD);
   const mobileNavigationRef = useRef<HTMLDetailsElement>(null);
 
-  useReveal();
+  useReveal(language);
 
   const content = uiCopy[language];
   const navigationItems = [
@@ -60,6 +60,10 @@ function App() {
   return (
     <div className="App" id="top">
       <IntroOverlay />
+
+      <a className="skip-link" href="#main">
+        {content.skipToContent}
+      </a>
 
       <header
         className={`top-nav ${hasScrolled ? 'top-nav--solid' : ''}`}
@@ -115,7 +119,7 @@ function App() {
         </div>
       </header>
 
-      <main className="page-content">
+      <main className="page-content" id="main" tabIndex={-1}>
         <HeroExperience
           contactHref={createMailtoHref(content.contact.subject)}
           content={content.hero}

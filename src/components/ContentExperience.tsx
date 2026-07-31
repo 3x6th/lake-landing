@@ -39,7 +39,6 @@ export const ContentExperience = ({
 
     <section id="offers" className="content-section content-shell">
       <header className="section-heading section-heading--wide" data-reveal>
-        <p className="section-label">{content.offers.label}</p>
         <h2>{content.offers.title}</h2>
         <p>{content.offers.introduction}</p>
       </header>
@@ -76,7 +75,6 @@ export const ContentExperience = ({
     <section id="work" className="content-section work-section">
       <div className="content-shell">
         <header className="section-heading section-heading--wide" data-reveal>
-          <p className="section-label">{content.work.label}</p>
           <h2>{content.work.title}</h2>
           <p>{content.work.introduction}</p>
         </header>
@@ -161,7 +159,6 @@ export const ContentExperience = ({
 
     <section id="process" className="content-section content-shell">
       <header className="section-heading" data-reveal>
-        <p className="section-label">{content.process.label}</p>
         <h2>{content.process.title}</h2>
         <p>{content.process.introduction}</p>
       </header>
@@ -186,7 +183,6 @@ export const ContentExperience = ({
 
     <section className="capability-section content-shell">
       <div className="capability-section__statement" data-reveal>
-        <p className="section-label">{content.capability.label}</p>
         <h2>{content.capability.title}</h2>
         <p>{content.capability.description}</p>
       </div>
@@ -202,7 +198,6 @@ export const ContentExperience = ({
 
     <section id="faq" className="content-section faq-section content-shell">
       <header className="section-heading" data-reveal>
-        <p className="section-label">{content.faq.label}</p>
         <h2>{content.faq.title}</h2>
       </header>
 
@@ -212,6 +207,7 @@ export const ContentExperience = ({
             className="faq-item"
             key={item.question}
             data-reveal
+            open={index === 0}
             style={revealOrder(index)}
           >
             <summary>
@@ -231,7 +227,6 @@ export const ContentExperience = ({
     <section id="contact" className="contact-section">
       <div className="content-shell contact-section__layout">
         <div className="contact-section__copy" data-reveal>
-          <p className="section-label">{content.contact.label}</p>
           <h2>{content.contact.title}</h2>
           <p>{content.contact.description}</p>
           <a

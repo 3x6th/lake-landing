@@ -1,9 +1,10 @@
 import { render } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { Language } from '../siteContent';
 import { useReveal } from './useReveal';
 
-const RevealHarness = () => {
-  useReveal();
+const RevealHarness = ({ language = 'en' }: { language?: Language }) => {
+  useReveal(language);
 
   return (
     <div>

@@ -56,7 +56,6 @@ interface AiCaseContent {
 }
 
 interface WorkContent {
-  label: string;
   title: string;
   introduction: string;
   taska: TaskaContent;
@@ -69,14 +68,12 @@ interface ProcessStep {
 }
 
 interface ProcessContent {
-  label: string;
   title: string;
   introduction: string;
   steps: ProcessStep[];
 }
 
 interface CapabilityContent {
-  label: string;
   title: string;
   description: string;
   facts: string[];
@@ -89,13 +86,11 @@ interface FaqItem {
 }
 
 interface FaqContent {
-  label: string;
   title: string;
   items: FaqItem[];
 }
 
 interface ContactContent {
-  label: string;
   title: string;
   description: string;
   includeLabel: string;
@@ -117,11 +112,11 @@ export interface UiCopy {
   nav: NavigationLabels;
   navAriaLabel: string;
   languageSwitcherAriaLabel: string;
+  skipToContent: string;
   hero: HeroContent;
   proofAriaLabel: string;
   proof: ProofFact[];
   offers: {
-    label: string;
     title: string;
     introduction: string;
     items: OfferItem[];
@@ -152,6 +147,7 @@ export const uiCopy: Record<Language, UiCopy> = {
     },
     navAriaLabel: 'Site navigation',
     languageSwitcherAriaLabel: 'Language switcher',
+    skipToContent: 'Skip to content',
     hero: {
       headline: 'ozero.dev',
       tagline: 'lake of developers',
@@ -180,7 +176,6 @@ export const uiCopy: Record<Language, UiCopy> = {
       },
     ],
     offers: {
-      label: 'Ways to work',
       title: 'Engineering capacity shaped around the work.',
       introduction:
         'Start with one experienced engineer, assemble a focused squad, or hand over a defined delivery scope.',
@@ -224,7 +219,6 @@ export const uiCopy: Record<Language, UiCopy> = {
       ],
     },
     work: {
-      label: 'Selected work',
       title: 'Current product work, shown as it is.',
       introduction:
         'No fictional client logos or inflated outcome metrics — only real product directions and their current status.',
@@ -232,7 +226,7 @@ export const uiCopy: Record<Language, UiCopy> = {
         status: 'IN DEVELOPMENT',
         title: 'Taska — work management for product teams',
         description:
-          'A Jira- and Kanban-like product with project workspaces, issue boards, roles, workflows, and notifications. The interface and product decisions are still evolving.',
+          'A Jira- and Kanban-like work-management product with project workspaces and issue boards. The interface and product decisions are still evolving.',
         note:
           'This is an active development project, not a completed customer case.',
         boardAlt:
@@ -271,7 +265,6 @@ export const uiCopy: Record<Language, UiCopy> = {
       },
     },
     process: {
-      label: 'How we start',
       title: 'A short path from the first email to useful work.',
       introduction:
         'The process stays small on purpose: enough structure to establish fit, without unnecessary procurement overhead.',
@@ -299,21 +292,19 @@ export const uiCopy: Record<Language, UiCopy> = {
       ],
     },
     capability: {
-      label: 'Delivery capability',
       title: 'A compact network with experienced support available.',
       description:
-        'Ozero maintains a curated network of trusted specialists around Java-heavy product work. Experienced onboarding, technical oversight, mentoring, and architecture support are available when the engagement needs them.',
+        'Ozero maintains a curated network of engineers around Java-heavy product work. Experienced onboarding, technical oversight, mentoring, and architecture support are available when the engagement needs them.',
       facts: [
-        'Both principals have more than six years of engineering experience',
+        'Each principal has more than six years of engineering experience',
         'Network engineers average about three years of development experience',
-        'Java, full-stack, and project-management capability',
+        'The network covers Java, full-stack, and project-management work',
         'An English-speaking subset is available; language fit is confirmed during matching',
       ],
       note:
         'Engagements are available across Europe and the CIS. DevOps and observability support can be included where the delivery scope requires it.',
     },
     faq: {
-      label: 'Before we talk',
       title: 'Practical questions, answered plainly.',
       items: [
         {
@@ -334,7 +325,7 @@ export const uiCopy: Record<Language, UiCopy> = {
         {
           question: 'What experience and language coverage is available?',
           answer:
-            'Both principals have more than six years of engineering experience, while network engineers average about three years. Part of the network can work in English; language fit is confirmed during matching.',
+            'Each principal has more than six years of engineering experience, while network engineers average about three years. Part of the network can work in English; language fit is confirmed during matching.',
         },
         {
           question: 'Do you work beyond team extension?',
@@ -349,7 +340,6 @@ export const uiCopy: Record<Language, UiCopy> = {
       ],
     },
     contact: {
-      label: 'Start here',
       title: 'Tell us what needs to move.',
       description:
         'A short email is enough. We will reply with the questions needed to establish fit and a realistic start.',
@@ -384,15 +374,16 @@ export const uiCopy: Record<Language, UiCopy> = {
     },
     navAriaLabel: 'Навигация по сайту',
     languageSwitcherAriaLabel: 'Выбор языка',
+    skipToContent: 'Перейти к содержимому',
     hero: {
       headline: 'ozero.dev',
       tagline: 'озеро разработчиков',
       valueProposition:
-        'Реалистичный срок подключения Java-разработчика или сфокусированной продуктовой команды — одна–три недели.',
-      primaryCta: 'Начать разговор',
+        'Реалистичный срок выхода Java-разработчика или небольшой продуктовой команды на проект — одна–три недели.',
+      primaryCta: 'Обсудить задачу',
       secondaryCta: 'Посмотреть проекты',
     },
-    proofAriaLabel: 'Факты о работе',
+    proofAriaLabel: 'Факты о сотрудничестве',
     proof: [
       {
         value: '≈30',
@@ -400,7 +391,7 @@ export const uiCopy: Record<Language, UiCopy> = {
       },
       {
         value: '1–3 недели',
-        label: 'до реалистичного сфокусированного старта после подтверждения fit',
+        label: 'реалистичный срок старта после согласования формата и состава',
       },
       {
         value: '1 специалист',
@@ -412,18 +403,17 @@ export const uiCopy: Record<Language, UiCopy> = {
       },
     ],
     offers: {
-      label: 'Форматы работы',
-      title: 'Инженерный ресурс под реальную задачу.',
+      title: 'Инженерный ресурс под конкретную задачу.',
       introduction:
-        'Начните с одного опытного разработчика, соберите небольшую команду или передайте нам очерченный объём разработки.',
+        'Начните с одного опытного разработчика, соберите небольшую команду или передайте нам отдельный, заранее согласованный объём работ.',
       items: [
         {
           title: 'Усиление команды',
           summary:
             'Java-разработчик или небольшая кросс-функциональная команда в дополнение к вашей.',
           details: [
-            'Roadmap и приоритеты остаются у вас',
-            'Опционально — онбординг и технический контроль',
+            'Продуктовый план и приоритеты остаются у вас',
+            'При необходимости — онбординг и технический контроль',
             'Архитектура, менторинг и замена специалиста при необходимости',
           ],
           cta: 'Обсудить усиление команды',
@@ -432,19 +422,19 @@ export const uiCopy: Record<Language, UiCopy> = {
         {
           title: 'Управляемая разработка',
           summary:
-            'Сфокусированная команда для поставки заранее согласованного продуктового или инженерного объёма.',
+            'Собираем небольшую команду под заранее согласованный продуктовый или инженерный объём работ.',
           details: [
-            'Discovery и уточнение объёма',
+            'Исследование задачи и уточнение объёма работ',
             'Архитектура и реализация',
-            'Поддержка поставки с понятными зонами ответственности',
+            'Сопровождение разработки с понятными зонами ответственности',
           ],
           cta: 'Обсудить управляемую разработку',
           subject: 'Ozero Dev — управляемая разработка',
         },
         {
-          title: 'AI и knowledge-интеграции',
+          title: 'AI и интеграции знаний',
           summary:
-            'Превращаем конкретную задачу работы со знаниями в полезный интерфейс или сервис.',
+            'Превращаем конкретную задачу по работе со знаниями в интерфейс ассистента или сервис.',
           details: [
             'Карта источников знаний',
             'Поиск контекста и контролируемая генерация',
@@ -456,30 +446,29 @@ export const uiCopy: Record<Language, UiCopy> = {
       ],
     },
     work: {
-      label: 'Избранные проекты',
-      title: 'Текущая продуктовая работа без приукрашиваний.',
+      title: 'Текущая продуктовая работа — как есть.',
       introduction:
-        'Без выдуманных логотипов клиентов и метрик результата — только реальные направления и их честный статус.',
+        'Без выдуманных логотипов клиентов и раздутых метрик — только реальные продуктовые направления и их текущий статус.',
       taska: {
         status: 'В РАЗРАБОТКЕ',
         title: 'Taska — управление работой продуктовых команд',
         description:
-          'Продукт по типу Jira и Kanban с рабочими пространствами, досками задач, ролями, workflow и уведомлениями. Интерфейс и продуктовые решения продолжают развиваться.',
+          'Продукт в духе Jira и Kanban с рабочими пространствами проектов и досками задач. Интерфейс и продуктовые решения продолжают развиваться.',
         note:
           'Это активная разработка, а не завершённый клиентский кейс.',
         boardAlt:
-          'Тёмная Kanban-доска Taska с колонками К выполнению, В работе и Готово',
+          'Тёмная Kanban-доска Taska с колонками To Do, In Progress и Done',
         projectsAlt:
-          'Обзор Taska с тремя рабочими пространствами проектов',
+          'Экран проектов Taska с тремя рабочими пространствами',
         boardCaption: 'Доска задач — текущий интерфейс продукта',
         projectsCaption: 'Рабочие пространства — дополнительный экран',
       },
       ai: {
         status: 'ВНУТРЕННИЙ R&D · АНОНИМИЗИРОВАНО',
-        title: 'Knowledge-ассистент для ответов в контексте проекта',
+        title: 'Ассистент по базе знаний для ответов в контексте проекта',
         description:
-          'Внутреннее исследовательское направление по подключению ассистентских интерфейсов к выбранным источникам знаний. Детали проекта и данных анонимизированы.',
-        flowAriaLabel: 'Схема работы knowledge-ассистента',
+          'Внутреннее исследовательское направление: подключаем интерфейс ассистента к выбранным источникам знаний. Детали проекта и данных анонимизированы.',
+        flowAriaLabel: 'Схема работы ассистента по базе знаний',
         steps: [
           {
             title: 'Библиотека источников',
@@ -487,7 +476,7 @@ export const uiCopy: Record<Language, UiCopy> = {
           },
           {
             title: 'Поиск контекста',
-            detail: 'Определяется релевантная информация',
+            detail: 'Определяется релевантный контекст',
           },
           {
             title: 'Контролируемая генерация',
@@ -495,18 +484,17 @@ export const uiCopy: Record<Language, UiCopy> = {
           },
           {
             title: 'Ответ с источниками',
-            detail: 'Доказательства остаются видимыми',
+            detail: 'В ответе видно, на чём он основан',
           },
         ],
         note:
-          'Схема показывает рабочую концепцию без раскрытия приватных экранов, поставщиков или данных.',
+          'Схема показывает рабочую концепцию и не раскрывает закрытые экраны, поставщиков моделей и данные.',
       },
     },
     process: {
-      label: 'Как начинаем',
       title: 'Короткий путь от первого письма до полезной работы.',
       introduction:
-        'Процесс намеренно компактный: достаточно структуры, чтобы подтвердить fit, без лишней бюрократии на старте.',
+        'Процесс намеренно простой: достаточно структуры, чтобы понять, подходим ли мы друг другу, и без долгих закупочных процедур.',
       steps: [
         {
           title: 'Вводные',
@@ -514,64 +502,62 @@ export const uiCopy: Record<Language, UiCopy> = {
             'Опишите роль или объём работ, контекст продукта, желаемую дату старта и рабочий язык.',
         },
         {
-          title: 'Соответствие',
+          title: 'Подбор',
           description:
-            'Согласуем формат работы, зоны ответственности, доступность и языковой fit.',
+            'Согласуем формат работы, зоны ответственности, доступность и владение нужным языком.',
         },
         {
           title: 'Старт',
           description:
-            'Реалистичный срок начала сфокусированной работы — от одной до трёх недель. Минимальный срок — один месяц.',
+            'Реалистичный срок выхода на проект — от одной до трёх недель. Минимальный срок сотрудничества — один месяц.',
         },
         {
           title: 'Работа',
           description:
-            'При усилении команды roadmap остаётся у клиента. Ozero может добавить онбординг, технический контроль или поддержку поставки.',
+            'При усилении команды продуктовый план остаётся у вас. Ozero может добавить онбординг, технический контроль или сопровождение разработки.',
         },
       ],
     },
     capability: {
-      label: 'Возможности',
-      title: 'Компактная сеть с доступной поддержкой опытных специалистов.',
+      title: 'Компактная сеть и опытная поддержка, когда она нужна.',
       description:
-        'Ozero поддерживает отобранную сеть проверенных специалистов вокруг Java-ориентированной продуктовой разработки. При необходимости доступны помощь с онбордингом, технический контроль, менторинг и архитектурная поддержка.',
+        'Ozero поддерживает отобранную сеть специалистов для Java-ориентированной продуктовой разработки. При необходимости доступны опытная помощь с онбордингом, технический контроль, менторинг и архитектурная поддержка.',
       facts: [
-        'У обоих руководителей более шести лет инженерного опыта',
-        'Средний опыт специалистов сети — около трёх лет разработки',
-        'Компетенции в Java, full-stack-разработке и управлении проектами',
-        'Часть специалистов работает на английском; языковой fit подтверждается при подборе',
+        'У каждого из двух руководителей — более шести лет инженерного опыта',
+        'Средний опыт разработчиков в сети — около трёх лет',
+        'Сеть закрывает Java, full-stack-разработку и управление проектами',
+        'Часть специалистов работает на английском; владение языком подтверждаем на этапе подбора',
       ],
       note:
-        'Работаем с Европой и СНГ. DevOps и observability могут входить в поддержку, когда этого требует объём поставки.',
+        'Работаем с компаниями из Европы и СНГ. DevOps и observability подключаем, когда этого требует объём работ.',
     },
     faq: {
-      label: 'До разговора',
       title: 'Практические вопросы — прямые ответы.',
       items: [
         {
           question: 'Можно начать с одного специалиста?',
           answer:
-            'Да. Сотрудничество может начаться с одного разработчика и вырасти до сфокусированной команды, если увеличится объём.',
+            'Да. Начать можно с одного разработчика и вырасти до небольшой команды, если объём работ увеличится.',
         },
         {
           question: 'Как быстро можно начать?',
           answer:
-            'После подтверждения fit и доступности реалистичный срок начала сфокусированной работы — от одной до трёх недель. Минимальный срок сотрудничества — один месяц.',
+            'Реалистичный срок выхода разработчика или небольшой команды — от одной до трёх недель после того, как согласованы формат работы и доступность. Минимальный срок сотрудничества — один месяц.',
         },
         {
-          question: 'Кто отвечает за roadmap и приоритеты?',
+          question: 'Кто отвечает за продуктовый план и приоритеты?',
           answer:
-            'В формате усиления команды roadmap и приоритеты остаются у клиента. По договорённости Ozero может добавить онбординг, технический контроль, менторинг, архитектурную поддержку или замену специалиста.',
+            'В формате усиления команды продуктовый план и приоритеты остаются у клиента. По договорённости Ozero может добавить онбординг, технический контроль, менторинг, архитектурную поддержку или замену специалиста.',
         },
         {
-          question: 'Какой опыт и языковая поддержка доступны?',
+          question: 'Какой опыт у команды и на каких языках вы работаете?',
           answer:
-            'У обоих руководителей более шести лет инженерного опыта, средний опыт специалистов сети — около трёх лет. Часть сети может работать на английском; языковой fit подтверждаем при подборе.',
+            'У каждого из двух руководителей более шести лет инженерного опыта, средний опыт разработчиков в сети — около трёх лет. Часть сети может работать на английском; владение языком подтверждаем на этапе подбора.',
         },
         {
-          question: 'Вы работаете только как team extension?',
+          question: 'Вы работаете только в формате усиления команды?',
           answer:
-            'Нет. Ozero также выполняет управляемую поставку согласованного продуктового объёма и создаёт AI или knowledge-интеграции под конкретную задачу.',
+            'Нет. Ozero также берёт на себя управляемую разработку согласованного объёма и делает интеграции AI и знаний под конкретную задачу.',
         },
         {
           question: 'Что написать в первом письме?',
@@ -581,28 +567,27 @@ export const uiCopy: Record<Language, UiCopy> = {
       ],
     },
     contact: {
-      label: 'Начать здесь',
       title: 'Расскажите, что нужно сдвинуть с места.',
       description:
-        'Достаточно короткого письма. Мы ответим вопросами, которые помогут подтвердить fit и реалистичный срок старта.',
+        'Достаточно короткого письма. В ответ зададим вопросы, которые помогут понять формат работы и реалистичный срок старта.',
       includeLabel: 'Полезно указать',
       includeItems: [
-        'Роль или объём поставки',
+        'Роль или объём работ',
         'Контекст продукта и команды',
-        'Желаемую дату старта',
+        'Желаемая дата старта',
         'Рабочий язык',
       ],
       primaryCta: 'Написать Ozero',
       subject: 'Ozero Dev — запрос по проекту',
       emailAriaLabel: `Отправить запрос по проекту на ${CONTACT_EMAIL}`,
       privacyNote:
-        'Без формы и сбора данных посетителя. Письмо откроется в вашем почтовом приложении.',
+        'Никаких форм и сбора данных о посетителях. Письмо откроется в вашем почтовом приложении.',
     },
     footer: {
       statement: 'Ozero Dev · Java-ориентированный инженерный ресурс',
       careersLabel: 'Знакомство на будущее',
       careersSubject: 'Ozero Dev — знакомство на будущее',
-      careersAriaLabel: `Отправить письмо для знакомства на ${CONTACT_EMAIL}`,
+      careersAriaLabel: `Написать на ${CONTACT_EMAIL} для знакомства на будущее`,
     },
   },
 };
