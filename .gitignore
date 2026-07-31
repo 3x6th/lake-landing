@@ -61,3 +61,12 @@ yarn-error.log*
 # Capture aids must never be servable from public/.
 /public/__seed.html
 /public/__og-card.html
+
+# Third-party skills, vendored on disk but restorable from skills-lock.json the
+# same way node_modules is restorable from package-lock.json. 81 files of
+# unrelated tooling — game generation, 3D rigging, marketplace cards — do not
+# belong in a landing-page repository's history.
+/.agents/skills/
+
+# Machine-local permission allowlist, not project configuration.
+.claude/settings.local.json
