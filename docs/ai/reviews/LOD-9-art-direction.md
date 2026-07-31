@@ -62,12 +62,24 @@ its location changes.
 scrolls through a transparent fixed navbar. Evidence:
 `docs/ai/evidence/content/content-1024-offers.jpg`.
 
-### 6. The Taska screenshot is the loudest element on the page
+### 6. The Taska screenshot is the loudest element on the page — needs a decision
 
 The raw capture carries indigo/violet product chrome against a near-black
 mineral palette. `DESIGN.md` § Submerged Color Rule reserves chroma for light
 inside media, and the reference lock rejects generic SaaS surfaces. As shipped,
 the single most saturated thing on the page belongs to a different brand.
+
+**This one is not fixed, deliberately.** A tone treatment was implemented and
+then reverted: `CONTENT-BRIEF.md` states the screenshots stay "sharp and
+unmodified: no mock device, skew, glow, recolor, rounded chrome, or violet site
+accent", and a saturation filter is a recolor. The content contract outranks an
+art-direction preference, so the capture ships exactly as the product renders
+it.
+
+Resolving this properly needs an owner decision, not a CSS filter. The options
+are to amend the content contract to permit a neutral tone treatment, to
+recapture Taska under a darker theme if the product has one, or to accept the
+clash as honest evidence.
 
 ## Non-blocking findings
 

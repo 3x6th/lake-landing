@@ -1,46 +1,59 @@
-# Getting Started with Create React App
+# ozero.dev
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Marketing site for Ozero Dev, a Java-first talent network. Single page,
+English primary with Russian at full parity, statically hosted on GitHub Pages
+at [ozero.dev](https://ozero.dev).
 
-## Available Scripts
+## Stack
 
-In the project directory, you can run:
+Vite 8, React 19, strict TypeScript. Vitest and Testing Library for tests,
+ESLint for linting. Fonts are self-hosted through `@fontsource`. No CSS
+framework and no animation library: the motion is a small scroll-progress hook
+and plain CSS.
 
-### `npm start`
+Node 20.19 or newer.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Commands
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+```bash
+npm install
+```
 
-### `npm test`
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Dev server on port 5173 |
+| `npm run check` | Typecheck, lint and tests — run before every commit |
+| `npm run build` | Production build into `dist/` |
+| `npm run preview` | Serve the built output |
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Layout
 
-### `npm run build`
+| Path | Contents |
+| --- | --- |
+| `src/siteContent.ts` | All copy, both locales. `Record<Language, UiCopy>` makes a missing translation a compile error |
+| `src/components/` | Hero, the fisherman interlude, and the content sections |
+| `src/hooks/` | Scroll-stage driver, reveal observer, nav scroll flag |
+| `src/mediaConfig.ts` | Atmosphere loop slots; see `docs/ai/VIDEO-BRIEF.md` |
+| `public/` | Everything here is published — never put private material in it |
+| `private-assets/` | Untracked source material that must not be served |
+| `docs/ai/` | Product, design and delivery documents, plus review records |
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Before changing anything
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Read [AGENTS.md](AGENTS.md). It defines the authority order, what may and may
+not be claimed on the page, and what evidence a change needs. `PRODUCT.md` and
+`DESIGN.md` outrank the implementation; if they conflict with what you are
+doing, resolve the document first rather than working around it.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Two constraints catch people out:
 
-### `npm run eject`
+- Nothing readable may depend on animation. Reveal and scroll effects are
+  additive and degrade to plain content.
+- `public/` is copied wholesale into `dist/`. Ignoring a file there does not
+  stop it being published.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Deployment
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+`.github/workflows/deploy.yml` runs `npm ci`, `npm run check` and
+`npm run build` on a clean checkout, then publishes `dist/`. `public/CNAME`
+holds the custom domain.

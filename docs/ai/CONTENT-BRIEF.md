@@ -90,11 +90,16 @@ Describe it as a Jira/Kanban-like work-management product in active
 development. Show the evolving interface and product decisions, never a
 completed customer outcome. Use only optimized derivatives of:
 
-- `public/media/taska-screanshots/img_2.png` as the primary board evidence;
-- `public/media/taska-screanshots/img_1.png` as the supporting projects view.
+- `private-assets/taska-source/img_2.png` as the primary board evidence;
+- `private-assets/taska-source/img_1.png` as the supporting projects view.
 
 Never publish or preload `img.png`, because it contains a visible login email.
 Preserve all three user-supplied source files unchanged and untracked.
+
+The sources were moved out of `public/` on 2026-07-31 and verified byte for
+byte. Ignoring them was not enough: Vite copies the whole of `public/` into
+`dist/`, so any local build published `img.png` regardless of what
+`.gitignore` said. Anything that must not be served cannot live in `public/`.
 
 Screenshots stay sharp and unmodified: no mock device, skew, glow, recolor,
 rounded chrome, or violet site accent. Technology may appear only as a short

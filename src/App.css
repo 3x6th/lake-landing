@@ -738,19 +738,14 @@ figcaption {
   aspect-ratio: 1234 / 768;
 }
 
-/*
- * The raw capture carries indigo product chrome, which made it the most
- * saturated thing on a near-black mineral page and read as another brand.
- * This is a tone treatment only — nothing in the interface is altered or
- * hidden, the evidence still shows exactly what the product shows.
- */
+/* Deliberately unfiltered. CONTENT-BRIEF.md forbids recolouring the case
+   evidence, so the capture is shown exactly as the product renders it. */
 .case-image-frame img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: top;
-  filter: saturate(0.62) contrast(1.03) brightness(0.96);
 }
 
 .taska-spread figcaption {
