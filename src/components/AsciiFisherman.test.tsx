@@ -8,6 +8,34 @@ import { AsciiFisherman } from './AsciiFisherman';
    invisibly, because both layers cropped alike and stayed registered. */
 const EXPECTED_VISIBLE_ASPECT_RATIO = 1536 / 1024;
 
+/*
+ * jsdom has no 2D context, so `sampleImage` would bail before reading a pixel
+ * and every test would end at `data-ascii-status="failed"` no matter what the
+ * loader did. This stands one in, lit in exactly one AREA_SAMPLE_SIZE block —
+ * the top-left 2x2 — so a passing sample produces exactly one glyph and the
+ * assertion can count glyphs instead of pixels.
+ */
+const stubSampledCanvas = () =>
+  vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue({
+    drawImage: () => {},
+    getImageData: (_x: number, _y: number, width: number, height: number) => {
+      const data = new Uint8ClampedArray(width * height * 4);
+
+      for (const [x, y] of [
+        [0, 0],
+        [1, 0],
+        [0, 1],
+        [1, 1],
+      ]) {
+        data.fill(255, (y * width + x) * 4, (y * width + x) * 4 + 4);
+      }
+
+      return { data };
+    },
+    imageSmoothingEnabled: false,
+    imageSmoothingQuality: 'low',
+  } as unknown as CanvasRenderingContext2D);
+
 describe('AsciiFisherman', () => {
   it('fails silently when the decorative source cannot be decoded', async () => {
     class FailingImage {
@@ -33,6 +61,86 @@ describe('AsciiFisherman', () => {
         'failed'
       );
     });
+  });
+
+  /*
+   * The WebKit defect, as a pair.
+   *
+   * `load` says the bytes arrived; it does not say there is a bitmap. WebKit
+   * draws nothing for an image that has loaded but not decoded, so sampling on
+   * `load` returned an all-zero buffer, no cell cleared TRANSPARENT_LUMINANCE,
+   * and the component published an empty `<svg data-ascii-status="ready">` —
+   * the failure that looks most like success. On an iPhone the signature was
+   * absent in both Safari and Chrome for iOS, because both are WebKit.
+   */
+  it('will not sample an image that has loaded but not decoded', async () => {
+    class LoadedUndecodedImage {
+      complete = true;
+      naturalHeight = 1024;
+      naturalWidth = 1536;
+      onerror: (() => void) | null = null;
+      onload: (() => void) | null = null;
+
+      set src(_value: string) {
+        queueMicrotask(() => this.onload?.());
+      }
+
+      decode() {
+        return new Promise<void>(() => {});
+      }
+    }
+
+    vi.stubGlobal('Image', LoadedUndecodedImage);
+    stubSampledCanvas();
+
+    const { container } = render(
+      <AsciiFisherman source="/undecoded-fisherman.png" />
+    );
+
+    await new Promise((resolve) => {
+      setTimeout(resolve, 20);
+    });
+
+    const svg = container.querySelector('svg');
+
+    expect(svg).toHaveAttribute('data-ascii-status', 'loading');
+    expect(svg?.querySelectorAll('text')).toHaveLength(0);
+  });
+
+  it('samples once the bitmap is decoded', async () => {
+    class DecodableImage {
+      complete = true;
+      naturalHeight = 1024;
+      naturalWidth = 1536;
+      onerror: (() => void) | null = null;
+      onload: (() => void) | null = null;
+
+      set src(_value: string) {
+        queueMicrotask(() => this.onload?.());
+      }
+
+      decode() {
+        return new Promise<void>((resolve) => {
+          setTimeout(resolve, 0);
+        });
+      }
+    }
+
+    vi.stubGlobal('Image', DecodableImage);
+    stubSampledCanvas();
+
+    const { container } = render(
+      <AsciiFisherman source="/decodable-fisherman.png" />
+    );
+
+    await waitFor(() => {
+      expect(container.querySelector('svg')).toHaveAttribute(
+        'data-ascii-status',
+        'ready'
+      );
+    });
+
+    expect(container.querySelectorAll('text')).toHaveLength(1);
   });
 
   /* The stylesheet half of this contract — `.fisherman-art__viewport`'s
