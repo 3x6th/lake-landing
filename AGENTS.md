@@ -29,6 +29,12 @@ higher-ranked source.
 Never run multiple production-code writers in parallel. Read-only agents may
 research or review concurrently when their scopes do not overlap.
 
+The four subagents are defined twice, once per harness: `.codex/agents/*.toml`
+for Codex and `.claude/agents/*.md` for Claude Code. The role bodies are
+identical; only the frontmatter differs, and read-only is expressed as a
+restricted tool list rather than a sandbox mode. When a role changes, change
+both.
+
 ## Delivery flow
 
 The epic is `LOD-1`. Work is grouped into four milestone branches:
