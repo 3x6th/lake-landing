@@ -5,6 +5,9 @@
   --paper-muted: #a8b0a9;
   --rule: #252b28;
   --accent: #b8ff78;
+  /* DESIGN.md's Ember Glow, tokenized where it is first needed: the warm half
+     of the tear's fringe. It is a media colour, never an interface one. */
+  --ember: #ff8a48;
   --content-width: 1440px;
   --page-gutter: clamp(20px, 5vw, 72px);
 }
@@ -757,11 +760,37 @@ figcaption {
   opacity: 0;
 }
 
+/* The glyph field. This is a group rather than a single <svg> because the tear
+   slices it into `TEAR_BAND_COUNT` bands that move independently; `fill` and
+   the type are set here so every band inherits one description of the ink, and
+   the screen blend from `.fisherman-art__layer` applies to the group, so the
+   slicing costs one blend rather than one per band. */
 .fisherman-art__ascii {
   fill: var(--paper);
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   font-weight: 600;
   opacity: 0;
+}
+
+/* Every band is laid out over the whole art box and carries only its own rows,
+   so the bands stack in exact register and their union is the untorn picture.
+   Transform, opacity and — while a band is slipping — a two-colour drop-shadow
+   are written here per frame; at rest the element carries none of them. */
+.fisherman-art__ascii-band {
+  /* The two fringe inks, held at a weight that lets the paper glyph underneath
+     still read as the subject. Both are blue-poor and the paper they sit behind
+     is neutral, so no pixel the tear can produce has blue as its strongest
+     channel: green and amber are reachable, cyan and magenta are not. An engine
+     that cannot parse `color-mix` drops the whole filter and gets an uncoloured
+     tear, which is the correct thing to lose. */
+  --tear-lake: color-mix(in srgb, var(--accent) 62%, transparent);
+  --tear-ember: color-mix(in srgb, var(--ember) 55%, transparent);
+
+  position: absolute;
+  inset: 0 auto 0 0;
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 @keyframes hero-water-drift {

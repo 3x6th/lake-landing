@@ -143,6 +143,71 @@ describe('AsciiFisherman', () => {
     expect(container.querySelectorAll('text')).toHaveLength(1);
   });
 
+  /*
+   * The tear slices this component and relies on the slices adding back up to
+   * the picture. The stub lights exactly one cell, at row 0, so the whole
+   * partition can be counted: the first slice must own that glyph, no other
+   * slice may draw it, and the geometry must not move when a slice is asked
+   * for — the viewBox is the frame's, not the slice's.
+   */
+  it('draws each glyph in exactly one slice, without moving it', async () => {
+    class DecodableImage {
+      complete = true;
+      naturalHeight = 1024;
+      naturalWidth = 1536;
+      onerror: (() => void) | null = null;
+      onload: (() => void) | null = null;
+
+      set src(_value: string) {
+        queueMicrotask(() => this.onload?.());
+      }
+
+      decode() {
+        return Promise.resolve();
+      }
+    }
+
+    vi.stubGlobal('Image', DecodableImage);
+    stubSampledCanvas();
+
+    const bands = 14;
+    const drawn: number[] = [];
+    let wholeViewBox = '';
+
+    for (let band = 0; band < bands; band += 1) {
+      const { container, unmount } = render(
+        <AsciiFisherman source="/sliced-fisherman.png" rowBand={[band, bands]} />
+      );
+
+      await waitFor(() => {
+        expect(container.querySelector('svg')).toHaveAttribute(
+          'data-ascii-status',
+          'ready'
+        );
+      });
+
+      drawn.push(container.querySelectorAll('text').length);
+      wholeViewBox =
+        container.querySelector('svg')?.getAttribute('viewBox') ?? '';
+      unmount();
+    }
+
+    expect(drawn.reduce((total, count) => total + count, 0)).toBe(1);
+    expect(drawn[0]).toBe(1);
+
+    const { container } = render(
+      <AsciiFisherman source="/sliced-fisherman.png" />
+    );
+
+    await waitFor(() => {
+      expect(container.querySelectorAll('text')).toHaveLength(1);
+    });
+    expect(container.querySelector('svg')).toHaveAttribute(
+      'viewBox',
+      wholeViewBox
+    );
+  });
+
   /* The stylesheet half of this contract — `.fisherman-art__viewport`'s
      aspect-ratio and `.fisherman-art__source`'s width — cannot be asserted
      here: vitest resolves `App.css?raw` to an empty string. It is held by the

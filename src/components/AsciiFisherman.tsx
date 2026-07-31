@@ -4,6 +4,17 @@ interface AsciiFishermanProps {
   className?: string;
   elementRef?: Ref<SVGSVGElement>;
   source?: string;
+  /**
+   * Renders only one contiguous slice of the glyph field, as `[index, count]`.
+   *
+   * Nothing about the sample changes: same crop, same grid, same viewBox, same
+   * glyph positions. The instance simply omits the rows outside its slice. So
+   * `count` instances covering `index` 0..count-1 draw every glyph exactly once
+   * between them and compose to the same picture a single unsliced instance
+   * draws — which is what lets the tear displace one slice without the frame
+   * gaining a seam, losing a glyph, or double-drawing one.
+   */
+  rowBand?: readonly [number, number];
 }
 
 interface AsciiGlyph {
@@ -97,6 +108,18 @@ const ASCII_CONTRAST_GAMMA = 0.65;
  */
 const ASCII_PEAK_LUMINANCE = 110;
 const imagePromises = new Map<string, Promise<HTMLImageElement>>();
+/*
+ * One sample per source and grid, shared by every instance.
+ *
+ * `loadImage` already shares the decode, but sampling is the expensive half:
+ * a canvas, a downscale of a 1536x1024 bitmap and a `getImageData` of the whole
+ * grid. The tear mounts fourteen instances of this component over the same
+ * pixels, and fourteen identical passes over that canvas — several hundred
+ * milliseconds of main thread on a phone — would buy exactly one distinct
+ * result. Keyed by grid as well as source because the mobile and desktop
+ * column counts are different samples of the same file.
+ */
+const samples = new Map<string, AsciiSample | null>();
 
 const loadImage = (source: string) => {
   const cachedImage = imagePromises.get(source);
@@ -322,9 +345,42 @@ const sampleImage = (
   };
 };
 
+const sampleOnce = (
+  image: HTMLImageElement,
+  source: string,
+  columns: number
+) => {
+  const key = `${source}|${columns}`;
+  const cached = samples.get(key);
+
+  if (cached !== undefined) {
+    return cached;
+  }
+
+  const sample = sampleImage(image, columns);
+
+  samples.set(key, sample);
+
+  return sample;
+};
+
+/*
+ * The row range a slice owns, as a half-open interval. Rounding the same
+ * boundary from both sides is what keeps the slices contiguous: slice k ends
+ * exactly where slice k + 1 begins, for every k, whatever the row count.
+ */
+const getBandRows = (
+  rows: number,
+  [index, count]: readonly [number, number]
+): [number, number] => [
+  Math.round((index * rows) / count),
+  Math.round(((index + 1) * rows) / count),
+];
+
 export const AsciiFisherman = ({
   className = '',
   elementRef,
+  rowBand,
   source = '/fishman.png',
 }: AsciiFishermanProps) => {
   const [columns, setColumns] = useState(getColumnCount);
@@ -357,7 +413,7 @@ export const AsciiFisherman = ({
           return;
         }
 
-        const nextSample = sampleImage(image, columns);
+        const nextSample = sampleOnce(image, source, columns);
 
         if (!nextSample) {
           setSample(null);
@@ -381,6 +437,11 @@ export const AsciiFisherman = ({
   }, [columns, source]);
 
   const classes = ['ascii-fisherman', className].filter(Boolean).join(' ');
+  const [firstRow, lastRow] =
+    sample && rowBand ? getBandRows(sample.rows, rowBand) : [0, Infinity];
+  const glyphs = sample
+    ? sample.glyphs.filter(({ row }) => row >= firstRow && row < lastRow)
+    : [];
 
   return (
     <svg
@@ -388,6 +449,7 @@ export const AsciiFisherman = ({
       aria-hidden="true"
       className={classes}
       data-ascii-columns={sample?.columns ?? columns}
+      data-ascii-rows={rowBand ? `${firstRow}-${lastRow}` : undefined}
       data-ascii-status={status}
       focusable="false"
       preserveAspectRatio="none"
@@ -404,16 +466,18 @@ export const AsciiFisherman = ({
             }`
       }
     >
-      {sample?.glyphs.map(({ character, column, row }) => (
-        <text
-          key={`${row}-${column}`}
-          fontSize={sample.rowHeight * 1.02}
-          x={column + 0.5}
-          y={(row + 0.78) * sample.rowHeight}
-        >
-          {character}
-        </text>
-      ))}
+      {sample
+        ? glyphs.map(({ character, column, row }) => (
+            <text
+              key={`${row}-${column}`}
+              fontSize={sample.rowHeight * 1.02}
+              x={column + 0.5}
+              y={(row + 0.78) * sample.rowHeight}
+            >
+              {character}
+            </text>
+          ))
+        : null}
     </svg>
   );
 };
