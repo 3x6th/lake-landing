@@ -14,6 +14,26 @@ const revealOrder = (index: number) =>
   ({ '--reveal-index': index }) as CSSProperties;
 
 /*
+ * The arrows carry U+FE0E, the text-presentation variation selector.
+ *
+ * U+2197 and U+2191 both have an emoji presentation form and mobile browsers
+ * pick it by default. On the owner's phone every one of these rendered as a
+ * blue emoji arrow inside a rounded blue box, on a page whose entire palette
+ * is near-black and paper-white — it looked broken because it was. The
+ * selector pins them to the monochrome text glyph.
+ *
+ * They are written as escapes rather than literals because U+FE0E is invisible
+ * in source: pasted directly, the next person to touch these lines would see a
+ * bare arrow and drop the selector without knowing it was there. The same
+ * applies to the '\2193\FE0E' connector in App.css.
+ *
+ * The '+' in the FAQ indicator is U+002B and has no emoji form, so it is left
+ * alone.
+ */
+const NORTH_EAST_ARROW = '\u2197\uFE0E';
+const UPWARDS_ARROW = '\u2191\uFE0E';
+
+/*
  * Every list below is keyed by position, and that is deliberate.
  *
  * The obvious keys — a title, a question, a label — are all translated copy,
@@ -83,7 +103,7 @@ export const ContentExperience = ({
               href={createMailtoHref(offer.subject)}
             >
               {offer.cta}
-              <span aria-hidden="true"> ↗</span>
+              <span aria-hidden="true">{` ${NORTH_EAST_ARROW}`}</span>
             </a>
           </article>
         ))}
@@ -255,7 +275,7 @@ export const ContentExperience = ({
             aria-label={content.contact.emailAriaLabel}
           >
             {content.contact.primaryCta}
-            <span aria-hidden="true"> ↗</span>
+            <span aria-hidden="true">{` ${NORTH_EAST_ARROW}`}</span>
           </a>
         </div>
 
@@ -282,7 +302,9 @@ export const ContentExperience = ({
         {content.footer.careersLabel}
       </a>
       <a href="#top">
-        {language === 'en' ? 'Back to top ↑' : 'Наверх ↑'}
+        {language === 'en'
+          ? `Back to top ${UPWARDS_ARROW}`
+          : `Наверх ${UPWARDS_ARROW}`}
       </a>
     </footer>
   </>

@@ -45,7 +45,32 @@ const ASCII_GLYPH_RAMP = ' .·:+*#@';
 const CROP_RATIO = 1;
 /* The intrinsic aspect of /fishman.png: 1536 x 1024. */
 const SOURCE_ASPECT_RATIO = 1.5;
-const MOBILE_COLUMNS = 64;
+/*
+ * The phone grid.
+ *
+ * This was 64, which is a legible fill ratio carried by an illegible number of
+ * samples. Measured against the shipped build at 390x844: 64 columns gives a
+ * 64x21 grid, 1344 cells and 140 glyphs — 10.4% fill, the same density as
+ * desktop, but the hat, the face, the hull and the rod line each end up with a
+ * handful of marks and the eye cannot assemble them. On the owner's phone the
+ * whole passage read as empty.
+ *
+ * Candidates were sampled from the real PNG through this exact code path and
+ * rendered at the real mobile art width (84vw). 88 and 92 recover the rod
+ * diagonal but leave the hat a single blob and the hull broken. 96 is the
+ * first count where all four read: brim and crown separate, the torso holds
+ * its block, the hull is one continuous stroke, and the line drops off the rod
+ * tip. Past it the gain is detail rather than legibility, and the added
+ * samples are mostly faint water crossing TRANSPARENT_LUMINANCE, which
+ * competes with the subject at this size instead of supporting it.
+ *
+ * There is a floor under this and 96 sits above it. The glyph size follows
+ * `rowHeight`, so more columns means smaller glyphs: at 96 the rendered type
+ * is 6.4px at a 360px viewport, 7.0px at 390 and 7.3px at 412, while 104 falls
+ * to 5.9px at 360. 96 also divides cleanly — 96x32 is exactly the 3:1 cell the
+ * sampler assumes, with no rounding in the row count.
+ */
+const MOBILE_COLUMNS = 96;
 const DESKTOP_COLUMNS = 120;
 const MOBILE_QUERY = '(max-width: 699px)';
 const AREA_SAMPLE_SIZE = 2;
