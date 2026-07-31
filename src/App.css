@@ -38,12 +38,135 @@ a {
   outline-offset: 4px;
 }
 
+/*
+ * Section structure resolves as it enters the viewport. The easing is the
+ * reference system's own patient curve; motion is deliberately small so it
+ * reads as settling rather than sliding. Body copy is never a target.
+ */
+.has-reveal [data-reveal] {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 600ms cubic-bezier(0.19, 1, 0.22, 1)
+      calc(var(--reveal-index, 0) * 60ms),
+    transform 600ms cubic-bezier(0.19, 1, 0.22, 1)
+      calc(var(--reveal-index, 0) * 60ms);
+}
+
+.has-reveal [data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
 .App {
   position: relative;
   min-height: 100vh;
   color: var(--paper);
   background: var(--ink);
   isolation: isolate;
+}
+
+/*
+ * One-shot entry curtain. The hero is in the DOM underneath the whole time;
+ * this only covers it. Skippable by click or key, absent under reduced
+ * motion, and shown once per session.
+ */
+.is-intro-open,
+.is-intro-open body {
+  overflow: hidden;
+}
+
+.intro-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ink);
+  transition:
+    opacity 520ms cubic-bezier(0.19, 1, 0.22, 1),
+    transform 520ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.intro-overlay--lifting {
+  opacity: 0;
+  transform: translateY(-1.5%);
+  pointer-events: none;
+}
+
+.intro-overlay__wordmark {
+  display: inline-flex;
+  align-items: baseline;
+  margin: 0;
+  color: var(--paper);
+  font-family: Onest, Arial, sans-serif;
+  font-size: clamp(2.25rem, 5.5vw, 4.25rem);
+  font-weight: 350;
+  letter-spacing: -0.045em;
+  line-height: 1;
+  /* Reserve the full width so the caret does not walk the line left and
+     right as characters are added and removed. */
+  min-width: 9ch;
+  justify-content: flex-start;
+}
+
+.intro-overlay__caret {
+  display: inline-block;
+  width: 0.07em;
+  height: 0.92em;
+  margin-left: 0.06em;
+  background: var(--accent);
+  translate: 0 0.06em;
+}
+
+.intro-overlay__caret--blinking {
+  animation: intro-caret-blink 900ms steps(1, end) infinite;
+}
+
+@keyframes intro-caret-blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/*
+ * The first focusable element on the page. Parked above the viewport instead
+ * of hidden, so it keeps its place in the tab order, and it returns over the
+ * fixed navigation rather than beside it — a keyboard visitor should not have
+ * to walk the whole nav before reaching the content.
+ */
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 70;
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  color: var(--ink);
+  background: var(--paper);
+  font-family: Onest, Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  transform: translateY(calc(-100% - 1.5rem));
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  transform: none;
 }
 
 .top-nav {
@@ -57,7 +180,9 @@ a {
   align-items: center;
   justify-content: space-between;
   gap: 0.3rem;
-  padding: 0.25rem;
+  /* The wordmark and the language switch are the outermost items, so the
+     horizontal padding is what keeps them off the edge of the scrim. */
+  padding: 0.25rem 1rem;
   transform: translateX(-50%);
   isolation: isolate;
 }
@@ -72,14 +197,50 @@ a {
   background: transparent;
   opacity: 0;
   transition:
-    background-color 180ms ease,
-    border-color 180ms ease,
-    opacity 180ms ease;
+    background-color 420ms cubic-bezier(0.19, 1, 0.22, 1),
+    border-color 420ms cubic-bezier(0.19, 1, 0.22, 1),
+    opacity 420ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* The island is only 920px wide, so at 1440 roughly 380px of the content
+   column — plus the 12px strip above the island — crosses the top edge with no
+   surface behind it and gets sliced mid-glyph. This is the scrim DESIGN.md
+   § Elevation allows for exactly that case: a subtle dark fade, not a bar and
+   not blurred glass. It is fixed to the viewport rather than sized in `vw` so
+   a classic scrollbar cannot push it off centre, it sits below the island's
+   own plate at -2, and it shares the island's `--solid` state so the hero's
+   first viewport keeps its fully transparent navigation. */
+.top-nav::after {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: -2;
+  height: 6.5rem;
+  content: '';
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgb(5 7 6 / 0.94) 0%,
+    rgb(5 7 6 / 0.86) 42%,
+    rgb(5 7 6 / 0.5) 72%,
+    rgb(5 7 6 / 0) 100%
+  );
+  opacity: 0;
+  transition: opacity 420ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.top-nav--solid::after {
+  opacity: 1;
 }
 
 .top-nav--solid::before {
   border-color: var(--rule);
-  background: rgba(5, 7, 6, 0.97);
+  /* Fully opaque. At 0.97 the body copy travelling under the island ghosted
+     through on the same band as the nav links — measured (10,13,11) against
+     the (5,7,6) plate. The plate is the reading surface for the links, so it
+     does not get to be translucent. */
+  background: rgb(5 7 6);
   opacity: 1;
 }
 
@@ -116,7 +277,7 @@ a {
   font: 500 0.78rem/1 Onest, Arial, sans-serif;
   text-decoration: none;
   cursor: pointer;
-  transition: color 150ms ease;
+  transition: color 420ms cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .nav-link {
@@ -207,6 +368,28 @@ a {
   padding-bottom: clamp(7rem, 12vw, 12rem);
 }
 
+/*
+ * Vertical rhythm is a property of the boundary, not of the section.
+ *
+ * Each padded section carried a full padding block on both sides, so a
+ * boundary against a band or the footer measured one block and was right,
+ * while a boundary between two padded sections measured two and was 346px at
+ * 1440 — 1.8x the CONTENT-BRIEF ceiling and 39% of a viewport of nothing.
+ * Halving the padding would have fixed those three and broken the six
+ * single-sided boundaries that were already correct, so the second
+ * contribution is dropped only where there is one.
+ *
+ * `:is()` rather than `:where()` on purpose: this has to outrank the section's
+ * own `padding-top`, including `.work-section`'s and the narrow-viewport
+ * overrides, and `:where()` would carry no specificity at all. Padding rather
+ * than margin, so the `border-top` hairlines on `.work-section` and
+ * `.faq-section` have no collapsing behaviour to interfere with.
+ */
+:is(.content-section, .capability-section, .contact-section)
+  + :is(.content-section, .capability-section, .contact-section) {
+  padding-top: 0;
+}
+
 .section-heading {
   display: grid;
   max-width: 860px;
@@ -218,7 +401,6 @@ a {
   max-width: 1080px;
 }
 
-.section-label,
 .status-label,
 .knowledge-flow__marker,
 .process-step__number,
@@ -256,12 +438,22 @@ figcaption {
   line-height: 1.65;
 }
 
+/*
+ * Full-bleed by filling the parent, not by measuring the viewport.
+ *
+ * Every one of these blocks is a direct child of `main.page-content`, which is
+ * `width: 100%` inside an unstyled `.App` — no padding, no max-width — so the
+ * parent's content box already IS the full bleed. `100vw` measured something
+ * slightly different: it includes the classic scrollbar that Windows and Linux
+ * Chrome still render, so each block came out about 8px wider than the page and
+ * sat ~7.5px left of centre, with `body { overflow-x: hidden }` hiding the
+ * resulting scrollbar but not the offset. Measured at 1280: scrollWidth 1273
+ * against clientWidth 1265.
+ */
 .hero-experience {
   position: relative;
-  left: 50%;
-  width: 100vw;
-  height: 210vh;
-  margin-left: -50vw;
+  width: 100%;
+  height: 130vh;
   background: var(--ink);
 }
 
@@ -300,7 +492,6 @@ figcaption {
   display: block;
   object-fit: cover;
   object-position: center;
-  opacity: 0.92;
   animation: hero-water-drift 22s linear infinite alternate;
   will-change: transform;
 }
@@ -310,23 +501,65 @@ figcaption {
   will-change: auto;
 }
 
+/*
+ * The water now fills the frame and its brightest bloom lands under the copy
+ * column, so the scrim is a pool of shade anchored to that column rather than
+ * a wash across the picture. Everything outside the copy stays as bright as
+ * the asset — darkening the whole frame is what made the previous hero empty.
+ */
 .hero-water__scrim {
   z-index: 1;
   pointer-events: none;
   background:
-    linear-gradient(
-      90deg,
-      rgba(5, 7, 6, 0.98) 0%,
-      rgba(5, 7, 6, 0.88) 26%,
-      rgba(5, 7, 6, 0.2) 58%,
-      rgba(5, 7, 6, 0.04) 100%
+    radial-gradient(
+      ellipse 62% 76% at 20% 52%,
+      rgba(5, 7, 6, 0.84) 0%,
+      rgba(5, 7, 6, 0.58) 44%,
+      rgba(5, 7, 6, 0) 78%
     ),
-    linear-gradient(
-      180deg,
-      rgba(5, 7, 6, 0.88) 0%,
-      rgba(5, 7, 6, 0.12) 42%,
-      rgba(5, 7, 6, 0.22) 100%
-    );
+    linear-gradient(90deg, rgba(5, 7, 6, 0.5) 0%, rgba(5, 7, 6, 0) 42%),
+    linear-gradient(180deg, rgba(5, 7, 6, 0.72) 0%, rgba(5, 7, 6, 0) 18%),
+    linear-gradient(0deg, rgba(5, 7, 6, 0.34) 0%, rgba(5, 7, 6, 0) 22%);
+}
+
+/*
+ * The loop sits above the poster and only becomes visible once it can play,
+ * so a missing or unsupported file leaves the still poster exactly as it was.
+ */
+.atmosphere-video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 900ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.atmosphere-video--playable {
+  opacity: 1;
+}
+
+.hero-water__video {
+  position: absolute;
+  inset: 0;
+  object-position: center;
+}
+
+/* The poster's drift is a stand-in for real motion; once the loop plays, the
+   video carries it and the still underneath should hold still. */
+.hero-experience:has(.atmosphere-video--playable) .hero-water__image {
+  animation: none;
+}
+
+.depth-band {
+  position: relative;
+  width: 100%;
+  height: clamp(38vh, 52vh, 70vh);
+  overflow: hidden;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  background: var(--ink);
 }
 
 .hero-experience__copy {
@@ -334,28 +567,44 @@ figcaption {
   top: 50%;
   left: clamp(48px, 8vw, 120px);
   z-index: 4;
-  width: min(38vw, 620px);
+  width: min(56vw, 900px);
   font-family: Onest, Arial, sans-serif;
   transform: translateY(-52%);
 }
 
+/* The hero ramp is display -> lede -> body, in three steps rather than two.
+   The h1 is the DESIGN.md display token exactly. The offer below it is the
+   lede: with only the display and body rungs, the sentence that carries the
+   actual proposition landed 5.8x smaller than the wordmark and read as a
+   caption, against PRODUCT.md Principle 1 and DESIGN.md's first "Do", which
+   both require the offer legible in the first viewport. All three rungs grow
+   through scale, never weight — the Whispered Authority Rule — so 350 stays. */
 .hero-experience__copy h1 {
-  max-width: 9ch;
   margin: 0;
   color: var(--paper);
-  font-size: clamp(3.8rem, 8vw, 6rem);
+  font-size: clamp(3.8rem, 10vw, 9.5rem);
   font-weight: 350;
-  letter-spacing: -0.04em;
-  line-height: 0.9;
-  text-wrap: balance;
+  letter-spacing: -0.065em;
+  line-height: 0.86;
 }
 
+/* `pretty` rather than `balance`: this is the lede, and balancing would even
+   out every line and cost the first line its full measure. `pretty` touches
+   only the end of the block, which is where the problem was — the Russian
+   second sentence misses the 640px box by 4.9px at 1440 and orphans "недели."
+   on a line of its own. Measured orphan windows are 1430-1548px and 738-799px
+   on desktop and 399-428px on phones, which covers Pixel and Galaxy at 412 and
+   iPhone 14 Plus at 428. No ramp token moves: size, weight, leading and
+   measure are untouched, and browsers without `pretty` wrap exactly as before. */
 .hero-experience__offer {
-  max-width: 38rem;
-  margin: 1.6rem 0 0;
-  color: var(--paper-muted);
-  font-size: clamp(1rem, 1.2vw, 1.2rem);
-  line-height: 1.5;
+  max-width: 40rem;
+  margin: 1.9rem 0 0;
+  color: var(--paper);
+  font-size: clamp(1.5rem, 2.4vw, 2.5rem);
+  font-weight: 350;
+  letter-spacing: -0.015em;
+  line-height: 1.22;
+  text-wrap: pretty;
 }
 
 .hero-experience__actions {
@@ -380,9 +629,9 @@ figcaption {
   line-height: 1;
   text-decoration: none;
   transition:
-    color 160ms ease,
-    background-color 160ms ease,
-    border-color 160ms ease;
+    color 420ms cubic-bezier(0.19, 1, 0.22, 1),
+    background-color 420ms cubic-bezier(0.19, 1, 0.22, 1),
+    border-color 420ms cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .hero-button--primary {
@@ -391,18 +640,77 @@ figcaption {
   color: var(--ink);
 }
 
-.fisherman-art {
+/*
+ * The signature passage. This is the only place the fisherman appears and the
+ * only scroll-driven transformation on the page.
+ */
+.fisherman-interlude {
+  position: relative;
+  width: 100%;
+  height: 200vh;
+  background: var(--ink);
+}
+
+/* The background is repeated from `.fisherman-interlude` on purpose, and it is
+   load-bearing rather than defensive.
+
+   `position: sticky` always creates a stacking context, so this element is an
+   isolated group for blending. `.fisherman-art__layer` uses
+   `mix-blend-mode: screen` to knock out the engraving's background — fishman.png
+   is RGB with no alpha channel and its background is solid (0,0,0) — but the
+   only ink surface used to live on the section OUTSIDE this group. Screen had
+   no backdrop to blend with, so the black composited normally and drew a faint
+   720x480 rectangle around a passage meant to be full-bleed: green channel 1
+   inside against 7 on the page canvas, which is exactly 0.82 * 0 + 0.18 * 7 at
+   ENGRAVING_PEAK.
+
+   Putting the canvas inside the group gives screen its backdrop back:
+   screen(0, ink) = ink, screen(white, ink) = white. The section keeps its own
+   background because it is 200vh tall and this stage only covers 100vh. */
+.fisherman-interlude__stage {
+  position: sticky;
+  top: 0;
+  display: flex;
+  height: 100vh;
+  height: 100svh;
+  align-items: center;
+  justify-content: center;
+  background: var(--ink);
+  overflow: hidden;
+}
+
+.fisherman-interlude__brand-line {
   position: absolute;
-  right: 5vw;
-  bottom: 10vh;
-  z-index: 2;
-  width: clamp(320px, 29vw, 520px);
+  bottom: clamp(3rem, 11vh, 7.5rem);
+  left: 50%;
+  margin: 0;
+  color: var(--paper);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  line-height: 1.4;
+  text-align: center;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateY(10px);
+  translate: -50% 0;
+}
+
+.fisherman-art {
+  position: relative;
+  width: min(64vw, 720px);
   pointer-events: none;
 }
 
+/* The visible region's aspect: 1536 x 1 / 1024. The engraving is authored
+   already framed, so CROP_RATIO in AsciiFisherman is 1 and the whole asset —
+   rod tip and fishing line included — stays in frame. Keeping this ratio in
+   step with CROP_RATIO is what keeps the engraving and its ASCII reading
+   pixel-registered through the crossfade. */
 .fisherman-art__viewport {
   position: relative;
-  aspect-ratio: 1.38;
+  aspect-ratio: 1.5;
   overflow: hidden;
 }
 
@@ -415,8 +723,11 @@ figcaption {
   mix-blend-mode: screen;
 }
 
+/* 100% / CROP_RATIO: both layers are laid out at the full source width and the
+   viewport above clips whatever the crop drops. At a ratio of 1 there is
+   nothing to clip, so this is plain 100%. */
 .fisherman-art__source {
-  width: calc(100% / 0.92);
+  width: 100%;
   height: 100%;
   object-fit: fill;
   object-position: left center;
@@ -431,22 +742,6 @@ figcaption {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   font-weight: 600;
   opacity: 0;
-}
-
-.hero-experience__brand-line {
-  position: absolute;
-  right: clamp(24px, 8vw, 120px);
-  bottom: 5.5vh;
-  z-index: 4;
-  margin: 0;
-  color: var(--paper);
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  line-height: 1.4;
-  opacity: 0;
-  transform: translateY(8px);
 }
 
 @keyframes hero-water-drift {
@@ -532,7 +827,7 @@ figcaption {
 .research-case__copy h3 {
   margin: 0;
   color: var(--paper);
-  font-size: clamp(1.25rem, 3vw, 2rem);
+  font-size: clamp(1.25rem, 2.8vw, 2rem);
   font-weight: 400;
   letter-spacing: -0.03em;
   line-height: 1.08;
@@ -636,14 +931,35 @@ figcaption {
   background: var(--ink-deep-water);
 }
 
+/* These ratios are each capture's full canvas, and showing every screenshot
+   whole is the owner's decision, taken after seeing the alternatives.
+
+   That decision cost something under the first pair of captures, which framed
+   their interface inside a large empty background: the projects view carried
+   roughly 61% dead space and the board 31%. Tightening the ratio, or
+   cropping the asset, was tried twice and rejected twice — cropping in CSS
+   shrank the projects frame to a 4:1 strip in a narrow column and made it
+   illegible, and stacking it full-width below the board lost the one thing
+   this spread is for, which is seeing the board and the projects screen
+   together in a single row.
+
+   The captures supplied on 2026-07-31 remove the trade-off rather than
+   resolve it. Their interface fills the canvas edge to edge, so there is
+   nothing to trim: they are published at native pixel dimensions, and the two
+   native ratios (1.42 and 1.58) are close enough to share the row while both
+   frames stay complete and comparable in height. Keep the ratios equal to the
+   files. CONTENT-BRIEF.md separately forbids recolouring or otherwise
+   dressing the captures. */
 .taska-spread__primary .case-image-frame {
-  aspect-ratio: 989 / 760;
+  aspect-ratio: 999 / 702;
 }
 
 .taska-spread__secondary .case-image-frame {
-  aspect-ratio: 1234 / 768;
+  aspect-ratio: 713 / 450;
 }
 
+/* Deliberately unfiltered. CONTENT-BRIEF.md forbids recolouring the case
+   evidence, so the capture is shown exactly as the product renders it. */
 .case-image-frame img {
   display: block;
   width: 100%;
@@ -658,19 +974,40 @@ figcaption {
 
 .research-band {
   position: relative;
-  left: 50%;
-  width: 100vw;
-  margin-left: -50vw;
+  width: 100%;
   padding: clamp(6rem, 11vw, 11rem) 0;
   border-top: 1px solid var(--rule);
   border-bottom: 1px solid var(--rule);
   background: var(--ink-deep-water);
 }
 
+/* The minima are 0 on purpose. A pixel floor on either column outlives the
+   single-column breakpoint at 820px: 280 + 520 plus a 7vw gap needs about
+   910px of viewport, so measured, every width from 821px to 908px pushed the
+   flow past the right edge — 70px of it at 830 — with the ↓ connectors, which
+   sit at `right: 0`, clipped off-screen and `body { overflow-x: hidden }`
+   hiding that it had happened. 834×1112 is iPad Pro 11" portrait, so the band
+   is real hardware, not a gap between breakpoints. The ratio still governs
+   wherever there is room to honour it. */
 .research-case {
   display: grid;
   gap: clamp(3.5rem, 7vw, 7rem);
-  grid-template-columns: minmax(280px, 0.8fr) minmax(520px, 1.6fr);
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.6fr);
+}
+
+/* The statement is short and the flow beside it is tall, which left a dead
+   column at wide viewports. Letting it travel keeps the pair related.
+
+   The travel now belongs to the aside rather than the statement alone. The
+   grid had three children — statement, flow, note — and auto-placement gave
+   the note a row of its own under the flow, so the left column ran empty from
+   the end of the statement to the bottom of the flow while the note sat off on
+   its own. Two children, with the note carried along under the statement,
+   closes the column and keeps the sticky travel that fix depends on. */
+.research-case__aside {
+  position: sticky;
+  top: 8rem;
+  align-self: start;
 }
 
 .research-case__copy .status-label {
@@ -725,9 +1062,8 @@ figcaption {
 }
 
 .research-case__note {
-  grid-column: 2;
-  max-width: 70ch;
-  margin: -3.5rem 0 0;
+  max-width: 52ch;
+  margin: 2.4rem 0 0;
   color: var(--paper-muted);
   font-size: 0.75rem;
   line-height: 1.55;
@@ -785,10 +1121,6 @@ figcaption {
   grid-template-columns: minmax(280px, 0.9fr) minmax(360px, 1.1fr);
 }
 
-.capability-section__statement .section-label {
-  margin-bottom: 1.5rem;
-}
-
 .capability-section__statement > p:last-child {
   margin-top: 2rem;
 }
@@ -816,11 +1148,14 @@ figcaption {
   line-height: 1.6;
 }
 
+/* Zero minima for the same reason as `.research-case`: with 280 + 480 and an
+   8vw gap this grid overflowed on its own from 821px to 883px, measured, all
+   of it above the width where it collapses to one column. */
 .faq-section {
   display: grid;
   gap: clamp(4rem, 8vw, 9rem);
   border-top: 1px solid var(--rule);
-  grid-template-columns: minmax(280px, 0.8fr) minmax(480px, 1.2fr);
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
 }
 
 .faq-list {
@@ -859,7 +1194,7 @@ figcaption {
   color: var(--paper-muted);
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   font-size: 1.2rem;
-  transition: transform 150ms ease;
+  transition: transform 260ms cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .faq-item[open] .faq-item__indicator {
@@ -876,9 +1211,7 @@ figcaption {
 
 .contact-section {
   position: relative;
-  left: 50%;
-  width: 100vw;
-  margin-left: -50vw;
+  width: 100%;
   padding: clamp(6rem, 10vw, 10rem) 0 3rem;
   color: var(--paper);
   background: var(--ink);
@@ -888,11 +1221,6 @@ figcaption {
   display: grid;
   gap: clamp(3.5rem, 8vw, 9rem);
   grid-template-columns: minmax(320px, 1.35fr) minmax(300px, 0.65fr);
-}
-
-.contact-section .section-label {
-  margin-bottom: 1.6rem;
-  color: var(--paper-muted);
 }
 
 .contact-section h2 {
@@ -1088,6 +1416,12 @@ figcaption {
     grid-template-columns: minmax(0, 1fr);
   }
 
+  /* Single column: the aside now sits directly above the flow, so there
+     is no dead space for it to travel through. */
+  .research-case__aside {
+    position: static;
+  }
+
   .taska-case__copy .status-label,
   .taska-case__copy h3,
   .taska-case__copy > p,
@@ -1108,11 +1442,6 @@ figcaption {
     margin-left: auto;
   }
 
-  .research-case__note {
-    grid-column: 1;
-    margin-top: -2rem;
-  }
-
   .faq-section {
     gap: 3.5rem;
   }
@@ -1123,7 +1452,14 @@ figcaption {
     --page-gutter: 20px;
   }
 
-  .content-section {
+  /* `.work-section` and `.capability-section` were never brought onto the
+     narrow-viewport step, so they held a 112px block where the rest of the page
+     used 104 and pushed `capability -> faq` and `faq -> band` outside the
+     88-104px mobile rhythm. The boundary rule above still drops the doubled
+     side; this only sets what one side is worth. */
+  .content-section,
+  .work-section,
+  .capability-section {
     padding-top: 6.5rem;
     padding-bottom: 6.5rem;
   }
@@ -1139,33 +1475,33 @@ figcaption {
   }
 
   .hero-experience {
-    height: 180vh;
+    height: 120vh;
   }
 
+  /* The portrait crop is authored for this ratio, so it needs no vertical
+     nudge; cover only trims its sides. */
   .hero-water__image {
-    object-position: center 72%;
+    object-position: center;
     animation-name: hero-water-drift-mobile;
   }
 
+  /* Portrait puts the copy in the upper half and the swell in the lower one,
+     so the shade is a band across the top rather than a pool on the left.
+     Measured, not guessed: this leaves the offer at roughly 7:1 against the
+     4.5:1 it needs, which is margin enough without flattening the water. */
   .hero-water__scrim {
-    background:
-      linear-gradient(
-        180deg,
-        #050706 0%,
-        rgba(5, 7, 6, 0.98) 40%,
-        rgba(5, 7, 6, 0.82) 51%,
-        rgba(5, 7, 6, 0.18) 64%,
-        rgba(5, 7, 6, 0.3) 100%
-      ),
-      linear-gradient(
-        90deg,
-        rgba(5, 7, 6, 0.8) 0%,
-        rgba(5, 7, 6, 0.08) 100%
-      );
+    background: linear-gradient(
+      180deg,
+      rgba(5, 7, 6, 0.7) 0%,
+      rgba(5, 7, 6, 0.56) 34%,
+      rgba(5, 7, 6, 0.22) 54%,
+      rgba(5, 7, 6, 0) 72%,
+      rgba(5, 7, 6, 0.2) 100%
+    );
   }
 
   .hero-experience__copy {
-    top: 17.5svh;
+    top: 15svh;
     right: 20px;
     left: 20px;
     width: auto;
@@ -1173,14 +1509,16 @@ figcaption {
   }
 
   .hero-experience__copy h1 {
-    max-width: none;
-    font-size: clamp(3.8rem, 14vw, 6rem);
+    font-size: clamp(3.6rem, 17vw, 5.5rem);
+    letter-spacing: -0.05em;
   }
 
+  /* The lede keeps its rung on phones, one step down from a 3.6rem headline
+     rather than the caption it used to be. 30ch holds the measure. */
   .hero-experience__offer {
-    max-width: 33ch;
-    margin-top: 1.2rem;
-    font-size: 1rem;
+    max-width: 30ch;
+    margin-top: 1.3rem;
+    font-size: 1.3rem;
   }
 
   .hero-experience__actions {
@@ -1192,15 +1530,17 @@ figcaption {
     padding-left: 1.1rem;
   }
 
-  .fisherman-art {
-    right: -2vw;
-    bottom: 8vh;
-    width: 74vw;
+  .fisherman-interlude {
+    height: 170vh;
   }
 
-  .hero-experience__brand-line {
-    right: 20px;
-    bottom: 4vh;
+  .fisherman-art {
+    width: 84vw;
+  }
+
+  .fisherman-interlude__brand-line {
+    bottom: 8vh;
+    letter-spacing: 0.22em;
   }
 
   .proof-rail__list {
@@ -1277,9 +1617,12 @@ figcaption {
     margin-top: 3rem;
   }
 
-  .taska-spread__primary .case-image-frame {
-    aspect-ratio: 4 / 5;
-  }
+  /* The narrow-viewport board used to be re-framed to 4 / 5. That worked only
+     because the previous capture had empty background around its interface, so
+     a taller frame zoomed past the padding and lost nothing. The 2026-07-31
+     board fills its canvas, and covering a 4 / 5 frame with it hid the To Do
+     and Done columns entirely, so the primary now keeps its native ratio at
+     every width. */
 
   .taska-spread__secondary {
     width: 84%;
@@ -1376,14 +1719,13 @@ figcaption {
 
   .hero-experience__stage {
     position: relative;
-    display: grid;
+    display: flex;
     min-height: 100vh;
     min-height: 100svh;
     height: auto;
-    grid-template-columns: minmax(0, 1fr) minmax(280px, 0.72fr);
-    align-items: center;
-    gap: clamp(2rem, 6vw, 7rem);
-    padding: 7rem clamp(48px, 8vw, 120px) 4rem;
+    flex-direction: column;
+    justify-content: center;
+    padding: 7rem clamp(48px, 8vw, 120px) 5rem;
     overflow: hidden;
   }
 
@@ -1393,67 +1735,85 @@ figcaption {
     will-change: auto;
   }
 
-  .hero-experience__copy,
-  .fisherman-art,
-  .hero-experience__brand-line {
+  .hero-experience__copy {
     position: relative;
     inset: auto;
+    width: auto;
     transform: none;
   }
 
-  .hero-experience__copy {
-    width: auto;
+  /* The signature passage collapses to one static frame; what that frame
+     holds is decided by the two layer opacities below. */
+  .fisherman-interlude {
+    height: auto;
   }
 
-  .fisherman-art {
-    width: min(100%, 520px);
-    justify-self: end;
+  .fisherman-interlude__stage {
+    position: relative;
+    display: flex;
+    height: auto;
+    min-height: 0;
+    flex-direction: column;
+    align-items: center;
+    gap: 2.5rem;
+    padding: clamp(5rem, 12vh, 9rem) clamp(20px, 8vw, 120px);
   }
 
+  /*
+   * The static frame shows the source, not just the result.
+   *
+   * This path used to hide the engraving entirely and hold the ASCII at its
+   * peak, which handed a visitor who cannot see the transition the output of a
+   * transformation whose input they were never shown — a field of characters
+   * with nothing to be a transformation OF. The passage means "this engraving
+   * becomes this signal", so both halves have to be in the one frame that
+   * these visitors get.
+   *
+   * Both numbers come off the animated path rather than being chosen by eye.
+   * 0.82 is ENGRAVING_PEAK exactly, the presence the engraving reaches on the
+   * animated path, so the source reads as the subject. 0.38 is the crossover:
+   * solving the entrance and exit windows against each other, the engraving
+   * and the ASCII are equally present at 0.388, which is the most the signal
+   * is ever co-equal with the source before it takes over. Holding the ASCII
+   * there keeps it legible as an overlay without competing with the engraving.
+   *
+   * The frame is composed rather than sampled — no single moment of the
+   * animation shows 0.82 over 0.38 — because a sampled moment would have to
+   * fade one of the two layers below the point where it reads at all.
+   */
   .fisherman-art__engraving {
-    opacity: 0;
+    opacity: 0.82;
   }
 
   .fisherman-art__ascii {
-    opacity: 0.76;
+    opacity: 0.38;
   }
 
-  .hero-experience__brand-line {
-    position: absolute;
-    right: clamp(48px, 8vw, 120px);
-    bottom: 2rem;
+  .fisherman-interlude__brand-line {
+    position: relative;
+    bottom: auto;
+    left: auto;
     opacity: 1;
+    transform: none;
+    translate: none;
   }
 
   .top-nav::before,
   .faq-item__indicator {
     transition-duration: 0.01ms;
   }
+
+  /* useReveal marks every target revealed immediately in this mode; the
+     transition is removed so nothing animates on the way there. */
+  .has-reveal [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
 
 @media (max-width: 699px) and (prefers-reduced-motion: reduce) {
   .hero-experience__stage {
-    display: flex;
-    min-height: 100svh;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: center;
-    gap: 2.75rem;
     padding: 7rem 20px 5rem;
-  }
-
-  .hero-experience__copy {
-    order: 1;
-  }
-
-  .fisherman-art {
-    order: 2;
-    width: min(88vw, 420px);
-    align-self: flex-end;
-  }
-
-  .hero-experience__brand-line {
-    right: 20px;
-    bottom: 1.4rem;
   }
 }

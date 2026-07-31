@@ -1,9 +1,35 @@
+import { CSSProperties } from 'react';
+import { interludeBands } from '../mediaConfig';
 import { createMailtoHref, Language, UiCopy } from '../siteContent';
+import { DepthBand } from './DepthBand';
+import { FishermanInterlude } from './FishermanInterlude';
 
 interface ContentExperienceProps {
   content: UiCopy;
   language: Language;
 }
+
+/** Staggers an item inside its group; see the [data-reveal] rule in App.css. */
+const revealOrder = (index: number) =>
+  ({ '--reveal-index': index }) as CSSProperties;
+
+/*
+ * Every list below is keyed by position, and that is deliberate.
+ *
+ * The obvious keys — a title, a question, a label — are all translated copy,
+ * so each one changes with the locale and React destroys the row and builds a
+ * new one. The replacement paints at the `[data-reveal]` rule's opacity 0 and
+ * transitions back in, which re-runs the entrance animation on the very block
+ * the visitor was reading, and no effect can prevent it because effects run
+ * after that first paint.
+ *
+ * Position is a legitimate key here because it is genuinely stable: these
+ * lists come from a fixed literal in siteContent.ts, both locales carry the
+ * same number of items, and nothing sorts, filters, or inserts. Row 3 is the
+ * same row in both languages, so React updates its text in place. There is no
+ * locale-independent id in the content model to prefer instead — even the
+ * mailto subjects are translated.
+ */
 
 export const ContentExperience = ({
   content,
@@ -15,8 +41,13 @@ export const ContentExperience = ({
       aria-label={content.proofAriaLabel}
     >
       <ul className="proof-rail__list">
-        {content.proof.map((fact) => (
-          <li className="proof-rail__item" key={fact.label}>
+        {content.proof.map((fact, index) => (
+          <li
+            className="proof-rail__item"
+            key={index}
+            data-reveal
+            style={revealOrder(index)}
+          >
             <strong>{fact.value}</strong>
             <span>{fact.label}</span>
           </li>
@@ -25,15 +56,19 @@ export const ContentExperience = ({
     </section>
 
     <section id="offers" className="content-section content-shell">
-      <header className="section-heading section-heading--wide">
-        <p className="section-label">{content.offers.label}</p>
+      <header className="section-heading section-heading--wide" data-reveal>
         <h2>{content.offers.title}</h2>
         <p>{content.offers.introduction}</p>
       </header>
 
       <div className="offer-list">
-        {content.offers.items.map((offer) => (
-          <article className="offer-row" key={offer.title}>
+        {content.offers.items.map((offer, index) => (
+          <article
+            className="offer-row"
+            key={index}
+            data-reveal
+            style={revealOrder(index)}
+          >
             <div className="offer-row__lead">
               <h3>{offer.title}</h3>
               <p>{offer.summary}</p>
@@ -57,13 +92,12 @@ export const ContentExperience = ({
 
     <section id="work" className="content-section work-section">
       <div className="content-shell">
-        <header className="section-heading section-heading--wide">
-          <p className="section-label">{content.work.label}</p>
+        <header className="section-heading section-heading--wide" data-reveal>
           <h2>{content.work.title}</h2>
           <p>{content.work.introduction}</p>
         </header>
 
-        <article className="taska-case">
+        <article className="taska-case" data-reveal>
           <div className="taska-case__copy">
             <p className="status-label">{content.work.taska.status}</p>
             <h3>{content.work.taska.title}</h3>
@@ -76,8 +110,8 @@ export const ContentExperience = ({
               <div className="case-image-frame">
                 <img
                   src="/media/cases/taska-board.webp"
-                  width="989"
-                  height="898"
+                  width="999"
+                  height="702"
                   loading="lazy"
                   decoding="async"
                   alt={content.work.taska.boardAlt}
@@ -89,8 +123,8 @@ export const ContentExperience = ({
               <div className="case-image-frame">
                 <img
                   src="/media/cases/taska-projects.webp"
-                  width="1234"
-                  height="768"
+                  width="713"
+                  height="450"
                   loading="lazy"
                   decoding="async"
                   alt={content.work.taska.projectsAlt}
@@ -103,12 +137,18 @@ export const ContentExperience = ({
       </div>
     </section>
 
+    <DepthBand source={interludeBands.afterWork} />
+
     <div className="research-band">
       <article className="content-shell research-case">
-        <div className="research-case__copy">
-          <p className="status-label">{content.work.ai.status}</p>
-          <h3>{content.work.ai.title}</h3>
-          <p>{content.work.ai.description}</p>
+        <div className="research-case__aside">
+          <div className="research-case__copy" data-reveal>
+            <p className="status-label">{content.work.ai.status}</p>
+            <h3>{content.work.ai.title}</h3>
+            <p>{content.work.ai.description}</p>
+          </div>
+
+          <p className="research-case__note">{content.work.ai.note}</p>
         </div>
 
         <ol
@@ -116,7 +156,12 @@ export const ContentExperience = ({
           aria-label={content.work.ai.flowAriaLabel}
         >
           {content.work.ai.steps.map((step, index) => (
-            <li className="knowledge-flow__step" key={step.title}>
+            <li
+              className="knowledge-flow__step"
+              key={index}
+              data-reveal
+              style={revealOrder(index)}
+            >
               <span className="knowledge-flow__marker" aria-hidden="true">
                 {String(index + 1).padStart(2, '0')}
               </span>
@@ -127,21 +172,25 @@ export const ContentExperience = ({
             </li>
           ))}
         </ol>
-
-        <p className="research-case__note">{content.work.ai.note}</p>
       </article>
     </div>
 
+    <FishermanInterlude content={content.hero} />
+
     <section id="process" className="content-section content-shell">
-      <header className="section-heading">
-        <p className="section-label">{content.process.label}</p>
+      <header className="section-heading" data-reveal>
         <h2>{content.process.title}</h2>
         <p>{content.process.introduction}</p>
       </header>
 
       <ol className="process-list">
         {content.process.steps.map((step, index) => (
-          <li className="process-step" key={step.title}>
+          <li
+            className="process-step"
+            key={index}
+            data-reveal
+            style={revealOrder(index)}
+          >
             <span className="process-step__number" aria-hidden="true">
               {String(index + 1).padStart(2, '0')}
             </span>
@@ -153,12 +202,11 @@ export const ContentExperience = ({
     </section>
 
     <section className="capability-section content-shell">
-      <div className="capability-section__statement">
-        <p className="section-label">{content.capability.label}</p>
+      <div className="capability-section__statement" data-reveal>
         <h2>{content.capability.title}</h2>
         <p>{content.capability.description}</p>
       </div>
-      <div className="capability-section__facts">
+      <div className="capability-section__facts" data-reveal>
         <ul>
           {content.capability.facts.map((fact) => (
             <li key={fact}>{fact}</li>
@@ -169,14 +217,19 @@ export const ContentExperience = ({
     </section>
 
     <section id="faq" className="content-section faq-section content-shell">
-      <header className="section-heading">
-        <p className="section-label">{content.faq.label}</p>
+      <header className="section-heading" data-reveal>
         <h2>{content.faq.title}</h2>
       </header>
 
       <div className="faq-list">
-        {content.faq.items.map((item) => (
-          <details className="faq-item" key={item.question}>
+        {content.faq.items.map((item, index) => (
+          <details
+            className="faq-item"
+            key={index}
+            data-reveal
+            open={index === 0}
+            style={revealOrder(index)}
+          >
             <summary>
               <span>{item.question}</span>
               <span className="faq-item__indicator" aria-hidden="true">
@@ -189,10 +242,11 @@ export const ContentExperience = ({
       </div>
     </section>
 
+    <DepthBand source={interludeBands.beforeContact} />
+
     <section id="contact" className="contact-section">
       <div className="content-shell contact-section__layout">
-        <div className="contact-section__copy">
-          <p className="section-label">{content.contact.label}</p>
+        <div className="contact-section__copy" data-reveal>
           <h2>{content.contact.title}</h2>
           <p>{content.contact.description}</p>
           <a
@@ -205,7 +259,7 @@ export const ContentExperience = ({
           </a>
         </div>
 
-        <div className="contact-section__brief">
+        <div className="contact-section__brief" data-reveal>
           <h3>{content.contact.includeLabel}</h3>
           <ul>
             {content.contact.includeItems.map((item) => (

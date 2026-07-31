@@ -124,6 +124,77 @@ describe('Ozero landing experience', () => {
     expect(window.localStorage.getItem(LANGUAGE_STORAGE_KEY)).toBe('ru');
   });
 
+  it('leaves no revealed block hidden after a language switch', async () => {
+    const user = userEvent.setup();
+    const { container } = render(<App />);
+
+    // CSS holds every [data-reveal] target at opacity 0 until it is marked
+    // revealed, so a target that loses the mark is invisible for good.
+    expect(
+      container.querySelectorAll('[data-reveal]:not(.is-revealed)')
+    ).toHaveLength(0);
+
+    await user.click(screen.getByRole('button', { name: 'RU' }));
+
+    const stillHidden = Array.from(
+      container.querySelectorAll('[data-reveal]:not(.is-revealed)')
+    ).map((node) => node.className || node.tagName);
+
+    expect(stillHidden).toEqual([]);
+  });
+
+  /*
+   * The mechanism, not the symptom. Whether a switched-to block re-animates is
+   * decided by whether React keeps its DOM node: a replaced node is painted at
+   * the stylesheet's opacity 0 and transitions back in, and no assertion about
+   * classes can see that, because the class is restored one passive effect too
+   * late — after the browser has already painted the fresh node.
+   *
+   * So this asserts identity. Every sampled node must be the same instance
+   * afterwards, updated in place, which is only true while the list keys are
+   * independent of the copy they render.
+   */
+  it('translates reveal blocks in place instead of replacing their nodes', async () => {
+    const user = userEvent.setup();
+    const { container } = render(<App />);
+
+    const sampledSelectors = [
+      '.proof-rail__item',
+      '.offer-row',
+      '.knowledge-flow__step',
+      '.process-step',
+      '.faq-item',
+    ];
+    const sampled = sampledSelectors.map((selector) => {
+      const node = container.querySelector(selector);
+
+      expect(node, `no node matched ${selector}`).not.toBeNull();
+
+      return { node: node as Element, selector };
+    });
+    const englishOffer = container.querySelector('.offer-row h3')?.textContent;
+
+    await user.click(screen.getByRole('button', { name: 'RU' }));
+
+    sampled.forEach(({ node, selector }) => {
+      expect(
+        container.contains(node),
+        `${selector} was replaced by the locale switch`
+      ).toBe(true);
+      expect(container.querySelector(selector)).toBe(node);
+      expect(node).toHaveClass('is-revealed');
+    });
+
+    // The switch has to have actually happened, or the identity check above
+    // would pass against a page that never changed.
+    expect(container.querySelector('.offer-row h3')?.textContent).not.toBe(
+      englishOffer
+    );
+    expect(container.querySelector('.offer-row h3')).toHaveTextContent(
+      'Усиление команды'
+    );
+  });
+
   it('restores a previously selected locale', () => {
     window.localStorage.setItem(LANGUAGE_STORAGE_KEY, 'ru');
 
@@ -131,7 +202,7 @@ describe('Ozero landing experience', () => {
 
     expect(
       screen.getByText(
-        'Реалистичный срок подключения Java-разработчика или сфокусированной продуктовой команды — одна–три недели.'
+        'Подключаем Java-разработчика или небольшую продуктовую команду. Реалистичный срок — одна–три недели.'
       )
     ).toBeInTheDocument();
     expect(document.documentElement).toHaveAttribute('lang', 'ru');
@@ -192,18 +263,20 @@ describe('Ozero landing experience', () => {
   it('uses optimized accessible Taska evidence and never publishes the excluded source', () => {
     const { container } = render(<App />);
     const board = screen.getByRole('img', {
-      name: 'Taska dark-mode Kanban board with To Do, In Progress, and Done columns',
+      name: 'Taska issue board in dark mode with To Do, In Progress, and Done columns holding ten task, bug, and story cards, each with a date and an assignee avatar',
     });
     const projects = screen.getByRole('img', {
-      name: 'Taska projects overview with three project workspaces',
+      name: 'Taska projects screen with four project workspace cards, each showing a short description, member avatars, and an issue count',
     });
 
     expect(board).toHaveAttribute(
       'src',
       '/media/cases/taska-board.webp'
     );
-    expect(board).toHaveAttribute('width', '989');
-    expect(board).toHaveAttribute('height', '898');
+    // The reserved box must equal the published file, or the spread reflows
+    // once the lazy image decodes.
+    expect(board).toHaveAttribute('width', '999');
+    expect(board).toHaveAttribute('height', '702');
     expect(board).toHaveAttribute('loading', 'lazy');
     expect(board).toHaveAttribute('decoding', 'async');
 
@@ -211,8 +284,8 @@ describe('Ozero landing experience', () => {
       'src',
       '/media/cases/taska-projects.webp'
     );
-    expect(projects).toHaveAttribute('width', '1234');
-    expect(projects).toHaveAttribute('height', '768');
+    expect(projects).toHaveAttribute('width', '713');
+    expect(projects).toHaveAttribute('height', '450');
     expect(projects).toHaveAttribute('loading', 'lazy');
     expect(projects).toHaveAttribute('decoding', 'async');
 
@@ -251,10 +324,9 @@ describe('Ozero landing experience', () => {
     mockMotionPreference(true);
     const { container } = render(<App />);
 
-    expect(container.querySelector('.hero-experience')).toHaveAttribute(
-      'data-reduced-motion',
-      'true'
-    );
+    expect(
+      container.querySelector('.fisherman-interlude')
+    ).toHaveClass('fisherman-interlude--reduced');
     expect(
       screen.getByRole('link', { name: 'Start a conversation' })
     ).toBeVisible();

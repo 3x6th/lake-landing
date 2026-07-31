@@ -24,13 +24,53 @@ interface AsciiSample {
 type AsciiStatus = 'loading' | 'ready' | 'failed';
 
 const ASCII_GLYPH_RAMP = ' .·:+*#@';
-const CROP_RATIO = 0.92;
+/*
+ * How much of the source width the interlude shows, measured from the left.
+ *
+ * The engraving is authored already framed — its ink runs from 3.7% to 96.6%
+ * of the width with even margins on all four sides — so it needs no crop. It
+ * was cropped to 0.87 once, which cut off the rod tip and the whole fishing
+ * line and left the fisherman holding a bare stick; both layers sampled from
+ * the same ratio, so the crossfade still registered and the loss was invisible
+ * in review.
+ *
+ * The constant stays because it is one third of a contract. Any re-crop has to
+ * move all three of these together or the engraving and its ASCII stop sitting
+ * on the same pixels through the crossfade:
+ *
+ *   1. this ratio
+ *   2. `.fisherman-art__viewport { aspect-ratio }`  = 1536 * ratio / 1024
+ *   3. `.fisherman-art__source { width }`           = 100% / ratio
+ */
+const CROP_RATIO = 1;
+/* The intrinsic aspect of /fishman.png: 1536 x 1024. */
+const SOURCE_ASPECT_RATIO = 1.5;
 const MOBILE_COLUMNS = 64;
 const DESKTOP_COLUMNS = 120;
 const MOBILE_QUERY = '(max-width: 699px)';
 const AREA_SAMPLE_SIZE = 2;
 const TRANSPARENT_LUMINANCE = 24;
 const ASCII_CONTRAST_GAMMA = 0.65;
+/*
+ * The luminance that maps to the heaviest glyph in the ramp.
+ *
+ * This is a property of /fishman.png, not a general constant. Normalizing
+ * against 255 assumes a cell somewhere reaches white, and this engraving never
+ * does: sampled at the shipped 120x40 grid its brightest cell is 131, p99 is
+ * 73.5 and p90 is 30.7. Against a 255 ceiling the brightest cell in the whole
+ * image resolves to '+', so '*', '#' and '@' could never be emitted once and
+ * 90% of the glyphs were the two faintest characters — the figure crossed the
+ * transition as scattered dots instead of a fisherman.
+ *
+ * 110 sits just under the measured ceiling so the densest passages — hat, face,
+ * hull — reach the top of the ramp while the sparse water stays sparse. The
+ * normalized value is clamped because cells above the peak would otherwise run
+ * off the end of the ramp.
+ *
+ * Replacing fishman.png means re-measuring this. Sample the new file at 120x40
+ * and set it near the p99 of the cells above TRANSPARENT_LUMINANCE.
+ */
+const ASCII_PEAK_LUMINANCE = 110;
 const imagePromises = new Map<string, Promise<HTMLImageElement>>();
 
 const loadImage = (source: string) => {
@@ -167,9 +207,11 @@ const sampleImage = (
         continue;
       }
 
-      const normalizedLuminance =
+      const normalizedLuminance = Math.min(
+        1,
         (luminance - TRANSPARENT_LUMINANCE) /
-        (255 - TRANSPARENT_LUMINANCE);
+          (ASCII_PEAK_LUMINANCE - TRANSPARENT_LUMINANCE)
+      );
       const contrastAdjustedLuminance = Math.pow(
         normalizedLuminance,
         ASCII_CONTRAST_GAMMA
@@ -200,6 +242,11 @@ const sampleImage = (
     rows,
     rowHeight: viewBoxHeight / rows,
     viewBoxHeight,
+    /*
+     * The glyphs occupy columns 0..`columns`, which is the cropped region. The
+     * box is widened by the same ratio the stylesheet widens this <svg> by, so
+     * one glyph column keeps covering one column of the visible viewport.
+     */
     viewBoxWidth: columns / CROP_RATIO,
   };
 };
@@ -276,7 +323,14 @@ export const AsciiFisherman = ({
       viewBox={
         sample
           ? `0 0 ${sample.viewBoxWidth} ${sample.viewBoxHeight}`
-          : `0 0 ${columns / CROP_RATIO} ${columns / 1.5}`
+          : /*
+             * Before the first sample lands, hold the same box the sample will
+             * produce: `croppedAspectRatio` is the source aspect times the
+             * crop, so this is that geometry stated ahead of the pixels.
+             */
+            `0 0 ${columns / CROP_RATIO} ${
+              columns / (SOURCE_ASPECT_RATIO * CROP_RATIO)
+            }`
       }
     >
       {sample?.glyphs.map(({ character, column, row }) => (

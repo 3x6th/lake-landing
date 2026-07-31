@@ -16,12 +16,24 @@ typography:
     fontWeight: 350
     lineHeight: 0.86
     letterSpacing: "-0.065em"
+  lede:
+    fontFamily: "Onest, Arial, sans-serif"
+    fontSize: "clamp(1.5rem, 2.4vw, 2.5rem)"
+    fontWeight: 350
+    lineHeight: 1.22
+    letterSpacing: "-0.015em"
   headline:
     fontFamily: "Onest, Arial, sans-serif"
     fontSize: "clamp(2.5rem, 6vw, 6rem)"
     fontWeight: 350
     lineHeight: 0.94
     letterSpacing: "-0.045em"
+  title:
+    fontFamily: "Onest, Arial, sans-serif"
+    fontSize: "clamp(1.25rem, 2.8vw, 2rem)"
+    fontWeight: 400
+    lineHeight: 1.15
+    letterSpacing: "-0.02em"
   body:
     fontFamily: "Onest, Arial, sans-serif"
     fontSize: "clamp(1rem, 1.2vw, 1.2rem)"
@@ -78,7 +90,8 @@ It must never become a large literal fishing scene or the dominant sales image.
 
 **Key Characteristics:**
 
-- Near-black water as a material field, not a generic dark-mode background.
+- Water as a material field that fills the frame, not a generic dark-mode
+  background and not a highlight in the corner of a black rectangle.
 - White editorial type with extremely restrained lake-green and ember light.
 - Sharp content geometry paired with full-pill actions.
 - One cinematic motion system; quiet, readable sections around it.
@@ -88,6 +101,14 @@ It must never become a large literal fishing scene or the dominant sales image.
 
 The interface is neutral and mineral; chroma belongs primarily to light moving
 inside hero media.
+
+**Amended 2026-07-31.** "Near-black" was read literally and produced a hero
+that is mostly empty black with the material pushed into one corner. The
+interface stays near-black; the *water* does not. Hero media carries a real
+range from shadow to highlight, with submerged green and amber light present
+across the whole frame. Neither reference behaves otherwise: monopo fills the
+frame with light and sets white type on top of it, and XData keeps its liquid
+dark but gives it form and speculars. See `docs/ai/MEDIA-BRIEF.md`.
 
 ### Primary
 
@@ -124,7 +145,9 @@ transformation.
 ### Hierarchy
 
 - **Display:** light-to-regular variable weight, viewport-scaled, tightly
-  tracked; hero statements only.
+  tracked; the hero wordmark only.
+- **Lede:** the hero's offer statement, and nothing else. The one role whose
+  job is meaning rather than voice.
 - **Headline:** light variable weight with compact leading; section theses.
 - **Title:** 1.25–2rem, regular weight; service and case titles.
 - **Body:** 1–1.2rem, regular, 1.55 leading, maximum 68 characters.
@@ -132,6 +155,39 @@ transformation.
 
 **The Whispered Authority Rule.** Large type grows through scale and negative
 space, never through heavy weight, outline effects, or gradient fill.
+
+**Amended 2026-07-31.** Two roles were added to the frontmatter. `title` was
+already described in this list but had never been tokenized, so every case and
+service heading was an untracked literal. `lede` is new, and it exists because
+the hero had a hole where its most important sentence lives.
+
+The hero sets `ozero.dev` at up to 152px and then dropped straight to a 26px
+paragraph — a 5.8× cliff with the offer stranded at the bottom of it. Nothing
+in the ramp could catch it. `headline` at 6rem would have rivalled the
+wordmark; `title` at 2rem is too quiet to carry the page's primary claim. So
+the rung between them is now named. `PRODUCT.md` Principle 1 asks that the
+offer be legible before the experience is cinematic, and the first entry under
+Do's below asks for the offer and CTA in the first viewport; neither was
+reachable without this role.
+
+The wordmark keeps `display`. The brand is still the largest thing on the
+page — the offer is simply no longer the smallest.
+
+Two deliberate exceptions stay off the ramp.
+
+`.intro-overlay__wordmark` (`src/App.css:104`) sets the entry curtain at
+`clamp(2.25rem, 5.5vw, 4.25rem)`. It is a single transient element that never
+coexists with page type, and tokenizing a role for one overlay would be worse
+than the exception.
+
+**Below 699px the hero overrides both `display` and `lede`**, to
+`clamp(3.6rem, 17vw, 5.5rem)` and `1.3rem`. The § Layout rule that mobile uses
+an art-directed vertical crop rather than a shrunken desktop composition
+applies to type as well: the declared `display` floor of `3.8rem` is tuned to
+a wide measure, and `17vw` is what keeps the wordmark proportionate to a
+portrait frame. This is recorded because the launch review found the `lede`
+token being quoted as universal when it holds on desktop only — the viewport
+class carrying most traffic was the one where it was untrue.
 
 ## Layout
 
