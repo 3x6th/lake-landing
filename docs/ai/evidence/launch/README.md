@@ -124,6 +124,29 @@ Anyone re-running this must drop `--disable-gpu` and assert
 `video.paused === false` before trusting a frame that is supposed to contain
 motion.
 
+## Every frame in this set was taken in Blink, and that hid a real defect
+
+The ASCII signature rendered **nothing** on iOS — Safari and Chrome for iOS
+alike, both WebKit — while every capture here showed it working.
+
+`loadImage` set `image.decoding = 'async'` and resolved on `load`. `load` means
+the bytes arrived, not that a bitmap exists. WebKit honours the hint literally,
+so `drawImage` of a loaded-but-undecoded image draws nothing and does not
+block: `getImageData` returned peak cell luminance 0, every cell fell under
+`TRANSPARENT_LUMINANCE`, and the glyph array came out empty. Blink decodes
+synchronously inside `drawImage`, so Chrome — and therefore this entire
+evidence set — could not see it.
+
+Measured on WebKit against the real asset: `load` gave peak luminance 0 and
+`decode()` gave 137.93. On the deployed site after the fix, the same probe
+counts 355 glyphs at 390×844 where it counted 0 before.
+
+**The lesson for this file: a viewport matrix in one engine is not coverage.**
+Two engines were needed and only one was used. WebKit is reachable without a
+simulator or automation permission — a small WKWebView snapshot binary does it
+— and any future claim about canvas, decoding or SVG rendering should be
+checked there before it is filed here.
+
 ## What the interlude frames show
 
 `launch-1440x900-interlude-engraving-en.jpg` is the evidence for the crop fix.
