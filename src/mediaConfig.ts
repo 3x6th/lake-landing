@@ -13,6 +13,7 @@ export const heroVideoSources: {
   mobile?: string;
 } | null = {
   desktop: '/media/hero/hero-water-desktop.mp4',
+  mobile: '/media/hero/hero-water-mobile.mp4',
 };
 
 export const interludeBands: {

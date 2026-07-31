@@ -147,7 +147,9 @@ a {
   align-items: center;
   justify-content: space-between;
   gap: 0.3rem;
-  padding: 0.25rem;
+  /* The wordmark and the language switch are the outermost items, so the
+     horizontal padding is what keeps them off the edge of the scrim. */
+  padding: 0.25rem 1rem;
   transform: translateX(-50%);
   isolation: isolate;
 }

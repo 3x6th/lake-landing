@@ -171,16 +171,37 @@ Encoder settings, for dark water specifically:
 `aq-mode=3` biases bitrate toward dark regions, which is where every artefact
 in this footage lives.
 
-Shipped: hero at width 1600 CRF 23, straight through with no ping-pong;
-interludes at width 1152 CRF 25, still ping-ponged because their seams remain
-low (23.4 and 20.2) and no replacement takes exist yet. Total video payload
-7.6MB against 51.5MB of source.
+### Final takes
 
-**Outstanding:** the two interlude clips would benefit from the same treatment
-as the hero — a take that loops on its own. Each currently runs 16s instead of
-8s purely to hide its seam, and would gain roughly the same quality-per-byte
-the hero did. There is also no portrait clip yet, so the hero plays video only
-above 700px; the portrait still carries the phone on its own.
+Every clip was regenerated to loop on its own, using the same picture in both
+`start_image` and `end_image` so the last frame is forced back to the first.
+Seams before and after:
+
+| Clip | First take | Final take |
+| --- | --- | --- |
+| hero, landscape | 21.9 | 36.5 |
+| hero, portrait | — | 36.1 |
+| interlude one | 23.4 | 36.2 |
+| interlude two | 20.3 | 43.3 |
+
+No clip needs a ping-pong any more, so each runs its native 8s and spends its
+whole bitrate on one pass of the material. The interludes show the effect most
+plainly: `depth-01` fell from 2408KB to **1028KB** while its fidelity rose to
+SSIM 0.989, because it no longer has to encode the same eight seconds twice.
+
+Shipped, all straight through with no seam repair:
+
+| File | Width | CRF | Size | SSIM |
+| --- | --- | --- | --- | --- |
+| `hero-water-desktop.mp4` | 1600 | 23 | 2386KB | 0.984 |
+| `hero-water-mobile.mp4` | 900 | 23 | 1520KB | 0.989 |
+| `depth-01.mp4` | 1280 | 24 | 1029KB | 0.989 |
+| `depth-02.mp4` | 1280 | 24 | 992KB | 0.986 |
+
+Total media payload 6.0MB, against 74MB of supplied source.
+
+The raw `-loop.mp4` deliveries are working files and are not committed. They
+remain retrievable from the Higgsfield web history.
 
 ## Production exports
 
